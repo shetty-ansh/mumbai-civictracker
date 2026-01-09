@@ -8,15 +8,64 @@ import {
     useMap,
 } from "@/components/ui/map";
 import type MapLibreGL from "maplibre-gl";
-import { ArrowLeft, Home } from "lucide-react";
+import { ArrowLeft, Home, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/lib/supabase";
 
 // Mumbai center coordinates
 const MUMBAI_CENTER: [number, number] = [72.8777, 19.076];
 const MUMBAI_ZOOM = 10.5;
 
+interface Candidate {
+    id: string;
+    ward_no: number;
+    candidate_name: string;
+    party_name: string;
+    symbol: string;
+    ward_name: string;
+}
+
+// Party color mapping based on official party colors
+function getPartyColor(partyName: string): { bg: string; text: string } {
+    const party = partyName.toLowerCase();
+
+    if (party.includes('bjp') || party.includes('bharatiya janata')) {
+        return { bg: '#FF9933', text: '#000000' }; // Saffron
+    }
+    if (party.includes('shiv sena') || party.includes('shivsena')) {
+        return { bg: '#FF6634', text: '#FFFFFF' }; // Orange
+    }
+    if (party.includes('congress') || party.includes('inc')) {
+        return { bg: '#19AAED', text: '#FFFFFF' }; // Sky Blue
+    }
+    if (party.includes('ncp') || party.includes('nationalist congress')) {
+        if (party.includes('ajit') || party.includes('pawar') && !party.includes('sharad')) {
+            return { bg: '#FF69B4', text: '#000000' }; // Pink (Ajit Pawar faction)
+        }
+        return { bg: '#00A7E1', text: '#FFFFFF' }; // Blue (Sharad Pawar faction)
+    }
+    if (party.includes('aap') || party.includes('aam aadmi')) {
+        return { bg: '#0066CC', text: '#FFFFFF' }; // Blue
+    }
+    if (party.includes('mns') || party.includes('maharashtra navnirman')) {
+        return { bg: '#FF9933', text: '#000000' }; // Saffron
+    }
+    if (party.includes('independent')) {
+        return { bg: '#808080', text: '#FFFFFF' }; // Gray
+    }
+
+    // Default color for unknown parties
+    return { bg: '#000000', text: '#FFFFFF' }; // Black
+}
+
 // GeoJSON layer component for 2022 Electoral Wards
-function ElectoralWardsLayer() {
+function ElectoralWardsLayer({
+    candidates,
+    onWardClick
+}: {
+    candidates: Record<number, Candidate[]>;
+    onWardClick: (wardNo: number) => void;
+}) {
     const { map, isLoaded } = useMap();
     const id = useId();
     const sourceId = `electoral-wards-source-${id}`;
@@ -27,6 +76,7 @@ function ElectoralWardsLayer() {
         prabhag: number;
         population: number;
         reservation: string;
+        candidateCount: number;
     } | null>(null);
 
     useEffect(() => {
@@ -38,43 +88,40 @@ function ElectoralWardsLayer() {
             data: "/mumbai_electoral_2022_ward_level.geojson",
         });
 
-        // Add fill layer with hover effect - flat black/white theme
+        // Add fill layer with hover effect - transparent fill, outline only
         map.addLayer({
             id: fillLayerId,
             type: "fill",
             source: sourceId,
             paint: {
-                "fill-color": [
-                    "case",
-                    ["boolean", ["feature-state", "hover"], false],
-                    "#000000", // black on hover
-                    [
-                        "match",
-                        ["get", "reservation"],
-                        "women", "#e5e5e5",
-                        "SC", "#d4d4d4",
-                        "ST", "#a3a3a3",
-                        "SC women", "#737373",
-                        "#f5f5f5" // general - lightest
-                    ]
-                ],
+                "fill-color": "#000000",
                 "fill-opacity": [
                     "case",
                     ["boolean", ["feature-state", "hover"], false],
-                    0.5,
-                    0.7,
+                    0.15, // slight fill on hover for feedback
+                    0, // completely transparent normally
                 ],
             },
         });
 
-        // Add outline layer
+        // Add outline layer with hover effect
         map.addLayer({
             id: outlineLayerId,
             type: "line",
             source: sourceId,
             paint: {
-                "line-color": "#000000",
-                "line-width": 1,
+                "line-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    "#FF6B35", // vibrant orange on hover
+                    "#888888", // subtle gray normally
+                ],
+                "line-width": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    2.5, // medium thickness on hover
+                    0.5, // very thin normally
+                ],
             },
         });
 
@@ -121,10 +168,14 @@ function ElectoralWardsLayer() {
                 }
 
                 const props = e.features[0].properties;
+                const prabhagNo = props?.prabhag || 0;
+                const wardCandidates = candidates[prabhagNo] || [];
+
                 setHoveredWard({
-                    prabhag: props?.prabhag || 0,
+                    prabhag: prabhagNo,
                     population: props?.tot_pop || 0,
                     reservation: props?.reservation || "unknown",
+                    candidateCount: wardCandidates.length,
                 });
                 map.getCanvas().style.cursor = "pointer";
             }
@@ -147,25 +198,26 @@ function ElectoralWardsLayer() {
         ) => {
             if (e.features && e.features.length > 0) {
                 const props = e.features[0].properties;
-                console.log("Ward clicked:", {
-                    id: e.features[0].id,
-                    prabhag: props?.prabhag,
-                    population: props?.tot_pop,
-                    SC_pop: props?.SC_pop,
-                    ST_pop: props?.ST_pop,
-                    reservation: props?.reservation,
-                });
+                const prabhagNo = props?.prabhag || 0;
+                onWardClick(prabhagNo);
             }
         };
 
         map.on("mousemove", fillLayerId, handleMouseMove);
         map.on("mouseleave", fillLayerId, handleMouseLeave);
         map.on("click", fillLayerId, handleClick);
+        // Also listen to outline layer for better hover detection
+        map.on("mousemove", outlineLayerId, handleMouseMove);
+        map.on("mouseleave", outlineLayerId, handleMouseLeave);
+        map.on("click", outlineLayerId, handleClick);
 
         return () => {
             map.off("mousemove", fillLayerId, handleMouseMove);
             map.off("mouseleave", fillLayerId, handleMouseLeave);
             map.off("click", fillLayerId, handleClick);
+            map.off("mousemove", outlineLayerId, handleMouseMove);
+            map.off("mouseleave", outlineLayerId, handleMouseLeave);
+            map.off("click", outlineLayerId, handleClick);
 
             try {
                 if (map.getLayer(labelLayerId)) map.removeLayer(labelLayerId);
@@ -176,25 +228,41 @@ function ElectoralWardsLayer() {
                 // ignore cleanup errors
             }
         };
-    }, [isLoaded, map, sourceId, fillLayerId, outlineLayerId, labelLayerId]);
+    }, [isLoaded, map, sourceId, fillLayerId, outlineLayerId, labelLayerId, candidates, onWardClick]);
 
     // Floating info box for hovered ward
     if (hoveredWard) {
         return (
-            <div className="absolute top-20 left-4 z-10 rounded-lg bg-background border border-border px-4 py-3 shadow-sm min-w-[180px]">
-                <p className="text-xs text-muted-foreground">Electoral Ward</p>
-                <p className="text-2xl font-bold">#{hoveredWard.prabhag}</p>
-                <div className="mt-2 space-y-1 text-sm">
-                    <div className="flex justify-between">
-                        <span className="text-muted-foreground">Population</span>
-                        <span className="font-medium">{hoveredWard.population.toLocaleString()}</span>
+            <div className="absolute top-20 left-4 z-10 rounded-lg bg-background border border-border px-4 py-3 shadow-sm min-w-[220px]">
+                <div className="flex justify-between items-start mb-2">
+                    <div>
+                        <p className="text-xs text-muted-foreground">Electoral Ward</p>
+                        <p className="text-2xl font-bold">#{hoveredWard.prabhag}</p>
                     </div>
-                    <div className="flex justify-between">
-                        <span className="text-muted-foreground">Reservation</span>
-                        <span className="font-medium capitalize">{hoveredWard.reservation}</span>
+                    {hoveredWard.candidateCount > 0 && (
+                        <div className="text-right">
+                            <span className="inline-block px-2 py-0.5 text-[10px] font-medium bg-muted text-foreground rounded-full border border-border">
+                                {hoveredWard.candidateCount} {hoveredWard.candidateCount === 1 ? 'Candidate' : 'Candidates'}
+                            </span>
+                        </div>
+                    )}
+                </div>
+
+                <div className="space-y-2 text-sm">
+                    <div className="pt-2 border-t border-border grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                            <span className="text-muted-foreground block">Population</span>
+                            <span className="font-medium">{hoveredWard.population.toLocaleString()}</span>
+                        </div>
+                        <div>
+                            <span className="text-muted-foreground block">Reservation</span>
+                            <span className="font-medium capitalize">{hoveredWard.reservation}</span>
+                        </div>
                     </div>
                 </div>
-                <p className="text-xs text-muted-foreground mt-2">Click for full details</p>
+                <p className="text-[10px] text-muted-foreground mt-3 text-center">
+                    {hoveredWard.candidateCount > 0 ? 'Click to view candidates' : 'No candidates yet'}
+                </p>
             </div>
         );
     }
@@ -202,7 +270,130 @@ function ElectoralWardsLayer() {
     return null;
 }
 
+// Candidate List Modal
+function CandidateListModal({
+    wardNo,
+    candidates,
+    onClose
+}: {
+    wardNo: number | null;
+    candidates: Candidate[];
+    onClose: () => void;
+}) {
+    if (wardNo === null) return null;
+
+    return (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="bg-background border border-border rounded-lg shadow-lg max-w-2xl w-full mx-4 max-h-[80vh] overflow-hidden flex flex-col">
+                {/* Header */}
+                <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+                    <div>
+                        <h2 className="text-xl font-bold">Ward #{wardNo} Candidates</h2>
+                        <p className="text-sm text-muted-foreground">
+                            {candidates.length} {candidates.length === 1 ? 'candidate' : 'candidates'} running
+                        </p>
+                    </div>
+                    <Button variant="ghost" size="icon" onClick={onClose}>
+                        <X className="w-5 h-5" />
+                    </Button>
+                </div>
+
+                {/* Candidate List */}
+                <div className="overflow-y-auto flex-1 p-6">
+                    {candidates.length === 0 ? (
+                        <div className="text-center py-12 text-muted-foreground">
+                            <p>No candidates found for this ward</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4">
+                            {candidates.map((candidate, index) => (
+                                <div
+                                    key={candidate.id}
+                                    className="border border-border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+                                >
+                                    <div className="flex items-start justify-between mb-2">
+                                        <div className="flex-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-black text-white text-xs font-bold">
+                                                    {index + 1}
+                                                </span>
+                                                <h3 className="font-semibold text-lg">{candidate.candidate_name}</h3>
+                                            </div>
+                                            <p className="text-sm text-muted-foreground">{candidate.ward_name}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <span
+                                                className="inline-block px-3 py-1 text-xs font-medium rounded-full"
+                                                style={{
+                                                    backgroundColor: getPartyColor(candidate.party_name).bg,
+                                                    color: getPartyColor(candidate.party_name).text
+                                                }}
+                                            >
+                                                {candidate.party_name}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div className="mt-3 pt-3 border-t border-border">
+                                        <div className="flex items-center gap-2 text-sm">
+                                            <span className="text-muted-foreground">Symbol:</span>
+                                            <span className="font-medium">{candidate.symbol}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-border">
+                    <Button onClick={onClose} className="w-full">
+                        Close
+                    </Button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function TestingPage() {
+    const [candidates, setCandidates] = useState<Record<number, Candidate[]>>({});
+    const [selectedWard, setSelectedWard] = useState<number | null>(null);
+
+    useEffect(() => {
+        const fetchCandidates = async () => {
+            const { data, error } = await supabase
+                .from('bmc_candidates')
+                .select('*');
+
+            if (error) {
+                console.error('Error fetching candidates:', error);
+                return;
+            }
+
+            if (data) {
+                const mapping: Record<number, Candidate[]> = {};
+                data.forEach((candidate: Candidate) => {
+                    if (!mapping[candidate.ward_no]) {
+                        mapping[candidate.ward_no] = [];
+                    }
+                    mapping[candidate.ward_no].push(candidate);
+                });
+                setCandidates(mapping);
+            }
+        };
+
+        fetchCandidates();
+    }, []);
+
+    const handleWardClick = (wardNo: number) => {
+        setSelectedWard(wardNo);
+    };
+
+    const handleCloseModal = () => {
+        setSelectedWard(null);
+    };
+
     return (
         <div className="h-screen w-screen bg-background">
             {/* Header */}
@@ -215,7 +406,7 @@ export default function TestingPage() {
                     </Button>
                     <div>
                         <h1 className="font-heading text-xl font-bold">Electoral Wards 2022</h1>
-                        <p className="text-xs text-muted-foreground">227 wards • Test data</p>
+                        <p className="text-xs text-muted-foreground">227 wards • Click to view candidates</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
@@ -236,7 +427,10 @@ export default function TestingPage() {
                     maxZoom={18}
                 >
                     {/* Electoral Wards GeoJSON Layer */}
-                    <ElectoralWardsLayer />
+                    <ElectoralWardsLayer
+                        candidates={candidates}
+                        onWardClick={handleWardClick}
+                    />
 
                     {/* Map Controls */}
                     <MapControls
@@ -280,10 +474,17 @@ export default function TestingPage() {
             <div className="absolute bottom-4 right-4 z-20">
                 <div className="bg-background/90 backdrop-blur-sm border border-border rounded-lg px-4 py-2 text-center">
                     <p className="text-sm text-muted-foreground">
-                        Hover for info • Click to log data
+                        Hover for info • Click to view candidates
                     </p>
                 </div>
             </div>
+
+            {/* Candidate List Modal */}
+            <CandidateListModal
+                wardNo={selectedWard}
+                candidates={selectedWard !== null ? (candidates[selectedWard] || []) : []}
+                onClose={handleCloseModal}
+            />
         </div>
     );
 }

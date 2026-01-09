@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Old_Standard_TT } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -13,15 +13,9 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const oldStandard = Old_Standard_TT({
-  variable: "--font-old-standard",
-  subsets: ["latin"],
-  weight: ["400", "700"],
-});
-
 export const metadata: Metadata = {
-  title: "Mumbai Tracker",
-  description: "Track accountability of your elected representatives in Mumbai",
+  title: "aamchi मुंबई - Mumbai Civic Tracker",
+  description: "Know your ward, know your corporator. Navigate through 227 electoral wards and hold your representatives accountable.",
 };
 
 export default function RootLayout({
@@ -32,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${oldStandard.variable} font-sans antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <Providers>{children}</Providers>
       </body>

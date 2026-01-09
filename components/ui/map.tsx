@@ -35,8 +35,17 @@ function useMap() {
 }
 
 const defaultStyles = {
-  dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
-  light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+  // DARK MODE OPTIONS:
+  dark: "https://tiles.openfreemap.org/styles/liberty",
+  // dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json", // Minimal dark
+  // dark: "https://basemaps.cartocdn.com/gl/voyager-nolabels-gl-style/style.json", // Voyager dark
+
+  // LIGHT MODE OPTIONS (uncomment one):
+  // light: "https://tiles.openfreemap.org/styles/bright", // ✨ Vibrant & colorful
+  // light: "https://tiles.openfreemap.org/styles/liberty", // 🗺️ Classic OSM colors
+  light: "https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json", // 🌍 Balanced colors
+  // light: "https://basemaps.cartocdn.com/gl/voyager-nolabels-gl-style/style.json", // 🌐 Balanced no labels
+  // light: "https://tiles.stadiamaps.com/styles/osm_bright.json", // ☀️ Bright OSM
 };
 
 type MapStyleOption = string | MapLibreGL.StyleSpecification;
@@ -551,13 +560,13 @@ type MapControlsProps = {
 const positionClasses = {
   "top-left": "top-2 left-2",
   "top-right": "top-2 right-2",
-  "bottom-left": "bottom-2 left-2",
+  "bottom-left": "bottom-6 left-6",
   "bottom-right": "bottom-10 right-2",
 };
 
 function ControlGroup({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col rounded-md border border-border bg-background shadow-sm overflow-hidden [&>button:not(:last-child)]:border-b [&>button:not(:last-child)]:border-border">
+    <div className="flex flex-col gap-2">
       {children}
     </div>
   );
@@ -580,7 +589,7 @@ function ControlButton({
       aria-label={label}
       type="button"
       className={cn(
-        "flex items-center justify-center size-8 hover:bg-accent dark:hover:bg-accent/40 transition-colors",
+        "flex items-center justify-center w-10 h-10 rounded-full bg-background border border-border shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors",
         disabled && "opacity-50 pointer-events-none cursor-not-allowed"
       )}
       disabled={disabled}
@@ -631,8 +640,8 @@ function MapControls({
           onLocate?.(coords);
           setWaitingForLocation(false);
         },
-        (error) => {
-          console.error("Error getting location:", error);
+        () => {
+          // User denied location or error occurred - silently handle
           setWaitingForLocation(false);
         }
       );
