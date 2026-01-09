@@ -8,14 +8,26 @@ export default function LandingPage() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-black">
       {/* Full-screen Video Background */}
+      {/* Desktop Video */}
       <video
         autoPlay
         loop
         muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover"
+        className="hidden md:block absolute inset-0 w-full h-full object-cover"
       >
         <source src="/images/mumbai-video.mp4" type="video/mp4" />
+      </video>
+
+      {/* Mobile Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="block md:hidden absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/images/mumbai-video-phone.mp4" type="video/mp4" />
       </video>
 
       {/* Subtle Blur Overlay */}
