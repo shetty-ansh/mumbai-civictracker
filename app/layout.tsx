@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mumbai Tracker",
-  description: "Interactive map of Mumbai wards",
+  title: "aamchi मुंबई - Mumbai Civic Tracker",
+  description: "Know your ward, know your corporator. Navigate through 227 electoral wards and hold your representatives accountable.",
 };
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         <Providers>{children}</Providers>
       </body>
