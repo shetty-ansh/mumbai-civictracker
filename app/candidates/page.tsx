@@ -284,10 +284,10 @@ export default function CandidatesPage() {
                                                     <h3 className="font-bold text-[18px] leading-tight truncate">
                                                         {candidate.candidate_name}
                                                     </h3>
-                                                    <div className="flex items-center gap-2 text-[14px] text-muted-foreground">
-                                                        <span className="truncate">{candidate.party_name}</span>
-                                                        <span className="text-muted-foreground/40">•</span>
-                                                        <span className="truncate">{candidate.ward_name}</span>
+                                                    <div className="flex items-center gap-2 text-[14px] text-muted-foreground min-w-0">
+                                                        <span className="truncate min-w-0 block">{candidate.party_name}</span>
+                                                        <span className="text-muted-foreground/40 shrink-0">•</span>
+                                                        <span className="truncate min-w-0 block">{candidate.ward_name}</span>
                                                     </div>
                                                 </div>
                                             </div>
