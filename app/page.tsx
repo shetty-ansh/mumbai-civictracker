@@ -68,23 +68,22 @@ export default function LandingPage() {
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 text-center">
         {/* Small 'aamchi' text */}
-        < p className="text-2xl md:text-3xl lg:text-4xl font-bold mb-0 ml-20 tracking-widest" style={{ color: '#FF8C00' }
-        }>
+        <p className="text-2xl md:text-3xl lg:text-4xl font-bold mb-0 ml-20 tracking-widest" style={{ color: '#FF8C00' }}>
           aamchi
-        </p >
+        </p>
 
         {/* Main Title - Mumbai in Hindi */}
-        < h1
+        <h1
           className="text-[12rem] md:text-[16rem] lg:text-[18rem] font-bold text-white mb-8 leading-none tracking-tight"
           style={{ fontFamily: 'serif' }}
         >
           मुंबई
-        </h1 >
+        </h1>
 
         {/* Subtitle */}
-        < p className="text-xl md:text-2xl lg:text-3xl text-white/90 font-light mb-4 max-w-3xl tracking-wide" >
-          Know your ward.Know your corporator.
-        </p >
+        <p className="text-xl md:text-2xl lg:text-3xl text-white/90 font-light mb-4 max-w-3xl tracking-wide">
+          Know your ward. Know your corporator.
+        </p>
 
         <p className="text-base md:text-lg text-white/70 font-light mb-12 max-w-2xl">
           Navigate through 227 electoral wards and hold your representatives accountable
@@ -104,12 +103,12 @@ export default function LandingPage() {
             <span className="inline-block ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
           </button>
         </Link>
-      </div >
+      </div>
 
       {/* Footer */}
-      < div className="absolute bottom-0 left-0 right-0 z-10 py-6 text-center" >
+      <div className="absolute bottom-0 left-0 right-0 z-10 py-6 text-center">
         <p className="text-sm text-white/60 font-light tracking-wide">Open data for civic transparency</p>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }
