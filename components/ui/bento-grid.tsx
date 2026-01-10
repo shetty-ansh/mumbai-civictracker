@@ -88,6 +88,13 @@ const BentoCard = ({
       </div>
     )}
     <div className="pointer-events-none absolute inset-0 transform-gpu transition-all duration-300 group-hover:bg-black/[.03] group-hover:dark:bg-neutral-800/10" />
+
+    {/* Make entire card clickable if not coming soon */}
+    {!comingSoon && (
+      <a href={href} className="absolute inset-0 z-0 text-transparent">
+        {name}
+      </a>
+    )}
   </div>
 );
 

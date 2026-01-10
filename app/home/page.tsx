@@ -12,7 +12,15 @@ export default function HomePage() {
             description: "Explore Mumbai's 24 administrative wards and 227 electoral wards. Find your representatives and ward statistics.",
             href: "/map",
             cta: "Explore Map",
-            background: <div className="absolute top-0 left-0 w-full h-full bg-indigo-100 z-0" />,
+            background: (
+                <div className="absolute top-0 left-0 w-full h-full bg-[#e0e7ff] z-0">
+                    <img
+                        src="/images/mumbaimap.png"
+                        alt="Mumbai Map"
+                        className="absolute right-0 top-0 h-full object-cover opacity-60"
+                    />
+                </div>
+            ),
             className: "md:col-span-2 md:row-span-1",
         },
         {
@@ -21,7 +29,7 @@ export default function HomePage() {
             description: "Get detailed information about your Corporators, MLAs, and MPs. Hold them accountable.",
             href: "/candidates",
             cta: "View Leaders",
-            background: <div className="absolute top-0 left-0 w-full h-full bg-orange-100 z-0" />,
+            background: <div className="absolute top-0 left-0 w-full h-full bg-[#ffedd5] z-0" />,
             className: "md:col-span-1 md:row-span-1",
         },
         {
@@ -30,16 +38,24 @@ export default function HomePage() {
             description: "Engage in civic discussions and ask questions to your local representatives.",
             href: "/home", // Placeholder
             cta: "Coming Soon",
-            background: <div className="absolute top-0 left-0 w-full h-full bg-green-100 z-0" />,
+            background: <div className="absolute top-0 left-0 w-full h-full bg-[#dcfce7] z-0" />,
             className: "md:col-span-1 md:row-span-1",
         },
         {
             Icon: Newspaper,
             name: "Local News",
             description: "Stay updated with the latest civic news and developments in your area.",
-            href: "/home", // Placeholder
+            href: "/news",
             cta: "Read News",
-            background: <div className="absolute top-0 left-0 w-full h-full bg-red-100 z-0" />,
+            background: (
+                <div className="absolute top-0 left-0 w-full h-full bg-[#fee2e2] z-0">
+                    <img
+                        src="/images/news-illustrtion.png"
+                        alt="News Illustration"
+                        className="absolute right-0 top-0 h-full object-cover opacity-60"
+                    />
+                </div>
+            ),
             className: "md:col-span-1 md:row-span-1",
         },
         {
@@ -48,7 +64,7 @@ export default function HomePage() {
             description: "Connect with fellow citizens, share issues, and build a better Mumbai together.",
             href: "/home", // Placeholder
             cta: "Join Community",
-            background: <div className="absolute top-0 left-0 w-full h-full bg-yellow-100 z-0" />,
+            background: <div className="absolute top-0 left-0 w-full h-full bg-[#fef9c3] z-0" />,
             className: "md:col-span-1 md:row-span-1",
             comingSoon: true,
         },

@@ -274,21 +274,16 @@ export default function CandidatesPage() {
                         <div className="grid gap-2">
                             {currentCandidates.map((candidate) => (
                                 <Card key={candidate.id} className="hover:shadow-md transition-shadow">
-                                    <CardHeader className="py-1">
-                                        <div className="flex items-center justify-between gap-4">
-                                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                                                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-black text-white text-[16px] font-bold shrink-0">
-                                                    {candidate.ward_no}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <h3 className="font-bold text-[18px] leading-tight truncate">
-                                                        {candidate.candidate_name}
-                                                    </h3>
-                                                    <div className="flex items-center gap-2 text-[14px] text-muted-foreground min-w-0">
-                                                        <span className="truncate min-w-0 block">{candidate.party_name}</span>
-                                                        <span className="text-muted-foreground/40 shrink-0">•</span>
-                                                        <span className="truncate min-w-0 block">{candidate.ward_name}</span>
-                                                    </div>
+                                    <CardHeader className="py-3 px-3 sm:px-4">
+                                        <div className="flex items-center gap-3 sm:gap-4">
+                                            <div className="flex-1 min-w-0 overflow-hidden">
+                                                <h3 className="font-bold text-base sm:text-lg leading-tight truncate">
+                                                    {candidate.candidate_name}
+                                                </h3>
+                                                <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 text-xs sm:text-sm text-muted-foreground">
+                                                    <span className="truncate">{candidate.party_name}</span>
+                                                    <span className="hidden sm:inline text-muted-foreground/40">•</span>
+                                                    <span className="truncate text-muted-foreground/70">Ward {candidate.ward_no} - {candidate.ward_name}</span>
                                                 </div>
                                             </div>
                                             <Image
@@ -296,7 +291,7 @@ export default function CandidatesPage() {
                                                 alt={candidate.party_name}
                                                 width={56}
                                                 height={56}
-                                                className="w-14 h-14 object-contain border border-black rounded-full shrink-0"
+                                                className="w-12 h-12 sm:w-14 sm:h-14 object-contain border border-black rounded-full shrink-0"
                                             />
                                         </div>
                                     </CardHeader>
