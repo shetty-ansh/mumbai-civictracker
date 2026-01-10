@@ -1,96 +1,135 @@
 "use client";
 
-import Link from "next/link";
-import { Map, Users, MessageSquare, ArrowRight } from "lucide-react";
+import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Navbar } from "@/components/ui/navbar";
+import { Map, Users, MessageSquare, Newspaper, Heart } from "lucide-react";
 
 export default function HomePage() {
+    const features = [
+        {
+            Icon: Map,
+            name: "Interactive Map",
+            description: "Explore Mumbai's 24 administrative wards and 227 electoral wards. Find your representatives and ward statistics.",
+            href: "/map",
+            cta: "Explore Map",
+            background: (
+                <div className="absolute top-0 left-0 w-full h-full bg-[#e0e7ff] z-0">
+                    <img
+                        src="/images/mumbaimap.png"
+                        alt="Mumbai Map"
+                        className="absolute right-0 top-0 h-full object-cover opacity-60"
+                    />
+                </div>
+            ),
+            className: "md:col-span-2 md:row-span-1",
+        },
+        {
+            Icon: Users,
+            name: "Representatives",
+            description: "Get detailed information about your Corporators, MLAs, and MPs. Hold them accountable.",
+            href: "/candidates",
+            cta: "View Leaders",
+            background: <div className="absolute top-0 left-0 w-full h-full bg-[#ffedd5] z-0" />,
+            className: "md:col-span-1 md:row-span-1",
+        },
+        {
+            Icon: MessageSquare,
+            name: "Ask Questions",
+            description: "Engage in civic discussions and ask questions to your local representatives.",
+            href: "/home", // Placeholder
+            cta: "Coming Soon",
+            background: <div className="absolute top-0 left-0 w-full h-full bg-[#dcfce7] z-0" />,
+            className: "md:col-span-1 md:row-span-1",
+        },
+        {
+            Icon: Newspaper,
+            name: "Local News",
+            description: "Stay updated with the latest civic news and developments in your area.",
+            href: "/news",
+            cta: "Read News",
+            background: (
+                <div className="absolute top-0 left-0 w-full h-full bg-[#fee2e2] z-0">
+                    <img
+                        src="/images/news-illustrtion.png"
+                        alt="News Illustration"
+                        className="absolute right-0 top-0 h-full object-cover opacity-60"
+                    />
+                </div>
+            ),
+            className: "md:col-span-1 md:row-span-1",
+        },
+        {
+            Icon: Heart,
+            name: "Community",
+            description: "Connect with fellow citizens, share issues, and build a better Mumbai together.",
+            href: "/home", // Placeholder
+            cta: "Join Community",
+            background: <div className="absolute top-0 left-0 w-full h-full bg-[#fef9c3] z-0" />,
+            className: "md:col-span-1 md:row-span-1",
+            comingSoon: true,
+        },
+    ];
+
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="min-h-screen bg-white text-stone-900">
             <Navbar />
 
-            {/* Main Content */}
-            <main className="max-w-6xl mx-auto px-6 py-16 space-y-16">
-                {/* Welcome */}
-                <section className="text-center space-y-3">
-                    <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
+            <main className="max-w-7xl mx-auto px-6 py-12 flex flex-col items-center">
+                {/* Header Section */}
+                <div className="w-full text-center mb-12 space-y-4">
+                    <h1 className="text-5xl md:text-6xl font-semibold tracking-tight font-[var(--font-fraunces)]">
                         Know Your City
                     </h1>
-                    <p className="text-xl text-accent font-light">
+                    <p className="text-xl text-stone-500 font-light">
                         Gateway to civic transparency in Mumbai
                     </p>
-                </section>
+                </div>
 
-                {/* Stats */}
-                <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-card border border-border p-6 hover:border-accent transition-colors">
-                        <p className="text-4xl font-bold mb-2">24</p>
-                        <p className="text-sm text-muted-foreground font-light">Admin Wards</p>
-                    </div>
-                    <div className="bg-card border border-border p-6 hover:border-accent transition-colors">
-                        <p className="text-4xl font-bold mb-2 text-accent">227</p>
-                        <p className="text-sm text-muted-foreground font-light">Electoral Wards</p>
-                    </div>
-                    <div className="bg-card border border-border p-6 hover:border-accent transition-colors">
-                        <p className="text-4xl font-bold mb-2">2000+</p>
-                        <p className="text-sm text-muted-foreground font-light">Candidates</p>
-                    </div>
-                    <div className="bg-card border border-border p-6 hover:border-accent transition-colors">
-                        <p className="text-4xl font-bold mb-2">12M+</p>
-                        <p className="text-sm text-muted-foreground font-light">Population</p>
-                    </div>
-                </section>
+                {/* Bento Grid */}
+                <div className="px-4 lg:px-20 w-full mb-20">
+                    <BentoGrid className="lg:auto-rows-[17rem]">
+                        {features.map((feature) => (
+                            <BentoCard key={feature.name} {...feature} />
+                        ))}
+                    </BentoGrid>
+                </div>
 
-                {/* Actions */}
-                <section className="space-y-6">
-                    <h2 className="text-2xl font-semibold">Quick Actions</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <Link href="/map" className="group bg-card border border-border p-8 hover:border-accent transition-all block">
-                            <Map className="w-8 h-8 mb-4 text-accent" strokeWidth={1.5} />
-                            <h3 className="font-semibold text-lg mb-2">Explore the Map</h3>
-                            <p className="text-sm text-muted-foreground mb-4 font-light">
-                                Find your ward and see who represents it
+                {/* Stats Section */}
+                <div className="w-full max-w-5xl px-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10 border-t border-stone-200">
+                        <div className="text-center space-y-2">
+                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">24</p>
+                            <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
+                                Admin Wards
                             </p>
-                            <span className="text-sm font-medium flex items-center gap-2 text-accent">
-                                Open Map <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                            </span>
-                        </Link>
-
-                        <div className="bg-card border border-border p-8 opacity-40">
-                            <Users className="w-8 h-8 mb-4" strokeWidth={1.5} />
-                            <h3 className="font-semibold text-lg mb-2">Representatives</h3>
-                            <p className="text-sm text-muted-foreground mb-4 font-light">
-                                Browse all elected officials
-                            </p>
-                            <span className="text-sm text-muted-foreground/60 font-light">Coming soon</span>
                         </div>
-
-                        <div className="bg-card border border-border p-8 opacity-40">
-                            <MessageSquare className="w-8 h-8 mb-4" strokeWidth={1.5} />
-                            <h3 className="font-semibold text-lg mb-2">Community</h3>
-                            <p className="text-sm text-muted-foreground mb-4 font-light">
-                                See ratings and comments
+                        <div className="text-center space-y-2">
+                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">227</p>
+                            <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
+                                Electoral Wards
                             </p>
-                            <span className="text-sm text-muted-foreground/60 font-light">Coming soon</span>
+                        </div>
+                        <div className="text-center space-y-2">
+                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">2000+</p>
+                            <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
+                                Candidates
+                            </p>
+                        </div>
+                        <div className="text-center space-y-2">
+                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">2 Crore+</p>
+                            <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
+                                Population
+                            </p>
                         </div>
                     </div>
-                </section>
-
-                {/* Info */}
-                <section className="border border-border p-8">
-                    <h2 className="text-xl font-semibold mb-4">About BMC Elections</h2>
-                    <p className="text-muted-foreground leading-relaxed font-light">
-                        The Brihanmumbai Municipal Corporation (BMC) is the governing civic body for Mumbai.
-                        Elections for the 227 corporator seats are scheduled for January 2026. Since March 2022,
-                        the BMC has been administered directly. This app helps you track accountability across
-                        Mumbai's 24 administrative wards and 36 MLA constituencies.
-                    </p>
-                </section>
+                </div>
             </main>
 
             {/* Footer */}
-            <footer className="border-t border-border py-8 px-6 text-center">
-                <p className="text-sm text-muted-foreground font-light">Open data for civic transparency</p>
+            <footer className="border-t border-stone-300 mt-12 py-8 px-6 text-center bg-[#F5F0E8]">
+                <p className="text-sm text-stone-500 font-light">
+                    Open data for civic transparency
+                </p>
             </footer>
         </div>
     );
