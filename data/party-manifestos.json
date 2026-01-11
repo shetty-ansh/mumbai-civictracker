@@ -1,0 +1,44 @@
+[
+    {
+        "id": "congress",
+        "partyName": "Indian National Congress",
+        "shortName": "CONGRESS",
+        "manifestoStatus": "released",
+        "summary": "Congress says it plans to tackle Mumbai's worsening air pollution with stronger controls and better urban planning, introduce universal health cards so residents can access free medicines and public healthcare without hassle, and reform the BMC to make it transparent and corruption-free, while significantly improving everyday civic services like roads, water supply, sanitation, and overall quality of life for Mumbaikars.",
+        "keyPromises": [
+            "Tackle air pollution with stronger controls",
+            "Better urban planning",
+            "Universal health cards for free medicines",
+            "Access to public healthcare",
+            "Reform BMC for transparency",
+            "Anti-corruption measures",
+            "Improved roads, water supply, sanitation"
+        ]
+    },
+    {
+        "id": "bjp-shivsena",
+        "partyName": "Bharatiya Janata Party & Shiv Sena",
+        "shortName": "BJP & ShivSena",
+        "manifestoStatus": "not_released",
+        "summary": "Manifesto Not Released",
+        "keyPromises": []
+    },
+    {
+        "id": "shivsena-ubt-mns",
+        "partyName": "Shiv Sena (Uddhav Balasaheb Thackeray) & Maharashtra Navnirman Sena",
+        "shortName": "ShivSena(UBT) & MNS",
+        "manifestoStatus": "released",
+        "summary": "ShivSena and MNS unveiled a joint BMC manifesto promising 100 units of free electricity per household, monthly financial support for women (including domestic workers and Koli community women), property tax relief for small homes, cheaper public transport, and a stronger focus on healthcare, education, and basic civic infrastructure to improve everyday life in Mumbai.",
+        "keyPromises": [
+            "100 units of free electricity per household",
+            "Monthly financial support for women",
+            "Support for domestic workers",
+            "Support for Koli community women",
+            "Property tax relief for small homes",
+            "Cheaper public transport",
+            "Focus on healthcare",
+            "Focus on education",
+            "Improved civic infrastructure"
+        ]
+    }
+]

@@ -367,7 +367,7 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
 
 export default function MapPage() {
     const router = useRouter();
-    const [dataset, setDataset] = useState<DatasetType>("plain");
+    const [dataset, setDataset] = useState<DatasetType>("electoral");
     const [userLocation, setUserLocation] = useState<{ lng: number; lat: number } | null>(null);
 
     const handleWardClick = useCallback(
@@ -389,15 +389,6 @@ export default function MapPage() {
             {/* Dataset Toggle */}
             <div className="absolute top-24 left-6 z-20">
                 <div className="bg-card/90 border border-border p-1.5 flex gap-1 backdrop-blur-sm rounded-full">
-                    <button
-                        onClick={() => setDataset("plain")}
-                        className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "plain"
-                            ? "bg-accent text-white"
-                            : "text-muted-foreground hover:text-accent hover:bg-muted"
-                            }`}
-                    >
-                        Plain
-                    </button>
                     {/* <button
                         onClick={() => setDataset("admin")}
                         className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "admin"
@@ -415,6 +406,15 @@ export default function MapPage() {
                             }`}
                     >
                         Electoral
+                    </button>
+                    <button
+                        onClick={() => setDataset("plain")}
+                        className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "plain"
+                            ? "bg-accent text-white"
+                            : "text-muted-foreground hover:text-accent hover:bg-muted"
+                            }`}
+                    >
+                        Plain
                     </button>
                 </div>
             </div>
