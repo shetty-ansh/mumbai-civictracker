@@ -124,11 +124,11 @@ export default function WardDetailPage({ params }: WardPageProps) {
     const uniqueParties = new Set(candidates.map(c => c.party_name)).size;
 
     return (
-        <div className="min-h-screen bg-stone-50">
+        <div className="min-h-screen bg-stone-50 overflow-x-hidden">
             <Navbar />
             <WardPageToast />
 
-            <main className="max-w-5xl mx-auto px-4 py-8">
+            <main className="max-w-5xl mx-auto px-4 py-8 overflow-x-hidden">
                 {/* Back Button */}
                 <Link
                     href="/map"
@@ -174,14 +174,14 @@ export default function WardDetailPage({ params }: WardPageProps) {
                         <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">With Known Cases</p>
                     </div>
                     <div className={`border rounded-xl p-4 text-center ${category === 'SC' ? 'bg-blue-50 border-blue-200' :
-                            category === 'ST' ? 'bg-green-50 border-green-200' :
-                                category === 'OBC' ? 'bg-amber-50 border-amber-200' :
-                                    'bg-white border-stone-200'
+                        category === 'ST' ? 'bg-green-50 border-green-200' :
+                            category === 'OBC' ? 'bg-amber-50 border-amber-200' :
+                                'bg-white border-stone-200'
                         }`}>
                         <p className={`text-xl font-bold ${category === 'SC' ? 'text-blue-600' :
-                                category === 'ST' ? 'text-green-600' :
-                                    category === 'OBC' ? 'text-amber-600' :
-                                        'text-stone-900'
+                            category === 'ST' ? 'text-green-600' :
+                                category === 'OBC' ? 'text-amber-600' :
+                                    'text-stone-900'
                             }`}>
                             {category}{isWomenReserved ? ' (W)' : ''}
                         </p>
@@ -216,9 +216,9 @@ export default function WardDetailPage({ params }: WardPageProps) {
                                     <Link
                                         key={candidate.id}
                                         href={`/candidates/${candidate.id}`}
-                                        className="group bg-white border border-stone-200 rounded-xl p-4 hover:shadow-md transition-all duration-300"
+                                        className="group bg-white border border-stone-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 overflow-hidden"
                                     >
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-4 w-full">
                                             {/* Party Logo */}
                                             <Image
                                                 src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}

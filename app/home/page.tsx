@@ -40,6 +40,7 @@ export default function HomePage() {
             cta: "Coming Soon",
             background: <div className="absolute top-0 left-0 w-full h-full bg-[#dcfce7] z-0" />,
             className: "md:col-span-1 md:row-span-1",
+            comingSoon: true,
         },
         {
             Icon: Newspaper,
@@ -126,7 +127,7 @@ export default function HomePage() {
             {/* Footer */}
             <footer className="border-t border-stone-300 mt-12 py-8 px-6 text-center bg-[#F5F0E8]">
                 <p className="text-sm text-stone-500 font-light">
-                    Open data for civic transparency
+                    Open data for civic transparency • <a href="/sources" className="hover:text-stone-800 underline underline-offset-4">Sources</a>
                 </p>
             </footer>
         </div>

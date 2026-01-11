@@ -121,8 +121,14 @@ export default function LandingPage() {
       </div>
 
       {/* Footer */}
-      <div className="absolute bottom-0 left-0 right-0 z-10 py-6 text-center">
+      <div className="absolute bottom-6 left-0 right-0 z-10 flex flex-col items-center gap-3 text-center">
         <p className="text-sm text-white/60 font-light tracking-wide">Open data for civic transparency</p>
+        <a
+          href="/sources"
+          className="text-[10px] uppercase tracking-widest text-white/40 border border-white/20 px-3 py-1 rounded-full hover:bg-white/10 hover:text-white/80 transition-all"
+        >
+          Sources
+        </a>
       </div>
     </div>
   );

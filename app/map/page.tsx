@@ -616,6 +616,13 @@ export default function MapPage() {
                     </div>
                 </div>
             )}
+
+            {/* Dataset Note */}
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 text-center pointer-events-none">
+                <p className="text-[10px] text-black/50 font-medium bg-white/80 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm border border-white/20">
+                    Map based on 2022 Electoral Ward Outlines
+                </p>
+            </div>
         </div>
     );
 }
