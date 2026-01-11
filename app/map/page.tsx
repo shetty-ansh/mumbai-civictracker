@@ -3,7 +3,7 @@
 import { useEffect, useId, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MapPin } from "lucide-react";
+import { MapPin, AlertTriangle, ExternalLink, X } from "lucide-react";
 import {
     Map,
     MapControls,
@@ -516,6 +516,8 @@ export default function MapPage() {
         setUserLocation({ lng: coords.longitude, lat: coords.latitude });
     }, []);
 
+    const [showWarning, setShowWarning] = useState(true);
+
     return (
         <div className="h-screen w-screen bg-background overflow-hidden">
             <Navbar />
@@ -608,7 +610,7 @@ export default function MapPage() {
 
             {/* Hint */}
             {dataset !== "plain" && (
-                <div className="absolute bottom-6 right-6 z-20">
+                <div className="absolute bottom-24 right-6 z-20 hidden sm:block">
                     <div className="bg-card/90 border border-white/20 px-4 py-2 backdrop-blur-sm">
                         <p className="text-xs text-black font-light">
                             Hover for info • Click for details
@@ -617,12 +619,49 @@ export default function MapPage() {
                 </div>
             )}
 
-            {/* Dataset Note */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 text-center pointer-events-none">
-                <p className="text-[10px] text-black/50 font-medium bg-white/80 px-2 py-1 rounded-full backdrop-blur-sm shadow-sm border border-white/20">
-                    Map based on 2022 Electoral Ward Outlines
-                </p>
-            </div>
+            {/* Disclaimer Overlay */}
+            {showWarning && (
+                <div className="absolute bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-20 w-[95%] max-w-lg pointer-events-auto">
+                    <div className="relative bg-white/95 border border-amber-200 shadow-xl rounded-xl p-3 sm:p-4 backdrop-blur-md flex flex-col sm:flex-row gap-2 sm:gap-3 items-start sm:items-center text-left pr-8 sm:pr-4">
+                        <button
+                            onClick={() => setShowWarning(false)}
+                            className="absolute top-2 right-2 p-1 hover:bg-stone-100 rounded-full text-stone-400 hover:text-stone-600 transition-colors"
+                        >
+                            <X className="w-3.5 h-3.5" />
+                            <span className="sr-only">Close warning</span>
+                        </button>
+                        <div className="p-2 bg-amber-50 rounded-full flex-shrink-0 hidden sm:block">
+                            <AlertTriangle className="w-5 h-5 text-amber-600" />
+                        </div>
+                        <div className="flex-1">
+                            <div className="flex items-center gap-1.5 mb-0.5">
+                                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 sm:hidden" />
+                                <p className="text-[10px] sm:text-xs font-bold text-amber-900 uppercase tracking-wide">
+                                    Data Outdated Warning
+                                </p>
+                            </div>
+                            <p className="text-[11px] sm:text-xs text-stone-600 leading-relaxed">
+                                The BMC has revised ward outlines for 2025. This map uses <strong>2022 boundaries</strong> which may not accurately reflect current jurisdictions. <span className="font-medium text-amber-700">We are actively updating to new outlines.</span>
+                            </p>
+                            <div className="flex flex-wrap items-center gap-1 mt-1.5 text-[11px] sm:text-xs text-stone-600">
+                                <span>First</span>
+                                <a
+                                    href="https://cityresource.in/councillorwards2025/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="font-semibold text-amber-700 hover:underline flex items-center gap-0.5"
+                                >
+                                    check your new ward here <ExternalLink className="w-3 h-3" />
+                                </a>
+                                <span>then</span>
+                                <Link href="/candidates" className="font-semibold text-amber-700 hover:underline">
+                                    go to candidates
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

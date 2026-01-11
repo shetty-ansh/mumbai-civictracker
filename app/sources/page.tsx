@@ -1,8 +1,13 @@
+"use client";
+
 import { Navbar } from "@/components/ui/navbar";
-import { ExternalLink, Database, FileText, Scale, AlertTriangle } from "lucide-react";
+import { ExternalLink, Database, FileText, Scale, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 import Link from "next/link";
 
 export default function SourcesPage() {
+    const [isMessageOpen, setIsMessageOpen] = useState(false);
+
     return (
         <div className="min-h-screen bg-stone-50">
             <Navbar />
@@ -17,6 +22,30 @@ export default function SourcesPage() {
                     </p>
                 </div>
 
+                {/* Message from Developer */}
+                <div className="mb-8 bg-white border border-stone-200 rounded-xl overflow-hidden shadow-sm">
+                    <button
+                        onClick={() => setIsMessageOpen(!isMessageOpen)}
+                        className="w-full flex items-center justify-between p-4 sm:p-5 bg-stone-900 text-white hover:bg-stone-800 transition-colors text-left"
+                    >
+                        <span className="font-medium flex items-center gap-2">
+                            👋 Message from the Developer
+                        </span>
+                        {isMessageOpen ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    </button>
+                    {isMessageOpen && (
+                        <div className="p-5 sm:p-6 bg-white border-t border-stone-100">
+                            <p className="text-stone-700 leading-relaxed max-w-3xl">
+                                This platform was built to democratize access to candidate information and empower Mumbai's voters.
+                                <br /><br />
+                                As a student-led initiative without institutional resources, we have manually verified data to the best of our ability, but minor discrepancies may exist. Our goal is strictly neutral civic awareness, and we do not intend to disrespect or defame any candidate or party.
+                                <br /><br />
+                                If you spot an error, please let us know at <a href="mailto:shettyansh205@gmail.com" className="text-amber-700 font-medium hover:underline">shettyansh205@gmail.com</a>, and we will correct it immediately. Thank you for your support.
+                            </p>
+                        </div>
+                    )}
+                </div>
+
                 {/* Data Coverage Notice */}
                 <div className="mb-10 bg-amber-50 border border-amber-200 rounded-xl p-6 flex flex-col sm:flex-row gap-4 text-left">
                     <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
@@ -24,6 +53,9 @@ export default function SourcesPage() {
                         <h3 className="font-semibold text-amber-900 mb-2">Important Notice on Data Accuracy</h3>
                         <p className="text-sm text-amber-800 mb-3 leading-relaxed">
                             We have currently covered detailed candidate-level data (Education, Criminal Record, etc.) explicitly for <strong>Congress, BJP, Shiv Sena, Shiv Sena (UBT), MNS, and NCP</strong>.
+                        </p>
+                        <p className="text-sm text-amber-800 mb-3 leading-relaxed">
+                            <strong>Note on Education:</strong> We count education based on the highest <em>completed</em> degree. For example, if a candidate is in the second year of BCom but has not graduated, we classify their education level as <strong>12th Pass</strong>.
                         </p>
                         <p className="text-sm text-amber-800 leading-relaxed">
                             Please note that while we strive for accuracy, some data points may be prone to human error as they were manually verified. As college students with limited resources, we couldn't manually verify detailed affidavits for every single independent candidate, but official records are linked below for your own research.
