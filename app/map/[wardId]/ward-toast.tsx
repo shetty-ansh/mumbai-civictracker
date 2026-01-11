@@ -11,9 +11,9 @@ export function WardPageToast() {
         hasShown.current = true
 
         showToast(
-            "warning",
-            "Data Verification Notice",
-            "Metrics might be prone to human error. Please verify from the affidavit link provided."
+            "info",
+            "Data Transparency",
+            "We encourage you to check the attached affidavit for official verification."
         )
     }, [])
 
