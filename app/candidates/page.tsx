@@ -16,10 +16,11 @@ interface Candidate {
     party_name: string;
     symbol: string;
     ward_name: string;
+    is_women_reserved: boolean;
 }
 
 // Party logo mapping - matches exact database values
-function getPartyLogo(partyName: string): string {
+function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
     switch (partyName) {
         case 'Indian National Congress':
             return '/images/party-symbols/congress-logo.jpg';
@@ -40,7 +41,9 @@ function getPartyLogo(partyName: string): string {
         case 'Maharashtra Navnirman Sena':
             return '/images/party-symbols/mns-logo.jpg';
         default:
-            return '/images/party-symbols/generic.jpg';
+            return isWomenReserved
+                ? '/images/party-symbols/generic-female.png'
+                : '/images/party-symbols/generic.jpg';
     }
 }
 
@@ -109,9 +112,9 @@ export default function CandidatesPage() {
         if (searchQuery) {
             filtered = filtered.filter(
                 (candidate) =>
-                    candidate.candidate_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    candidate.ward_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    candidate.party_name.toLowerCase().includes(searchQuery.toLowerCase())
+                    (candidate.candidate_name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+                    (candidate.ward_name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+                    (candidate.party_name?.toLowerCase() || "").includes(searchQuery.toLowerCase())
             );
         }
 
@@ -289,7 +292,7 @@ export default function CandidatesPage() {
                                                     {candidate.candidate_name}
                                                 </h3>
                                                 <Image
-                                                    src={getPartyLogo(candidate.party_name)}
+                                                    src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
                                                     alt={candidate.party_name}
                                                     width={48}
                                                     height={48}
@@ -335,7 +338,7 @@ export default function CandidatesPage() {
                                     >
                                         <div className="flex items-center gap-3">
                                             <Image
-                                                src={getPartyLogo(candidate.party_name)}
+                                                src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
                                                 alt={candidate.party_name}
                                                 width={44}
                                                 height={44}

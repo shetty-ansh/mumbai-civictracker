@@ -3,10 +3,10 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { MapPin, User, Star, MessageSquare } from "lucide-react";
+import { ArrowLeftIcon } from "@radix-ui/react-icons";
+import { AlertTriangle, GraduationCap, Scale, Users } from "lucide-react";
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 function unslugify(slug: string): string {
     return slug
@@ -19,18 +19,19 @@ interface WardPageProps {
     params: Promise<{ wardId: string }>;
 }
 
-interface Candidate {
+interface CandidateWithInfo {
     id: string;
     ward_no: number;
     candidate_name: string;
     party_name: string;
     symbol: string;
     ward_name: string;
+    is_women_reserved: boolean;
+    case_info: { education: string; active_cases: number; closed_cases: number }[] | { education: string; active_cases: number; closed_cases: number } | null;
 }
 
-// Party logo mapping - matches exact database values
-function getPartyLogo(partyName: string): string {
-    // Exact matches for database values
+// Party logo mapping
+function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
     switch (partyName) {
         case 'Indian National Congress':
             return '/images/party-symbols/congress-logo.jpg';
@@ -51,23 +52,27 @@ function getPartyLogo(partyName: string): string {
         case 'Maharashtra Navnirman Sena':
             return '/images/party-symbols/mns-logo.jpg';
         default:
-            // Default generic logo for all others
-            return '/images/party-symbols/generic.jpg';
+            return isWomenReserved
+                ? '/images/party-symbols/generic-female.png'
+                : '/images/party-symbols/generic.jpg';
     }
 }
 
 export default function WardDetailPage({ params }: WardPageProps) {
     const { wardId } = use(params);
     const wardName = unslugify(wardId);
-    const [candidates, setCandidates] = useState<Candidate[]>([]);
+    const [candidates, setCandidates] = useState<CandidateWithInfo[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchCandidates = async () => {
-            // Try to fetch candidates - search by ward_name first
+            // Try to fetch candidates with case_info - search by ward_name first
             let { data, error } = await supabase
                 .from('bmc_candidates')
-                .select('*')
+                .select(`
+                    *,
+                    case_info:bmc_candidate_case_info(education, active_cases, closed_cases)
+                `)
                 .ilike('ward_name', `%${wardName}%`);
 
             if (error) {
@@ -83,7 +88,10 @@ export default function WardDetailPage({ params }: WardPageProps) {
                     const wardNumber = parseInt(wardMatch[0]);
                     const result = await supabase
                         .from('bmc_candidates')
-                        .select('*')
+                        .select(`
+                            *,
+                            case_info:bmc_candidate_case_info(education, active_cases, closed_cases)
+                        `)
                         .eq('ward_no', wardNumber);
 
                     data = result.data;
@@ -92,7 +100,7 @@ export default function WardDetailPage({ params }: WardPageProps) {
             }
 
             if (data) {
-                setCandidates(data as Candidate[]);
+                setCandidates(data as CandidateWithInfo[]);
             }
             setLoading(false);
         };
@@ -100,113 +108,170 @@ export default function WardDetailPage({ params }: WardPageProps) {
         fetchCandidates();
     }, [wardName]);
 
+    // Calculate ward stats
+    const isWomenReserved = candidates.length > 0 && candidates[0]?.is_women_reserved;
+    const candidatesWithCases = candidates.filter(c => {
+        const info = Array.isArray(c.case_info) ? c.case_info[0] : c.case_info;
+        return info && (info.active_cases > 0 || info.closed_cases > 0);
+    }).length;
+    const uniqueParties = new Set(candidates.map(c => c.party_name)).size;
+
     return (
-        <div className="min-h-screen bg-background text-foreground">
+        <div className="min-h-screen bg-stone-50">
             <Navbar />
 
-            {/* Main Content */}
-            <main className="max-w-4xl mx-auto px-6 py-8 space-y-8">
-                {/* Ward Info */}
-                <section className="bg-card border border-border p-6">
-                    <div className="flex items-center gap-2 mb-6">
-                        <MapPin className="w-5 h-5 text-accent" strokeWidth={1.5} />
-                        <h2 className="text-lg font-semibold">Ward Information</h2>
-                    </div>
-                    <div className="grid grid-cols-2 gap-6 text-sm">
-                        <div>
-                            <p className="text-muted-foreground font-light mb-1">Ward Name</p>
-                            <p className="font-medium text-base">{wardName}</p>
-                        </div>
-                        <div>
-                            <p className="text-muted-foreground font-light mb-1">Ward ID</p>
-                            <p className="font-mono text-base">{wardId}</p>
-                        </div>
-                        <div>
-                            <p className="text-muted-foreground font-light mb-1">Candidates</p>
-                            <p className="font-semibold text-base text-accent">{candidates.length}</p>
-                        </div>
-                        <div>
-                            <p className="text-muted-foreground font-light mb-1">Election</p>
-                            <p className="text-base">BMC 2026</p>
-                        </div>
-                    </div>
-                </section>
+            <main className="max-w-5xl mx-auto px-4 py-8">
+                {/* Back Button */}
+                <Link
+                    href="/map"
+                    className="inline-flex items-center gap-2 text-sm text-black hover:text-stone-900 mb-6 transition-colors"
+                >
+                    <ArrowLeftIcon className="w-6 h-6" />
+                    Back to Map
+                </Link>
 
-                {/* Candidates */}
-                <section className="space-y-6">
-                    <div className="flex items-center gap-2">
-                        <User className="w-5 h-5 text-accent" strokeWidth={1.5} />
-                        <h2 className="text-lg font-semibold">Candidates</h2>
+                {/* Ward Header */}
+                <div className="mb-8">
+                    <div className="flex items-center justify-between gap-4 flex-wrap">
+                        <div>
+                            <h1 className="text-3xl md:text-4xl font-semibold font-[family-name:var(--font-fraunces)] mb-2">
+                                {candidates[0]?.ward_name || wardName}
+                            </h1>
+                            <p className="text-stone-500">
+                                Ward {candidates[0]?.ward_no || wardId.replace(/\D/g, '')} • BMC Elections 2026
+                            </p>
+                        </div>
+                        <Link
+                            href={`/candidates/compare/${candidates[0]?.ward_no || wardId.replace(/\D/g, '')}`}
+                            className="inline-flex items-center gap-2 bg-black text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-stone-800 transition-colors"
+                        >
+                            <Scale className="w-4 h-4" />
+                            Compare Candidates
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Ward Stats Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                    <div className="bg-white border border-stone-200 rounded-xl p-4 text-center">
+                        <p className="text-3xl font-bold text-stone-900">{candidates.length}</p>
+                        <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">Candidates</p>
+                    </div>
+                    <div className="bg-white border border-stone-200 rounded-xl p-4 text-center">
+                        <p className="text-3xl font-bold text-stone-900">{uniqueParties}</p>
+                        <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">Parties</p>
+                    </div>
+                    <div className={`border rounded-xl p-4 text-center ${candidatesWithCases > 0 ? 'bg-amber-50 border-amber-200' : 'bg-white border-stone-200'}`}>
+                        <p className={`text-3xl font-bold ${candidatesWithCases > 0 ? 'text-amber-600' : 'text-stone-900'}`}>{candidatesWithCases}</p>
+                        <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">With Known Cases</p>
+                    </div>
+                    <div className={`border rounded-xl p-4 text-center ${isWomenReserved ? 'bg-pink-50 border-pink-200' : 'bg-white border-stone-200'}`}>
+                        <p className={`text-xl font-bold ${isWomenReserved ? 'text-pink-600' : 'text-stone-400'}`}>
+                            {isWomenReserved ? 'Women' : 'General'}
+                        </p>
+                        <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">Reservation</p>
+                    </div>
+                </div>
+
+                {/* Candidates Section */}
+                <div className="mb-8">
+                    <div className="flex items-center gap-2 mb-4">
+                        <Users className="w-5 h-5 text-stone-600" />
+                        <h2 className="text-lg font-semibold">All Candidates</h2>
                     </div>
 
                     {loading ? (
-                        <div className="bg-card border border-border p-12 text-center">
-                            <p className="text-sm text-muted-foreground font-light">Loading candidates...</p>
+                        <div className="bg-white border border-stone-200 rounded-xl p-12 text-center">
+                            <p className="text-sm text-stone-400">Loading candidates...</p>
                         </div>
                     ) : candidates.length === 0 ? (
-                        <div className="bg-card border border-border p-12 text-center">
-                            <User className="w-12 h-12 mx-auto mb-3 text-muted-foreground/20" strokeWidth={1.5} />
-                            <p className="text-sm text-muted-foreground/60 font-light">No candidates found for this ward</p>
+                        <div className="bg-white border border-stone-200 rounded-xl p-12 text-center">
+                            <Users className="w-12 h-12 mx-auto mb-3 text-stone-200" />
+                            <p className="text-sm text-stone-400">No candidates found for this ward</p>
                         </div>
                     ) : (
-                        <div className="grid gap-2">
-                            {candidates.map((candidate, index) => (
-                                <Card key={candidate.id} className="hover:shadow-md transition-shadow">
-                                    <CardHeader className="py-1">
-                                        <div className="flex items-center justify-between gap-4">
-                                            <div className="flex items-center gap-3 flex-1 min-w-0">
-                                                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-black text-white text-[16px] font-bold shrink-0">
-                                                    {index + 1}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <h3 className="font-bold text-[18px] leading-tight truncate">{candidate.candidate_name}</h3>
-                                                    <p className="text-[14px] text-muted-foreground truncate">{candidate.party_name}</p>
-                                                </div>
-                                            </div>
+                        <div className="grid gap-3">
+                            {candidates.map((candidate) => {
+                                const caseInfo = Array.isArray(candidate.case_info) ? candidate.case_info[0] : candidate.case_info;
+                                const hasCases = caseInfo && (caseInfo.active_cases > 0 || caseInfo.closed_cases > 0);
+                                const education = caseInfo?.education || 'N/A';
+
+                                return (
+                                    <Link
+                                        key={candidate.id}
+                                        href={`/candidates/${candidate.id}`}
+                                        className="group bg-white border border-stone-200 rounded-xl p-4 hover:shadow-md transition-all duration-300"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            {/* Party Logo */}
                                             <Image
-                                                src={getPartyLogo(candidate.party_name)}
+                                                src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
                                                 alt={candidate.party_name}
-                                                width={64}
-                                                height={64}
-                                                className="w-14 h-14 object-contain border border-black rounded-full shrink-0"
+                                                width={56}
+                                                height={56}
+                                                className="w-14 h-14 object-contain border border-stone-200 rounded-full shrink-0 bg-white"
                                             />
+
+                                            {/* Candidate Info */}
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="text-lg font-medium leading-tight truncate group-hover:text-stone-600 transition-colors font-[family-name:var(--font-fraunces)]">
+                                                    {candidate.candidate_name}
+                                                </h3>
+                                                <p className="text-sm text-stone-500 truncate">
+                                                    {candidate.party_name}
+                                                </p>
+                                            </div>
+
+                                            {/* Quick Stats */}
+                                            <div className="hidden sm:flex items-center gap-3">
+                                                {/* Education */}
+                                                <div className="flex items-center gap-1.5 text-xs text-stone-500">
+                                                    <GraduationCap className="w-4 h-4" />
+                                                    <span className="max-w-[80px] truncate">{education.toUpperCase()}</span>
+                                                </div>
+
+                                                {/* Legal History */}
+                                                {hasCases && (
+                                                    <div className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
+                                                        <AlertTriangle className="w-3.5 h-3.5" />
+                                                        <span>{(caseInfo?.active_cases || 0) + (caseInfo?.closed_cases || 0)} known cases</span>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Arrow */}
+                                            <svg className="w-5 h-5 text-stone-300 group-hover:text-stone-500 transition-colors shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
                                         </div>
-                                    </CardHeader>
-                                </Card>
-                            ))}
+
+                                        {/* Mobile Stats */}
+                                        <div className="sm:hidden flex items-center gap-3 mt-3 pt-3 border-t border-stone-100">
+                                            <div className="flex items-center gap-1.5 text-xs text-stone-500">
+                                                <GraduationCap className="w-4 h-4" />
+                                                <span>{education.toUpperCase()}</span>
+                                            </div>
+                                            {hasCases && (
+                                                <div className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-2 py-1 rounded-md">
+                                                    <AlertTriangle className="w-3.5 h-3.5" />
+                                                    <span>{(caseInfo?.active_cases || 0) + (caseInfo?.closed_cases || 0)} known cases</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </Link>
+                                );
+                            })}
                         </div>
                     )}
-                </section>
+                </div>
 
-                {/* Ratings */}
-                <section className="space-y-6">
-                    <div className="flex items-center gap-2">
-                        <Star className="w-5 h-5 text-accent" strokeWidth={1.5} />
-                        <h2 className="text-lg font-semibold">Ratings</h2>
-                    </div>
-                    <div className="bg-card border border-border p-12 text-center">
-                        <Star className="w-12 h-12 mx-auto mb-3 text-muted-foreground/20" strokeWidth={1.5} />
-                        <p className="text-sm text-muted-foreground/60 font-light">Ratings coming soon</p>
-                    </div>
-                </section>
-
-                {/* Comments */}
-                <section className="space-y-6">
-                    <div className="flex items-center gap-2">
-                        <MessageSquare className="w-5 h-5 text-accent" strokeWidth={1.5} />
-                        <h2 className="text-lg font-semibold">Community Feedback</h2>
-                    </div>
-                    <div className="bg-card border border-border p-12 text-center">
-                        <MessageSquare className="w-12 h-12 mx-auto mb-3 text-muted-foreground/20" strokeWidth={1.5} />
-                        <p className="text-sm text-muted-foreground/60 font-light">Comments coming soon</p>
-                    </div>
-                </section>
+                {/* Footer Note */}
+                <div className="text-center py-6 border-t border-stone-200">
+                    <p className="text-xs text-stone-400">
+                        Data sourced from election commission public records
+                    </p>
+                </div>
             </main>
-
-            {/* Footer */}
-            <footer className="border-t border-border py-8 px-6 text-center mt-12">
-                <p className="text-sm text-muted-foreground font-light">Data sourced from public records</p>
-            </footer>
         </div>
     );
 }

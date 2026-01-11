@@ -7,7 +7,7 @@ import { Users, AlertTriangle, GraduationCap, FileText, CheckCircle, XCircle } f
 import manifestoData from "@/data/party-manifestos.json";
 
 // Party logo mapping
-function getPartyLogo(partyName: string): string {
+function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
     switch (partyName) {
         case 'Indian National Congress':
             return '/images/party-symbols/congress-logo.jpg';
@@ -28,7 +28,9 @@ function getPartyLogo(partyName: string): string {
         case 'Maharashtra Navnirman Sena':
             return '/images/party-symbols/mns-logo.jpg';
         default:
-            return '/images/party-symbols/generic.jpg';
+            return isWomenReserved
+                ? '/images/party-symbols/generic-female.png'
+                : '/images/party-symbols/generic.jpg';
     }
 }
 
@@ -40,6 +42,36 @@ function getPartyManifesto(partyName: string) {
         partyName.includes(m.shortName.split(' ')[0])
     );
     return manifesto;
+}
+
+// Convert party name to initials (multi-word) or keep as-is (single word)
+function getPartyInitials(partyName: string): string {
+    // Known party abbreviations
+    const knownAbbreviations: Record<string, string> = {
+        'Indian National Congress': 'INC',
+        'Bharatiya Janata Party': 'BJP',
+        'Shiv Sena': 'SS',
+        'Shiv Sena (Uddhav Balasaheb Thackeray)': 'SS(UBT)',
+        'Nationalist Congress Party': 'NCP',
+        'Bahujan Samaj Party': 'BSP',
+        'Samajwadi Party': 'SP',
+        'Aam Aadmi Party': 'AAP',
+        'Maharashtra Navnirman Sena': 'MNS',
+        'Communist Party of India': 'CPI',
+        'Communist Party of India (Marxist)': 'CPI(M)',
+    };
+
+    if (knownAbbreviations[partyName]) {
+        return knownAbbreviations[partyName];
+    }
+
+    const words = partyName.split(' ').filter(w => w.length > 0);
+    if (words.length <= 1) return partyName;
+    // Get first letter of each word (skip parentheses), uppercase
+    return words.map(w => {
+        const char = w.replace(/[()]/g, '')[0];
+        return char ? char.toUpperCase() : '';
+    }).filter(c => c).join('');
 }
 
 interface CandidateWithInfo {
@@ -93,17 +125,17 @@ export default async function CompareWardPage({
         <div className="min-h-screen bg-stone-50">
             <Navbar />
 
-            <main className="max-w-7xl mx-auto px-4 py-8">
+            <main className="max-w-7xl mx-auto px-4 md:px-8 py-4">
                 {/* Header */}
                 <Link
                     href="/candidates"
-                    className="inline-flex items-center gap-2 text-sm text-black hover:text-stone-900 mb-6 transition-colors"
+                    className="inline-flex items-center gap-2 text-sm text-black hover:text-stone-900 mb-2 transition-colors"
                 >
                     <ArrowLeftIcon className="w-5 h-5" />
                     Back to Candidates
                 </Link>
 
-                <div className="mb-8">
+                <div className="mb-6">
                     <h1 className="text-3xl font-bold font-[family-name:var(--font-fraunces)] mb-2">
                         Compare Candidates
                     </h1>
@@ -130,7 +162,7 @@ export default async function CompareWardPage({
                                     <th className="text-left p-4 font-medium text-sm uppercase tracking-wider">
                                         <div className="flex items-center gap-2">
                                             <AlertTriangle className="w-4 h-4" />
-                                            Criminal Cases
+                                            Legal History
                                         </div>
                                     </th>
                                     <th className="text-left p-4 font-medium text-sm uppercase tracking-wider">
@@ -165,13 +197,13 @@ export default async function CompareWardPage({
                                             className={`border-b border-stone-100 hover:bg-stone-50 transition-colors ${index % 2 === 0 ? 'bg-white' : 'bg-stone-50/50'}`}
                                         >
                                             {/* Candidate Info - Sticky */}
-                                            <td className="p-4 sticky left-0 bg-inherit z-10">
+                                            <td className={`p-4 sticky left-0 z-10 ${index % 2 === 0 ? 'bg-white' : 'bg-stone-50'}`}>
                                                 <Link
                                                     href={`/candidates/${candidate.id}`}
                                                     className="flex items-center gap-3 hover:opacity-80 transition-opacity"
                                                 >
                                                     <Image
-                                                        src={getPartyLogo(candidate.party_name)}
+                                                        src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
                                                         alt={candidate.party_name}
                                                         width={40}
                                                         height={40}
@@ -179,10 +211,11 @@ export default async function CompareWardPage({
                                                     />
                                                     <div>
                                                         <p className="font-medium text-stone-900 font-[family-name:var(--font-fraunces)]">
-                                                            {candidate.candidate_name}
+                                                            <span className="hidden sm:inline">{candidate.candidate_name}</span>
+                                                            <span className="sm:hidden">{candidate.candidate_name.split(' ')[0]}</span>
                                                         </p>
                                                         <p className="text-xs text-stone-500 truncate max-w-[150px]">
-                                                            {candidate.party_name}
+                                                            {getPartyInitials(candidate.party_name)}
                                                         </p>
                                                     </div>
                                                 </Link>
@@ -190,15 +223,17 @@ export default async function CompareWardPage({
 
                                             {/* Education */}
                                             <td className="p-4">
-                                                <span className={`inline-flex items-center px-3 py-1 rounded-md text-sm font-medium ${isLowEducation
-                                                    ? 'bg-red-100 text-red-700'
-                                                    : 'bg-emerald-100 text-emerald-700'
+                                                <span className={`inline-flex items-center px-3 py-1 rounded-md text-sm font-medium ${education === 'N/A'
+                                                    ? 'bg-amber-100 text-amber-700'
+                                                    : isLowEducation
+                                                        ? 'bg-red-100 text-red-700'
+                                                        : 'bg-emerald-100 text-emerald-700'
                                                     }`}>
-                                                    {education}
+                                                    {education.toUpperCase()}
                                                 </span>
                                             </td>
 
-                                            {/* Criminal Cases */}
+                                            {/* Legal History */}
                                             <td className="p-4">
                                                 {caseInfo ? (
                                                     <div className="space-y-1">
@@ -265,7 +300,7 @@ export default async function CompareWardPage({
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-red-600 font-bold">N</span>
-                        <span>Active criminal cases</span>
+                        <span>Active legal cases</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-amber-600 font-bold">N</span>

@@ -8,8 +8,19 @@ import { fetchNews } from "@/lib/news-service";
 // Revalidate every 3 hours (3 * 60 * 60 = 10800 seconds)
 export const revalidate = 10800;
 
-export default async function NewsPage() {
-    const newsItems = await fetchNews();
+export default async function NewsPage(props: { searchParams: Promise<{ page?: string }> }) {
+    const searchParams = await props.searchParams;
+    const page = Number(searchParams.page) || 1;
+    const itemsPerPage = 9;
+
+    const allNewsItems = await fetchNews();
+
+    // Pagination logic
+    const totalItems = allNewsItems.length;
+    const totalPages = Math.ceil(totalItems / itemsPerPage);
+    const startIndex = (page - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const newsItems = allNewsItems.slice(startIndex, endIndex);
 
     return (
         <div className="min-h-screen bg-stone-50 text-stone-900 font-sans">
@@ -33,40 +44,73 @@ export default async function NewsPage() {
                 </div>
 
                 {newsItems.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {newsItems.map((item) => (
-                            <Link
-                                key={item.id}
-                                href={item.link}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="group block bg-white border border-stone-200 rounded-xl overflow-hidden hover:shadow-md transition-all duration-300"
-                            >
-                                <div className="p-6 flex flex-col h-full justify-between">
-                                    <div>
-                                        <h2 className="text-2xl font-normal mb-3 leading-tight group-hover:text-stone-600 transition-colors font-[var(--font-fraunces)]">
-                                            {item.title}
-                                        </h2>
-                                        {item.contentSnippet && (
-                                            <p className="hidden md:block text-stone-500 text-sm leading-relaxed mb-4 line-clamp-2">
-                                                {item.contentSnippet}
-                                            </p>
-                                        )}
-                                    </div>
+                    <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {newsItems.map((item) => (
+                                <Link
+                                    key={item.id}
+                                    href={item.link}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="group block bg-white border border-stone-200 rounded-xl overflow-hidden hover:shadow-md transition-all duration-300"
+                                >
+                                    <div className="p-6 flex flex-col h-full justify-between">
+                                        <div>
+                                            <h2 className="text-2xl font-normal mb-3 leading-tight group-hover:text-stone-600 transition-colors font-[var(--font-fraunces)]">
+                                                {item.title}
+                                            </h2>
+                                            {item.contentSnippet && (
+                                                <p className="hidden md:block text-stone-500 text-sm leading-relaxed mb-4 line-clamp-2">
+                                                    {item.contentSnippet}
+                                                </p>
+                                            )}
+                                        </div>
 
-                                    <div className="flex items-center justify-between mt-auto pt-3">
-                                        <span className="inline-flex items-center bg-stone-900 text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium">
-                                            {item.category}
-                                        </span>
+                                        <div className="flex items-center justify-between mt-auto pt-3">
+                                            <span className="inline-flex items-center bg-stone-900 text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium">
+                                                {item.category}
+                                            </span>
 
-                                        <span className="text-[10px] font-medium text-amber-600 uppercase tracking-wider">
-                                            {item.source}
-                                        </span>
+                                            <span className="text-[10px] font-medium text-amber-600 uppercase tracking-wider">
+                                                {item.source}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
+                                </Link>
+                            ))}
+                        </div>
+
+                        {/* Pagination Controls */}
+                        {totalPages > 1 && (
+                            <div className="mt-12 flex justify-center items-center gap-4">
+                                <Link
+                                    href={`/news?page=${page - 1}`}
+                                    className={`px-4 py-2 border border-stone-200 rounded-md text-sm font-medium transition-colors ${page <= 1
+                                            ? 'bg-stone-100 text-stone-400 pointer-events-none'
+                                            : 'bg-white hover:bg-stone-50 text-stone-900'
+                                        }`}
+                                    aria-disabled={page <= 1}
+                                >
+                                    Previous
+                                </Link>
+
+                                <span className="text-stone-600 text-sm">
+                                    Page <span className="font-semibold text-stone-900">{page}</span> of {totalPages}
+                                </span>
+
+                                <Link
+                                    href={`/news?page=${page + 1}`}
+                                    className={`px-4 py-2 border border-stone-200 rounded-md text-sm font-medium transition-colors ${page >= totalPages
+                                            ? 'bg-stone-100 text-stone-400 pointer-events-none'
+                                            : 'bg-white hover:bg-stone-50 text-stone-900'
+                                        }`}
+                                    aria-disabled={page >= totalPages}
+                                >
+                                    Next
+                                </Link>
+                            </div>
+                        )}
+                    </>
                 ) : (
                     <div className="text-center py-20 bg-stone-50 rounded-lg border border-dashed border-stone-200">
                         <p className="text-stone-500">No recent relevant news found. Please check back later.</p>

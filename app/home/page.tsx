@@ -74,15 +74,13 @@ export default function HomePage() {
         <div className="min-h-screen bg-white text-stone-900">
             <Navbar />
 
-            <main className="max-w-7xl mx-auto px-6 py-12 flex flex-col items-center">
+            <main className="max-w-7xl mx-auto px-3 py-6 flex flex-col items-center">
                 {/* Header Section */}
-                <div className="w-full text-center mb-12 space-y-4">
-                    <h1 className="text-5xl md:text-6xl font-semibold tracking-tight font-[var(--font-fraunces)]">
-                        Know Your City
+                <div className="w-full text-center mb-6 space-y-4">
+                    <h1 className="text-4xl md:text-6xl font-semibold tracking-tight font-[var(--font-fraunces)]">
+                        Know your Mumbai
                     </h1>
-                    <p className="text-xl text-stone-500 font-light">
-                        Gateway to civic transparency in Mumbai
-                    </p>
+                    <p className="text-xl text-stone-500 font-light" suppressHydrationWarning>Waking up the city that never sleeps!</p>
                 </div>
 
                 {/* Bento Grid */}
