@@ -14,6 +14,8 @@ import {
 import type MapLibreGL from "maplibre-gl";
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
+import categoryReservationData from "@/data/category-reservation.json";
+import { showToast } from "@/lib/toast";
 
 // Mumbai center coordinates
 const MUMBAI_CENTER: [number, number] = [72.8777, 19.076];
@@ -199,30 +201,15 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
     const [hoveredWard, setHoveredWard] = useState<{
         prabhag: number;
         population: number;
-        isWomenReserved: boolean | null;
-        loading: boolean;
+        category: string;
+        isWomenReserved: boolean;
     } | null>(null);
 
-    // Cache for reservation data
-    const reservationCache = useRef<Record<number, boolean>>({});
-
-    // Fetch reservation from Supabase
-    const fetchReservation = async (wardNo: number) => {
-        if (reservationCache.current[wardNo] !== undefined) {
-            return reservationCache.current[wardNo];
-        }
-
-        const { data } = await supabase
-            .from('bmc_candidates')
-            .select('is_women_reserved')
-            .eq('ward_no', wardNo)
-            .limit(1)
-            .single();
-
-        const isWomenReserved = data?.is_women_reserved ?? false;
-        reservationCache.current[wardNo] = isWomenReserved;
-        return isWomenReserved;
-    };
+    // Build lookup from JSON
+    const reservationLookup = categoryReservationData.reduce((acc, item) => {
+        acc[item.ward_no] = { category: item.category, women_reserved: item.women_reserved };
+        return acc;
+    }, {} as Record<number, { category: string; women_reserved: boolean }>);
 
     useEffect(() => {
         if (!isLoaded || !map) return;
@@ -306,20 +293,14 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
                 }
                 const props = e.features[0].properties;
                 const wardNo = props?.prabhag || 0;
+                const reservation = reservationLookup[wardNo] || { category: 'GEN', women_reserved: false };
 
-                // Set initial state with loading
                 setHoveredWard({
                     prabhag: wardNo,
                     population: props?.tot_pop || 0,
-                    isWomenReserved: reservationCache.current[wardNo] ?? null,
-                    loading: reservationCache.current[wardNo] === undefined,
+                    category: reservation.category,
+                    isWomenReserved: reservation.women_reserved,
                 });
-
-                // Fetch reservation if not cached
-                if (reservationCache.current[wardNo] === undefined) {
-                    const isWomenReserved = await fetchReservation(wardNo);
-                    setHoveredWard(prev => prev ? { ...prev, isWomenReserved, loading: false } : null);
-                }
 
                 map.getCanvas().style.cursor = "pointer";
             }
@@ -388,14 +369,20 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
                         <span className="font-semibold text-stone-900">{hoveredWard.population.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between gap-4">
+                        <span className="text-stone-500">Category</span>
+                        <span className={`font-semibold ${hoveredWard.category === 'SC' ? 'text-blue-600' :
+                            hoveredWard.category === 'ST' ? 'text-green-600' :
+                                hoveredWard.category === 'OBC' ? 'text-amber-600' :
+                                    'text-stone-900'
+                            }`}>
+                            {hoveredWard.category}
+                        </span>
+                    </div>
+                    <div className="flex justify-between gap-4">
                         <span className="text-stone-500">Reservation</span>
-                        {hoveredWard.loading ? (
-                            <span className="text-stone-400">Loading...</span>
-                        ) : (
-                            <span className={`font-semibold ${hoveredWard.isWomenReserved ? 'text-pink-600' : 'text-stone-900'}`}>
-                                {hoveredWard.isWomenReserved ? 'Women' : 'General'}
-                            </span>
-                        )}
+                        <span className={`font-semibold ${hoveredWard.isWomenReserved ? 'text-pink-600' : 'text-stone-900'}`}>
+                            {hoveredWard.isWomenReserved ? 'Women' : 'General'}
+                        </span>
                     </div>
                 </div>
                 <p className="text-xs text-stone-400 mt-3">Click for details</p>
@@ -468,35 +455,33 @@ function MyWardButton({
                 (error) => {
                     console.error("Geolocation error:", error);
                     setFinding(false);
-                    alert("Could not access your location. Please check your permissions.");
+                    showToast('error', 'Location Error', 'Could not access your location. Please check your permissions.');
                 }
             );
         } else {
-            alert("Geolocation is not supported by your browser");
+            showToast('error', 'Not Supported', 'Geolocation is not supported by your browser');
             setFinding(false);
         }
     };
 
     return (
-        <div className="absolute top-24 left-[280px] z-20">
-            <button
-                onClick={handleFindWard}
-                disabled={finding}
-                className="bg-black text-white px-4 py-2.5 text-sm font-medium rounded-full shadow-lg hover:bg-stone-800 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-wait"
-            >
-                {finding ? (
-                    <>
-                        <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Finding...
-                    </>
-                ) : (
-                    <>
-                        <MapPin className="w-4 h-4" />
-                        My Ward
-                    </>
-                )}
-            </button>
-        </div>
+        <button
+            onClick={handleFindWard}
+            disabled={finding}
+            className="bg-black text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg hover:bg-stone-800 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-wait"
+        >
+            {finding ? (
+                <>
+                    <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Finding...
+                </>
+            ) : (
+                <>
+                    <MapPin className="w-4 h-4" />
+                    My Ward
+                </>
+            )}
+        </button>
     );
 }
 
@@ -535,40 +520,6 @@ export default function MapPage() {
         <div className="h-screen w-screen bg-background overflow-hidden">
             <Navbar />
 
-            {/* Dataset Toggle + My Ward Button */}
-            <div className="absolute top-24 left-6 z-20 flex items-center gap-3">
-                <div className="bg-card/90 border border-border p-1.5 flex gap-1 backdrop-blur-sm rounded-full">
-                    {/* <button
-                        onClick={() => setDataset("admin")}
-                        className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "admin"
-                            ? "bg-accent text-white"
-                            : "text-muted-foreground hover:text-accent hover:bg-muted"
-                            }`}
-                    >
-                        Admin
-                    </button> */}
-                    <button
-                        onClick={() => setDataset("electoral")}
-                        className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "electoral"
-                            ? "bg-accent text-white"
-                            : "text-muted-foreground hover:text-accent hover:bg-muted"
-                            }`}
-                    >
-                        Electoral
-                    </button>
-                    <button
-                        onClick={() => setDataset("plain")}
-                        className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "plain"
-                            ? "bg-accent text-white"
-                            : "text-muted-foreground hover:text-accent hover:bg-muted"
-                            }`}
-                    >
-                        Plain
-                    </button>
-                </div>
-            </div>
-
-
             {/* Full-screen Map */}
             <div className="h-full w-full">
                 <Map
@@ -578,8 +529,30 @@ export default function MapPage() {
                     maxZoom={18}
                     key={dataset}
                 >
-                    {/* My Ward Button - inside Map for useMap context */}
-                    <MyWardButton setDataset={setDataset} onWardFound={handleWardFound} />
+                    {/* Dataset Toggle + My Ward Button - inside Map for shared context */}
+                    <div className="absolute top-4 left-6 z-20 flex items-center gap-3">
+                        <div className="bg-card/90 border border-border p-1.5 flex gap-1 backdrop-blur-sm rounded-full">
+                            <button
+                                onClick={() => setDataset("electoral")}
+                                className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "electoral"
+                                    ? "bg-accent text-white"
+                                    : "text-muted-foreground hover:text-accent hover:bg-muted"
+                                    }`}
+                            >
+                                Electoral
+                            </button>
+                            <button
+                                onClick={() => setDataset("plain")}
+                                className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "plain"
+                                    ? "bg-accent text-white"
+                                    : "text-muted-foreground hover:text-accent hover:bg-muted"
+                                    }`}
+                            >
+                                Plain
+                            </button>
+                        </div>
+                        <MyWardButton setDataset={setDataset} onWardFound={handleWardFound} />
+                    </div>
 
                     {dataset === "admin" && <AdminWardsLayer onWardClick={handleWardClick} />}
                     {dataset === "electoral" && <ElectoralWardsLayer onWardClick={handleWardClick} />}

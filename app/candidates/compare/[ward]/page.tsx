@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { Users, AlertTriangle, GraduationCap, FileText, CheckCircle, XCircle } from "lucide-react";
 import manifestoData from "@/data/party-manifestos.json";
+import { ComparePageToast } from "./compare-toast";
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
@@ -92,14 +93,22 @@ export default async function CompareWardPage({
     const { ward } = await params;
     const wardNo = parseInt(ward);
 
-    const { data: candidates, error } = await supabase
+    const { data: candidatesRaw, error } = await supabase
         .from('bmc_candidates')
         .select(`
             *,
-            case_info:bmc_candidate_case_info(education, active_cases, closed_cases)
+            case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases)
         `)
         .eq('ward_no', wardNo)
         .order('party_name', { ascending: true });
+
+    // Sort candidates: Independents go to the end
+    const candidates = candidatesRaw?.sort((a, b) => {
+        const aIsIndependent = a.party_name?.toLowerCase().includes('independent') ? 1 : 0;
+        const bIsIndependent = b.party_name?.toLowerCase().includes('independent') ? 1 : 0;
+        if (aIsIndependent !== bIsIndependent) return aIsIndependent - bIsIndependent;
+        return (a.party_name || '').localeCompare(b.party_name || '');
+    });
 
     if (error || !candidates || candidates.length === 0) {
         return (
@@ -124,6 +133,7 @@ export default async function CompareWardPage({
     return (
         <div className="min-h-screen bg-stone-50">
             <Navbar />
+            <ComparePageToast />
 
             <main className="max-w-7xl mx-auto px-4 md:px-8 py-4">
                 {/* Header */}

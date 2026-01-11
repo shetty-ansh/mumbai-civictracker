@@ -16,12 +16,23 @@
         ]
     },
     {
-        "id": "bjp-shivsena",
-        "partyName": "Bharatiya Janata Party & Shiv Sena",
-        "shortName": "BJP & ShivSena",
-        "manifestoStatus": "not_released",
-        "summary": "Manifesto Not Released",
-        "keyPromises": []
+        "id": "mahayuti",
+        "partyName": "Bharatiya Janata Party, Shiv Sena, Nationalist Congress Party & Republican Party of India (Athawale)",
+        "shortName": "Mahayuti (BJP, SS, NCP, RPI-A)",
+        "manifestoStatus": "released",
+        "summary": "Mahayuti (BJP, Shiv Sena, NCP & RPI-A) released their BMC election manifesto focusing on transforming Mumbai into a modern global city. Key highlights include interest-free loans up to ₹5 lakh for women under 'Ladki Bahin' scheme, slum-free Mumbai through rehabilitation and 30-35 lakh affordable homes, 50% BEST bus fare concession for women, tech-driven governance with AI, and Marathi pride with infrastructure development.",
+        "keyPromises": [
+            "Interest-free loans up to ₹5 lakh for women (Ladki Bahin)",
+            "50% BEST bus fare concession for women",
+            "30-35 lakh homes under slum rehabilitation",
+            "Slum-free Mumbai initiative",
+            "AI-driven identification of illegal immigrants",
+            "Tech-driven transparent governance",
+            "Affordable housing initiatives",
+            "Improved civic infrastructure",
+            "Marathi pride promotion",
+            "Position Mumbai as a global city"
+        ]
     },
     {
         "id": "shivsena-ubt-mns",

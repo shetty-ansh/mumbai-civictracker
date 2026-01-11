@@ -36,10 +36,10 @@ export default async function NewsPage(props: { searchParams: Promise<{ page?: s
                         <span className="ml-2 text-xs font-medium text-green-700 uppercase tracking-wider">Live Updates</span>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-semibold tracking-tight font-[var(--font-fraunces)]">
-                        Civic News
+                        Mumbai News
                     </h1>
                     <p className="text-lg text-stone-500 font-light">
-                        Latest stories from Mumbai's top newspapers
+                        Election's latest news!
                     </p>
                 </div>
 
@@ -86,8 +86,8 @@ export default async function NewsPage(props: { searchParams: Promise<{ page?: s
                                 <Link
                                     href={`/news?page=${page - 1}`}
                                     className={`px-4 py-2 border border-stone-200 rounded-md text-sm font-medium transition-colors ${page <= 1
-                                            ? 'bg-stone-100 text-stone-400 pointer-events-none'
-                                            : 'bg-white hover:bg-stone-50 text-stone-900'
+                                        ? 'bg-stone-100 text-stone-400 pointer-events-none'
+                                        : 'bg-white hover:bg-stone-50 text-stone-900'
                                         }`}
                                     aria-disabled={page <= 1}
                                 >
@@ -101,8 +101,8 @@ export default async function NewsPage(props: { searchParams: Promise<{ page?: s
                                 <Link
                                     href={`/news?page=${page + 1}`}
                                     className={`px-4 py-2 border border-stone-200 rounded-md text-sm font-medium transition-colors ${page >= totalPages
-                                            ? 'bg-stone-100 text-stone-400 pointer-events-none'
-                                            : 'bg-white hover:bg-stone-50 text-stone-900'
+                                        ? 'bg-stone-100 text-stone-400 pointer-events-none'
+                                        : 'bg-white hover:bg-stone-50 text-stone-900'
                                         }`}
                                     aria-disabled={page >= totalPages}
                                 >

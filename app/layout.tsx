@@ -22,6 +22,10 @@ const fraunces = Fraunces({
 export const metadata: Metadata = {
   title: "aamchi मुंबई - Mumbai Civic Tracker",
   description: "Know your ward, know your corporator. Navigate through 227 electoral wards and hold your representatives accountable.",
+  icons: {
+    icon: "/images/kaali-peeli.png",
+    apple: "/images/kaali-peeli.png",
+  },
 };
 
 export default function RootLayout({

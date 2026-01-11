@@ -1,12 +1,26 @@
 "use client";
 
-import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Twitter, Linkedin, Globe } from "lucide-react";
+import { Loader } from "@/components/ui/loader";
 
 export default function LandingPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleExplore = () => {
+    setLoading(true);
+    router.push("/home"); // Commented for testing loader
+  };
+
+  if (loading) {
+    return <Loader message="Loading Mumbai..." />;
+  }
+
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-black">
+    <div className="relative h-screen w-full overflow-hidden bg-black">
       {/* Full-screen Video Background */}
       {/* Desktop Video */}
       <video
@@ -90,19 +104,20 @@ export default function LandingPage() {
         </p>
 
         {/* CTA Button */}
-        <Link href="/home">
-          <button className="group px-12 py-5 bg-white text-black hover:bg-white/90 transition-all duration-300 text-lg font-medium tracking-wide flex items-center gap-3">
-            <Image
-              src="/images/kaali-peeli.png"
-              alt="Kaali Peeli Taxi"
-              width={32}
-              height={32}
-              className="w-8 h-8"
-            />
-            Explore Your Ward
-            <span className="inline-block ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
-          </button>
-        </Link>
+        <button
+          onClick={handleExplore}
+          className="group px-12 py-5 bg-white text-black hover:bg-white/90 active:scale-95 transition-all duration-150 text-lg font-medium tracking-wide flex items-center gap-3 shadow-lg hover:shadow-xl"
+        >
+          <Image
+            src="/images/kaali-peeli.png"
+            alt="Kaali Peeli Taxi"
+            width={32}
+            height={32}
+            className="w-8 h-8"
+          />
+          Explore Your Ward
+          <span className="inline-block ml-2 group-hover:translate-x-1 transition-transform duration-300">→</span>
+        </button>
       </div>
 
       {/* Footer */}
