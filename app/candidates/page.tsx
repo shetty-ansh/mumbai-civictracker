@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Search, Filter, User } from "lucide-react";
+import Link from "next/link";
+import { Search, Filter, User, Scale } from "lucide-react";
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -271,33 +272,99 @@ export default function CandidatesPage() {
                     </div>
                 ) : (
                     <>
-                        <div className="grid gap-2">
+                        {/* Desktop: Grid layout | Mobile: List layout */}
+                        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {currentCandidates.map((candidate) => (
-                                <Card key={candidate.id} className="hover:shadow-md transition-shadow">
-                                    <CardHeader className="py-3 px-3 sm:px-4">
-                                        <div className="flex items-center gap-3 sm:gap-4">
-                                            <div className="flex-1 min-w-0 overflow-hidden">
-                                                <h3 className="font-bold text-base sm:text-lg leading-tight truncate">
+                                <div
+                                    key={candidate.id}
+                                    className="flex flex-col bg-white border border-stone-200 rounded-xl overflow-hidden hover:shadow-md transition-all duration-300"
+                                >
+                                    <Link
+                                        href={`/candidates/${candidate.id}`}
+                                        className="group block flex-1"
+                                    >
+                                        <div className="p-5 flex flex-col h-full">
+                                            <div className="flex items-start justify-between gap-4 mb-4">
+                                                <h3 className="text-xl font-normal leading-tight group-hover:text-stone-600 transition-colors font-[family-name:var(--font-fraunces)]">
                                                     {candidate.candidate_name}
                                                 </h3>
-                                                <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2 text-xs sm:text-sm text-muted-foreground">
-                                                    <span className="truncate">{candidate.party_name}</span>
-                                                    <span className="hidden sm:inline text-muted-foreground/40">•</span>
-                                                    <span className="truncate text-muted-foreground/70">Ward {candidate.ward_no} - {candidate.ward_name}</span>
-                                                </div>
+                                                <Image
+                                                    src={getPartyLogo(candidate.party_name)}
+                                                    alt={candidate.party_name}
+                                                    width={48}
+                                                    height={48}
+                                                    className="w-12 h-12 object-contain border border-stone-200 rounded-full shrink-0"
+                                                />
                                             </div>
+
+                                            <p className="text-stone-500 text-sm mb-4 line-clamp-1">
+                                                {candidate.party_name}
+                                            </p>
+
+                                            <div className="flex items-center justify-between mt-auto pt-3 border-t border-stone-100">
+                                                <span className="inline-flex items-center bg-stone-900 text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium">
+                                                    Ward {candidate.ward_no}
+                                                </span>
+                                                <span className="text-[10px] font-medium text-amber-600 uppercase tracking-wider truncate max-w-[80px]">
+                                                    {candidate.ward_name}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </Link>
+                                    <Link
+                                        href={`/candidates/compare/${candidate.ward_no}`}
+                                        className="flex items-center justify-center gap-1 py-2 bg-stone-100 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
+                                    >
+                                        <Scale className="w-3 h-3" />
+                                        Compare Ward
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Mobile: List layout */}
+                        <div className="md:hidden space-y-2">
+                            {currentCandidates.map((candidate) => (
+                                <div
+                                    key={candidate.id}
+                                    className="bg-white border border-stone-200 rounded-lg overflow-hidden"
+                                >
+                                    <Link
+                                        href={`/candidates/${candidate.id}`}
+                                        className="block p-4 hover:bg-stone-50 transition-colors"
+                                    >
+                                        <div className="flex items-center gap-3">
                                             <Image
                                                 src={getPartyLogo(candidate.party_name)}
                                                 alt={candidate.party_name}
-                                                width={56}
-                                                height={56}
-                                                className="w-12 h-12 sm:w-14 sm:h-14 object-contain border border-black rounded-full shrink-0"
+                                                width={44}
+                                                height={44}
+                                                className="w-11 h-11 object-contain border border-stone-200 rounded-full shrink-0"
                                             />
+                                            <div className="flex-1 min-w-0">
+                                                <h3 className="font-medium text-base leading-tight truncate font-[family-name:var(--font-fraunces)]">
+                                                    {candidate.candidate_name}
+                                                </h3>
+                                                <p className="text-xs text-stone-500 truncate">
+                                                    {candidate.party_name}
+                                                </p>
+                                                <p className="text-xs text-amber-600 font-medium">
+                                                    Ward {candidate.ward_no} • {candidate.ward_name}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </CardHeader>
-                                </Card>
+                                    </Link>
+                                    <Link
+                                        href={`/candidates/compare/${candidate.ward_no}`}
+                                        className="flex items-center justify-center gap-1 py-2 bg-stone-100 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
+                                    >
+                                        <Scale className="w-3 h-3" />
+                                        Compare Ward Candidates
+                                    </Link>
+                                </div>
                             ))}
                         </div>
+
 
                         {/* Pagination Controls */}
                         {totalPages > 1 && (
