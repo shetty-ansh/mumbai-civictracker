@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { CustomToast } from "@/components/ui/custom-toast";
 
 export const showToast = (
-    type: "success" | "error" | "processing" | "warning" | "confirm" | "confirmDelete",
+    type: "success" | "error" | "processing" | "warning" | "confirm" | "confirmDelete" | "info",
     title: string,
     message: string,
     onConfirm?: () => void,

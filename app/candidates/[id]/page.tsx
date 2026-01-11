@@ -7,6 +7,7 @@ import { User, AlertTriangle, Scale } from "lucide-react";
 import manifestoData from "@/data/party-manifestos.json";
 import wardAffidavits from "@/data/ward-affidavits.json";
 import { CandidatePageToast } from "./candidate-toast";
+import { ManifestoSection } from "./manifesto-section";
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
@@ -104,7 +105,7 @@ export default async function CandidatePage({
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:min-h-[500px]">
 
                     {/* Left Column - Candidate Info Card */}
-                    <div className="lg:col-span-2 bg-stone-800 text-white rounded-xl p-8 flex flex-col min-h-[400px]">
+                    <div className="lg:col-span-2 bg-black text-white rounded-xl p-8 flex flex-col min-h-[400px]">
                         <div className="flex-1 flex flex-col items-center justify-center text-center py-6">
                             <Image
                                 src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
@@ -115,7 +116,7 @@ export default async function CandidatePage({
                             />
                             <h1 className="text-2xl sm:text-3xl font-bold mb-3">{candidate.candidate_name}</h1>
                             <p className="text-stone-300 text-lg mb-2">{candidate.party_name}</p>
-                            <p className="text-amber-400 font-medium text-lg">Ward {candidate.ward_no} - {candidate.ward_name}</p>
+                            <p className="text-amber-400 font-medium text-lg">Ward {candidate.ward_no} • {candidate.ward_name}</p>
 
                             {candidate.is_women_reserved && (
                                 <span className="mt-5 inline-flex items-center bg-pink-500/20 text-pink-300 text-xs px-4 py-1.5 rounded-md">
@@ -235,36 +236,7 @@ export default async function CandidatePage({
                             <p className="text-[18px] font-medium text-black uppercase tracking-widest mb-4">Party Manifesto</p>
 
                             <div className="flex-1">
-                                {manifesto ? (
-                                    manifesto.manifestoStatus === 'released' ? (
-                                        <div>
-                                            <p className="text-stone-600 leading-relaxed text-sm mb-5">
-                                                {manifesto.summary}
-                                            </p>
-                                            {manifesto.keyPromises.length > 0 && (
-                                                <div className="flex flex-wrap gap-2">
-                                                    {manifesto.keyPromises.slice(0, 6).map((promise, index) => (
-                                                        <span
-                                                            key={index}
-                                                            className="inline-flex items-center bg-stone-900 text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium"
-                                                        >
-                                                            {promise}
-                                                        </span>
-                                                    ))}
-                                                    {manifesto.keyPromises.length > 6 && (
-                                                        <span className="text-xs text-stone-400 self-center">
-                                                            +{manifesto.keyPromises.length - 6} more
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <p className="text-stone-400 italic">Manifesto not yet released</p>
-                                    )
-                                ) : (
-                                    <p className="text-stone-400 italic">No manifesto information available for this party</p>
-                                )}
+                                <ManifestoSection manifesto={manifesto} />
                             </div>
                         </div>
                     </div>

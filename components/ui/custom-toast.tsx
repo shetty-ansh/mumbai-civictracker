@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle2, Info, XCircle, AlertTriangle, Loader2 } from
 import { cn } from "@/lib/utils"
 
 interface CustomToastProps {
-    type: "success" | "error" | "processing" | "warning" | "confirm" | "confirmDelete"
+    type: "success" | "error" | "processing" | "warning" | "confirm" | "confirmDelete" | "info"
     title: string
     message: string
     onConfirm?: () => void
@@ -25,6 +25,7 @@ export const CustomToast = ({
         processing: <Loader2 className="h-5 w-5 text-sky-500 animate-spin" />,
         confirm: <Info className="h-5 w-5 text-sky-500" />,
         confirmDelete: <AlertCircle className="h-5 w-5 text-rose-500" />,
+        info: <Info className="h-5 w-5 text-blue-500" />,
     }
 
     return (

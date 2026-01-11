@@ -51,6 +51,15 @@ export function Navbar() {
                     >
                         News
                     </Link>
+                    {/* <Link
+                        href="/stats"
+                        className={`text-base transition-colors ${pathname === '/stats'
+                            ? 'font-semibold text-foreground'
+                            : 'font-medium text-muted-foreground hover:text-accent'
+                            }`}
+                    >
+                        Stats
+                    </Link> */}
                 </nav>
             </div>
         </header>
