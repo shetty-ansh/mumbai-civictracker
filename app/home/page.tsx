@@ -108,7 +108,7 @@ export default function HomePage() {
                             </p>
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">2000+</p>
+                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">1700+</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Candidates
                             </p>

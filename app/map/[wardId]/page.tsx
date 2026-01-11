@@ -7,6 +7,9 @@ import { ArrowLeftIcon } from "@radix-ui/react-icons";
 import { AlertTriangle, GraduationCap, Scale, Users } from "lucide-react";
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
+import { showToast } from "@/lib/toast";
+import { WardPageToast } from "./ward-toast";
+import categoryReservationData from "@/data/category-reservation.json";
 
 function unslugify(slug: string): string {
     return slug
@@ -71,12 +74,13 @@ export default function WardDetailPage({ params }: WardPageProps) {
                 .from('bmc_candidates')
                 .select(`
                     *,
-                    case_info:bmc_candidate_case_info(education, active_cases, closed_cases)
+                    case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases)
                 `)
                 .ilike('ward_name', `%${wardName}%`);
 
             if (error) {
                 console.error('Error fetching candidates:', error);
+                showToast('error', 'Failed to load ward data', 'Please check your connection and try again.');
                 setLoading(false);
                 return;
             }
@@ -90,7 +94,7 @@ export default function WardDetailPage({ params }: WardPageProps) {
                         .from('bmc_candidates')
                         .select(`
                             *,
-                            case_info:bmc_candidate_case_info(education, active_cases, closed_cases)
+                            case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases)
                         `)
                         .eq('ward_no', wardNumber);
 
@@ -109,7 +113,10 @@ export default function WardDetailPage({ params }: WardPageProps) {
     }, [wardName]);
 
     // Calculate ward stats
-    const isWomenReserved = candidates.length > 0 && candidates[0]?.is_women_reserved;
+    const wardNo = candidates.length > 0 ? candidates[0]?.ward_no : parseInt(wardId.replace(/\D/g, '')) || 0;
+    const reservationInfo = categoryReservationData.find(r => r.ward_no === wardNo);
+    const category = reservationInfo?.category || 'GEN';
+    const isWomenReserved = reservationInfo?.women_reserved ?? false;
     const candidatesWithCases = candidates.filter(c => {
         const info = Array.isArray(c.case_info) ? c.case_info[0] : c.case_info;
         return info && (info.active_cases > 0 || info.closed_cases > 0);
@@ -119,6 +126,7 @@ export default function WardDetailPage({ params }: WardPageProps) {
     return (
         <div className="min-h-screen bg-stone-50">
             <Navbar />
+            <WardPageToast />
 
             <main className="max-w-5xl mx-auto px-4 py-8">
                 {/* Back Button */}
@@ -165,9 +173,17 @@ export default function WardDetailPage({ params }: WardPageProps) {
                         <p className={`text-3xl font-bold ${candidatesWithCases > 0 ? 'text-amber-600' : 'text-stone-900'}`}>{candidatesWithCases}</p>
                         <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">With Known Cases</p>
                     </div>
-                    <div className={`border rounded-xl p-4 text-center ${isWomenReserved ? 'bg-pink-50 border-pink-200' : 'bg-white border-stone-200'}`}>
-                        <p className={`text-xl font-bold ${isWomenReserved ? 'text-pink-600' : 'text-stone-400'}`}>
-                            {isWomenReserved ? 'Women' : 'General'}
+                    <div className={`border rounded-xl p-4 text-center ${category === 'SC' ? 'bg-blue-50 border-blue-200' :
+                            category === 'ST' ? 'bg-green-50 border-green-200' :
+                                category === 'OBC' ? 'bg-amber-50 border-amber-200' :
+                                    'bg-white border-stone-200'
+                        }`}>
+                        <p className={`text-xl font-bold ${category === 'SC' ? 'text-blue-600' :
+                                category === 'ST' ? 'text-green-600' :
+                                    category === 'OBC' ? 'text-amber-600' :
+                                        'text-stone-900'
+                            }`}>
+                            {category}{isWomenReserved ? ' (W)' : ''}
                         </p>
                         <p className="text-xs text-stone-500 uppercase tracking-wider mt-1">Reservation</p>
                     </div>

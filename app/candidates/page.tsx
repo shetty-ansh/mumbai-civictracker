@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Filter, User, Scale } from "lucide-react";
+import { Search, Filter, User, Scale, MapPin } from "lucide-react";
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { showToast } from "@/lib/toast";
+import categoryReservationData from "@/data/category-reservation.json";
 
 interface Candidate {
     id: string;
@@ -53,11 +55,16 @@ export default function CandidatesPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedParty, setSelectedParty] = useState<string>("all");
+    const [selectedWard, setSelectedWard] = useState<string>("all");
     const [parties, setParties] = useState<string[]>([]);
     const [partySearchQuery, setPartySearchQuery] = useState("");
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isWardDropdownOpen, setIsWardDropdownOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
+
+    // Get unique ward numbers
+    const wardNumbers = Array.from(new Set(candidates.map(c => c.ward_no))).sort((a, b) => a - b);
 
     useEffect(() => {
         const fetchCandidates = async () => {
@@ -76,6 +83,7 @@ export default function CandidatesPage() {
 
                 if (error) {
                     console.error('Error fetching candidates:', error);
+                    showToast('error', 'Failed to load candidates', 'Please check your connection and try again.');
                     break;
                 }
 
@@ -104,16 +112,15 @@ export default function CandidatesPage() {
         fetchCandidates();
     }, []);
 
-    // Filter candidates based on search and party
+    // Filter candidates based on search, party, and ward
     useEffect(() => {
         let filtered = candidates;
 
-        // Filter by search query
+        // Filter by search query (name and party only)
         if (searchQuery) {
             filtered = filtered.filter(
                 (candidate) =>
                     (candidate.candidate_name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-                    (candidate.ward_name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
                     (candidate.party_name?.toLowerCase() || "").includes(searchQuery.toLowerCase())
             );
         }
@@ -123,9 +130,14 @@ export default function CandidatesPage() {
             filtered = filtered.filter((candidate) => candidate.party_name === selectedParty);
         }
 
+        // Filter by ward
+        if (selectedWard !== "all") {
+            filtered = filtered.filter((candidate) => candidate.ward_no === parseInt(selectedWard));
+        }
+
         setFilteredCandidates(filtered);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchQuery, selectedParty, candidates]);
+    }, [searchQuery, selectedParty, selectedWard, candidates]);
 
     // Filter parties based on search query
     const filteredParties = parties.filter((party) =>
@@ -234,21 +246,75 @@ export default function CandidatesPage() {
                     </div>
                 </div>
 
+                {/* Map CTA Section */}
+                <div className="mb-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                            <MapPin className="w-5 h-5 text-amber-600" />
+                        </div>
+                        <div>
+                            <p className="font-semibold text-stone-900">Find your ward on the map</p>
+                            <p className="text-sm text-stone-600">See all candidates in your area and compare them</p>
+                        </div>
+                    </div>
+                    <Link
+                        href="/map"
+                        className="w-full sm:w-auto bg-stone-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-stone-800 transition-colors text-center"
+                    >
+                        Explore Map
+                    </Link>
+                </div>
+
                 {/* Filters */}
-                <div className="mb-6 space-y-4">
-                    {/* Search */}
-                    <div className="relative">
+                <div className="mb-6 flex flex-col md:flex-row gap-4">
+                    {/* Search - Name and Party only */}
+                    <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
                         <Input
                             type="text"
-                            placeholder="Search by candidate name, party, or ward..."
+                            placeholder="Search by candidate name or party..."
                             value={searchQuery}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
                             className="pl-10"
                         />
                     </div>
 
-
+                    {/* Ward Filter Dropdown */}
+                    <div className="relative">
+                        <button
+                            onClick={() => { setIsWardDropdownOpen(!isWardDropdownOpen); setIsDropdownOpen(false); }}
+                            className="flex items-center justify-between w-full md:w-40 px-4 py-2 text-sm border border-border rounded-md bg-background hover:bg-muted transition-colors"
+                        >
+                            <span>{selectedWard === "all" ? "All Wards" : `Ward ${selectedWard}`}</span>
+                            <svg
+                                className={`w-4 h-4 transition-transform ${isWardDropdownOpen ? 'rotate-180' : ''}`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        {isWardDropdownOpen && (
+                            <div className="absolute top-full left-0 mt-2 w-full md:w-48 bg-background border border-border rounded-md shadow-lg z-50 max-h-64 overflow-y-auto">
+                                <button
+                                    onClick={() => { setSelectedWard("all"); setIsWardDropdownOpen(false); }}
+                                    className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${selectedWard === "all" ? "bg-accent/10 font-medium" : ""}`}
+                                >
+                                    All Wards
+                                </button>
+                                {wardNumbers.map((ward) => (
+                                    <button
+                                        key={ward}
+                                        onClick={() => { setSelectedWard(ward.toString()); setIsWardDropdownOpen(false); }}
+                                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${selectedWard === ward.toString() ? "bg-accent/10 font-medium" : ""}`}
+                                    >
+                                        Ward {ward}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Results Count */}
@@ -308,9 +374,20 @@ export default function CandidatesPage() {
                                                 <span className="inline-flex items-center bg-stone-900 text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium">
                                                     Ward {candidate.ward_no}
                                                 </span>
-                                                <span className="text-[10px] font-medium text-amber-600 uppercase tracking-wider truncate max-w-[80px]">
-                                                    {candidate.ward_name}
-                                                </span>
+                                                {(() => {
+                                                    const reservation = categoryReservationData.find(r => r.ward_no === candidate.ward_no);
+                                                    const category = reservation?.category || 'GEN';
+                                                    const isWomen = reservation?.women_reserved;
+                                                    return (
+                                                        <span className={`text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded ${category === 'SC' ? 'bg-blue-100 text-blue-600' :
+                                                            category === 'ST' ? 'bg-green-100 text-green-600' :
+                                                                category === 'OBC' ? 'bg-amber-100 text-amber-600' :
+                                                                    'bg-stone-100 text-stone-600'
+                                                            }`}>
+                                                            {category}{isWomen ? ' (W)' : ''}
+                                                        </span>
+                                                    );
+                                                })()}
                                             </div>
                                         </div>
                                     </Link>
@@ -351,9 +428,25 @@ export default function CandidatesPage() {
                                                 <p className="text-xs text-stone-500 truncate">
                                                     {candidate.party_name}
                                                 </p>
-                                                <p className="text-xs text-amber-600 font-medium">
-                                                    Ward {candidate.ward_no} • {candidate.ward_name}
-                                                </p>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-xs text-amber-600 font-medium">
+                                                        Ward {candidate.ward_no}
+                                                    </span>
+                                                    {(() => {
+                                                        const reservation = categoryReservationData.find(r => r.ward_no === candidate.ward_no);
+                                                        const category = reservation?.category || 'GEN';
+                                                        const isWomen = reservation?.women_reserved;
+                                                        return (
+                                                            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${category === 'SC' ? 'bg-blue-100 text-blue-600' :
+                                                                category === 'ST' ? 'bg-green-100 text-green-600' :
+                                                                    category === 'OBC' ? 'bg-amber-100 text-amber-600' :
+                                                                        'bg-stone-100 text-stone-600'
+                                                                }`}>
+                                                                {category}{isWomen ? ' (W)' : ''}
+                                                            </span>
+                                                        );
+                                                    })()}
+                                                </div>
                                             </div>
                                         </div>
                                     </Link>

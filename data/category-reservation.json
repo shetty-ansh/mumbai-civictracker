@@ -1,0 +1,1137 @@
+[
+    {
+        "ward_no": 1,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 2,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 3,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 4,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 5,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 6,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 7,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 8,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 9,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 10,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 11,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 12,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 13,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 14,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 15,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 16,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 17,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 18,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 19,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 20,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 21,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 22,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 23,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 24,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 25,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 26,
+        "category": "SC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 27,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 28,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 29,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 30,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 31,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 32,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 33,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 34,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 35,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 36,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 37,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 38,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 39,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 40,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 41,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 42,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 43,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 44,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 45,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 46,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 47,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 48,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 49,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 50,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 51,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 52,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 53,
+        "category": "ST",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 54,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 55,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 56,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 57,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 58,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 59,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 60,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 61,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 62,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 63,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 64,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 65,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 66,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 67,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 68,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 69,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 70,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 71,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 72,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 73,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 74,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 75,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 76,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 77,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 78,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 79,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 80,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 81,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 82,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 83,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 84,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 85,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 86,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 87,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 88,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 89,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 90,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 91,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 92,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 93,
+        "category": "SC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 94,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 95,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 96,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 97,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 98,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 99,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 100,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 101,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 102,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 103,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 104,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 105,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 106,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 107,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 108,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 109,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 110,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 111,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 112,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 113,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 114,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 115,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 116,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 117,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 118,
+        "category": "SC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 119,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 120,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 121,
+        "category": "ST",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 122,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 123,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 124,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 125,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 126,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 127,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 128,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 129,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 130,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 131,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 132,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 133,
+        "category": "SC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 134,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 135,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 136,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 137,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 138,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 139,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 140,
+        "category": "SC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 141,
+        "category": "SC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 142,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 143,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 144,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 145,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 146,
+        "category": "SC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 147,
+        "category": "SC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 148,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 149,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 150,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 151,
+        "category": "SC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 152,
+        "category": "SC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 153,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 154,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 155,
+        "category": "SC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 156,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 157,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 158,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 159,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 160,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 161,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 162,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 163,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 164,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 165,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 166,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 167,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 168,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 169,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 170,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 171,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 172,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 173,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 174,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 175,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 176,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 177,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 178,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 179,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 180,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 181,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 182,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 183,
+        "category": "SC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 184,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 185,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 186,
+        "category": "SC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 187,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 188,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 189,
+        "category": "SC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 190,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 191,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 192,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 193,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 194,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 195,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 196,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 197,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 198,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 199,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 200,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 201,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 202,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 203,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 204,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 205,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 206,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 207,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 208,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 209,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 210,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 211,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 212,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 213,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 214,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 215,
+        "category": "SC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 216,
+        "category": "OBC",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 217,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 218,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 219,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 220,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 221,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 222,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 223,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 224,
+        "category": "GEN",
+        "women_reserved": true
+    },
+    {
+        "ward_no": 225,
+        "category": "GEN",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 226,
+        "category": "OBC",
+        "women_reserved": false
+    },
+    {
+        "ward_no": 227,
+        "category": "GEN",
+        "women_reserved": true
+    }
+]

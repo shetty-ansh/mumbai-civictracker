@@ -58,7 +58,7 @@ export default async function CandidatePage({
         .from('bmc_candidates')
         .select(`
             *,
-            case_info:bmc_candidate_case_info(education, active_cases, closed_cases),
+            case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases),
             reservation_category:reservation_categories(category_code, category_name_marathi, category_name_english, total_seats, women_reserved_seats)
         `)
         .eq('id', id)
@@ -124,18 +124,18 @@ export default async function CandidatePage({
                             )}
 
                             {/* View Affidavit Button */}
-                            <div className="mt-8 flex flex-wrap gap-3">
+                            <div className="mt-8 flex flex-row gap-2">
                                 <a
                                     href={wardAffidavits[candidate.ward_no.toString() as keyof typeof wardAffidavits] || "#"}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center bg-white text-stone-800 text-sm font-medium px-6 py-3 rounded-lg hover:bg-stone-100 transition-colors"
+                                    className="inline-flex items-center justify-center bg-white text-stone-800 text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-stone-100 transition-colors"
                                 >
                                     View Affidavit
                                 </a>
                                 <Link
                                     href={`/candidates/compare/${candidate.ward_no}`}
-                                    className="inline-flex items-center justify-center gap-2 bg-stone-700 text-white text-sm font-medium px-6 py-3 rounded-lg hover:bg-stone-600 transition-colors"
+                                    className="inline-flex items-center justify-center gap-2 bg-stone-700 text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-stone-600 transition-colors"
                                 >
                                     <Scale className="w-4 h-4" />
                                     Compare Ward

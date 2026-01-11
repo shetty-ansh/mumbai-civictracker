@@ -14,8 +14,8 @@ export function Navbar() {
                     <Image
                         src="/images/kaali-peeli.png"
                         alt="Kaali Peeli"
-                        width={32}
-                        height={32}
+                        width={42}
+                        height={36}
                         className="w-8 h-8"
                     />
                     <div>
@@ -26,27 +26,27 @@ export function Navbar() {
                 <nav className="flex items-center gap-8">
                     <Link
                         href="/map"
-                        className={`text-sm transition-colors ${pathname?.startsWith('/map')
-                            ? 'font-medium text-foreground'
-                            : 'text-muted-foreground hover:text-accent'
+                        className={`text-base transition-colors ${pathname?.startsWith('/map')
+                            ? 'font-semibold text-foreground'
+                            : 'font-medium text-muted-foreground hover:text-accent'
                             }`}
                     >
                         Map
                     </Link>
                     <Link
                         href="/candidates"
-                        className={`text-sm transition-colors ${pathname === '/candidates'
-                            ? 'font-medium text-foreground'
-                            : 'text-muted-foreground hover:text-accent'
+                        className={`text-base transition-colors ${pathname === '/candidates'
+                            ? 'font-semibold text-foreground'
+                            : 'font-medium text-muted-foreground hover:text-accent'
                             }`}
                     >
                         Candidates
                     </Link>
                     <Link
                         href="/news"
-                        className={`text-sm transition-colors ${pathname === '/news'
-                            ? 'font-medium text-foreground'
-                            : 'text-muted-foreground hover:text-accent'
+                        className={`text-base transition-colors ${pathname === '/news'
+                            ? 'font-semibold text-foreground'
+                            : 'font-medium text-muted-foreground hover:text-accent'
                             }`}
                     >
                         News
