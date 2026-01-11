@@ -10,7 +10,7 @@ export function Navbar() {
     return (
         <header className="border-b border-border px-6 py-4 bg-background/80 backdrop-blur-md">
             <div className="max-w-6xl mx-auto flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-3">
+                <Link href="/home" className="flex items-center gap-3">
                     <Image
                         src="/images/kaali-peeli.png"
                         alt="Kaali Peeli"
@@ -36,20 +36,20 @@ export function Navbar() {
                     <Link
                         href="/candidates"
                         className={`text-sm transition-colors ${pathname === '/candidates'
-                                ? 'font-medium text-foreground'
-                                : 'text-muted-foreground hover:text-accent'
+                            ? 'font-medium text-foreground'
+                            : 'text-muted-foreground hover:text-accent'
                             }`}
                     >
                         Candidates
                     </Link>
                     <Link
-                        href="/home"
-                        className={`text-sm transition-colors ${pathname === '/home'
+                        href="/news"
+                        className={`text-sm transition-colors ${pathname === '/news'
                             ? 'font-medium text-foreground'
                             : 'text-muted-foreground hover:text-accent'
                             }`}
                     >
-                        Home
+                        News
                     </Link>
                 </nav>
             </div>

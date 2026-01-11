@@ -9,7 +9,7 @@ import wardAffidavits from "@/data/ward-affidavits.json";
 import { CandidatePageToast } from "./candidate-toast";
 
 // Party logo mapping
-function getPartyLogo(partyName: string): string {
+function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
     switch (partyName) {
         case 'Indian National Congress':
             return '/images/party-symbols/congress-logo.jpg';
@@ -30,7 +30,9 @@ function getPartyLogo(partyName: string): string {
         case 'Maharashtra Navnirman Sena':
             return '/images/party-symbols/mns-logo.jpg';
         default:
-            return '/images/party-symbols/generic.jpg';
+            return isWomenReserved
+                ? '/images/party-symbols/generic-female.png'
+                : '/images/party-symbols/generic.jpg';
     }
 }
 
@@ -105,7 +107,7 @@ export default async function CandidatePage({
                     <div className="lg:col-span-2 bg-stone-800 text-white rounded-xl p-8 flex flex-col min-h-[400px]">
                         <div className="flex-1 flex flex-col items-center justify-center text-center py-6">
                             <Image
-                                src={getPartyLogo(candidate.party_name)}
+                                src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
                                 alt={candidate.party_name}
                                 width={120}
                                 height={120}
@@ -145,7 +147,7 @@ export default async function CandidatePage({
                     {/* Right Column */}
                     <div className="lg:col-span-3 flex flex-col gap-4">
 
-                        {/* Top Row - Education & Criminal Cases */}
+                        {/* Top Row - Education & Legal History */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-h-[200px]">
                             {/* Education Card */}
                             {/* Education Card */}
@@ -177,14 +179,14 @@ export default async function CandidatePage({
                                         {/* Content - 70% */}
                                         <div className="basis-[70%] flex items-center justify-center p-4">
                                             <p className={`text-xl font-semibold uppercase text-center ${isLowEducation ? 'text-red-600' : 'text-stone-800'}`}>
-                                                {education}
+                                                {education.toUpperCase()}
                                             </p>
                                         </div>
                                     </div>
                                 );
                             })()}
 
-                            {/* Criminal Cases Card */}
+                            {/* Legal History Card */}
                             {(() => {
                                 const hasCases = caseInfo && (caseInfo.active_cases > 0 || caseInfo.closed_cases > 0);
                                 return (

@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useId, useState, useCallback } from "react";
+import { useEffect, useId, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { MapPin } from "lucide-react";
 import {
     Map,
     MapControls,
@@ -12,6 +13,7 @@ import {
 } from "@/components/ui/map";
 import type MapLibreGL from "maplibre-gl";
 import { Navbar } from "@/components/ui/navbar";
+import { supabase } from "@/lib/supabase";
 
 // Mumbai center coordinates
 const MUMBAI_CENTER: [number, number] = [72.8777, 19.076];
@@ -197,8 +199,30 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
     const [hoveredWard, setHoveredWard] = useState<{
         prabhag: number;
         population: number;
-        reservation: string;
+        isWomenReserved: boolean | null;
+        loading: boolean;
     } | null>(null);
+
+    // Cache for reservation data
+    const reservationCache = useRef<Record<number, boolean>>({});
+
+    // Fetch reservation from Supabase
+    const fetchReservation = async (wardNo: number) => {
+        if (reservationCache.current[wardNo] !== undefined) {
+            return reservationCache.current[wardNo];
+        }
+
+        const { data } = await supabase
+            .from('bmc_candidates')
+            .select('is_women_reserved')
+            .eq('ward_no', wardNo)
+            .limit(1)
+            .single();
+
+        const isWomenReserved = data?.is_women_reserved ?? false;
+        reservationCache.current[wardNo] = isWomenReserved;
+        return isWomenReserved;
+    };
 
     useEffect(() => {
         if (!isLoaded || !map) return;
@@ -263,7 +287,7 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
 
         let hoveredFeatureId: string | number | undefined = undefined;
 
-        const handleMouseMove = (
+        const handleMouseMove = async (
             e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }
         ) => {
             if (e.features && e.features.length > 0) {
@@ -281,11 +305,22 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
                     );
                 }
                 const props = e.features[0].properties;
+                const wardNo = props?.prabhag || 0;
+
+                // Set initial state with loading
                 setHoveredWard({
-                    prabhag: props?.prabhag || 0,
+                    prabhag: wardNo,
                     population: props?.tot_pop || 0,
-                    reservation: props?.reservation || "unknown",
+                    isWomenReserved: reservationCache.current[wardNo] ?? null,
+                    loading: reservationCache.current[wardNo] === undefined,
                 });
+
+                // Fetch reservation if not cached
+                if (reservationCache.current[wardNo] === undefined) {
+                    const isWomenReserved = await fetchReservation(wardNo);
+                    setHoveredWard(prev => prev ? { ...prev, isWomenReserved, loading: false } : null);
+                }
+
                 map.getCanvas().style.cursor = "pointer";
             }
         };
@@ -311,7 +346,6 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
                     id: e.features[0].id,
                     prabhag: props?.prabhag,
                     population: props?.tot_pop,
-                    reservation: props?.reservation,
                 });
                 onWardClick(`ward-${props?.prabhag}`, e.features[0].id ?? "unknown");
             }
@@ -345,24 +379,125 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
 
     if (hoveredWard) {
         return (
-            <div className="absolute top-20 left-4 z-10 bg-card border border-white/20 px-4 py-3 backdrop-blur-sm min-w-[180px]">
-                <p className="text-xs text-white/60 font-light">Electoral Ward</p>
-                <p className="text-3xl font-bold text-accent">#{hoveredWard.prabhag}</p>
-                <div className="mt-3 space-y-2 text-sm">
+            <div className="absolute top-24 left-6 z-10 bg-white border border-stone-200 rounded-xl px-5 py-4 shadow-lg min-w-[200px]">
+                <p className="text-xs text-stone-500 uppercase tracking-wider font-medium">Electoral Ward</p>
+                <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">#{hoveredWard.prabhag}</p>
+                <div className="mt-4 space-y-2 text-sm">
                     <div className="flex justify-between gap-4">
-                        <span className="text-white/60 font-light">Population</span>
-                        <span className="font-medium">{hoveredWard.population.toLocaleString()}</span>
+                        <span className="text-stone-500">Population</span>
+                        <span className="font-semibold text-stone-900">{hoveredWard.population.toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between gap-4">
-                        <span className="text-white/60 font-light">Reservation</span>
-                        <span className="capitalize font-medium">{hoveredWard.reservation}</span>
+                        <span className="text-stone-500">Reservation</span>
+                        {hoveredWard.loading ? (
+                            <span className="text-stone-400">Loading...</span>
+                        ) : (
+                            <span className={`font-semibold ${hoveredWard.isWomenReserved ? 'text-pink-600' : 'text-stone-900'}`}>
+                                {hoveredWard.isWomenReserved ? 'Women' : 'General'}
+                            </span>
+                        )}
                     </div>
                 </div>
-                <p className="text-xs text-white/40 mt-2 font-light">Click for details</p>
+                <p className="text-xs text-stone-400 mt-3">Click for details</p>
             </div>
         );
     }
     return null;
+}
+
+// My Ward Button - Black button with Pin icon
+function MyWardButton({
+    setDataset,
+    onWardFound
+}: {
+    setDataset: (type: DatasetType) => void;
+    onWardFound: (feature: any) => void;
+}) {
+    const { map, isLoaded } = useMap();
+    const [finding, setFinding] = useState(false);
+
+    const handleFindWard = () => {
+        if (!isLoaded || !map) return;
+        setFinding(true);
+        setDataset("electoral");
+
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { longitude, latitude } = pos.coords;
+
+                    // Fly to location
+                    map.flyTo({
+                        center: [longitude, latitude],
+                        zoom: 14,
+                        duration: 2000,
+                    });
+
+                    // Wait for move to end and tiles to load
+                    map.once("moveend", () => {
+                        // Check immediately
+                        const point = map.project([longitude, latitude]);
+                        // Attempt to query all layers at the point
+                        const features = map.queryRenderedFeatures(point);
+                        const wardFeature = features.find(f =>
+                            f.source.includes("electoral-wards-source") &&
+                            f.layer.type === 'fill'
+                        );
+
+                        if (wardFeature) {
+                            onWardFound(wardFeature);
+                            setFinding(false);
+                        } else {
+                            // Retry once after a short delay in case of tile loading
+                            setTimeout(() => {
+                                const features = map.queryRenderedFeatures(point);
+                                const wardFeature = features.find(f =>
+                                    f.source.includes("electoral-wards-source") &&
+                                    f.layer.type === 'fill'
+                                );
+                                if (wardFeature) {
+                                    onWardFound(wardFeature);
+                                } else {
+                                    console.warn("No electoral ward found at this location");
+                                }
+                                setFinding(false);
+                            }, 1000);
+                        }
+                    });
+                },
+                (error) => {
+                    console.error("Geolocation error:", error);
+                    setFinding(false);
+                    alert("Could not access your location. Please check your permissions.");
+                }
+            );
+        } else {
+            alert("Geolocation is not supported by your browser");
+            setFinding(false);
+        }
+    };
+
+    return (
+        <div className="absolute top-24 left-[280px] z-20">
+            <button
+                onClick={handleFindWard}
+                disabled={finding}
+                className="bg-black text-white px-4 py-2.5 text-sm font-medium rounded-full shadow-lg hover:bg-stone-800 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-wait"
+            >
+                {finding ? (
+                    <>
+                        <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        Finding...
+                    </>
+                ) : (
+                    <>
+                        <MapPin className="w-4 h-4" />
+                        My Ward
+                    </>
+                )}
+            </button>
+        </div>
+    );
 }
 
 export default function MapPage() {
@@ -378,6 +513,20 @@ export default function MapPage() {
         [router]
     );
 
+    // Callback for when My Ward finds a feature
+    const handleWardFound = useCallback((feature: any) => {
+        const props = feature.properties;
+        // Simulate click logs
+        console.log("My Ward found:", {
+            id: feature.id,
+            prabhag: props?.prabhag,
+        });
+
+        // We use the same click handler logic
+        // The ID in geojson is usually the feature id
+        handleWardClick(`ward-${props?.prabhag}`, feature.id ?? "unknown");
+    }, [handleWardClick]);
+
     const handleLocate = useCallback((coords: { longitude: number; latitude: number }) => {
         setUserLocation({ lng: coords.longitude, lat: coords.latitude });
     }, []);
@@ -386,8 +535,8 @@ export default function MapPage() {
         <div className="h-screen w-screen bg-background overflow-hidden">
             <Navbar />
 
-            {/* Dataset Toggle */}
-            <div className="absolute top-24 left-6 z-20">
+            {/* Dataset Toggle + My Ward Button */}
+            <div className="absolute top-24 left-6 z-20 flex items-center gap-3">
                 <div className="bg-card/90 border border-border p-1.5 flex gap-1 backdrop-blur-sm rounded-full">
                     {/* <button
                         onClick={() => setDataset("admin")}
@@ -429,6 +578,9 @@ export default function MapPage() {
                     maxZoom={18}
                     key={dataset}
                 >
+                    {/* My Ward Button - inside Map for useMap context */}
+                    <MyWardButton setDataset={setDataset} onWardFound={handleWardFound} />
+
                     {dataset === "admin" && <AdminWardsLayer onWardClick={handleWardClick} />}
                     {dataset === "electoral" && <ElectoralWardsLayer onWardClick={handleWardClick} />}
                     {/* Plain mode shows no layers - just base map */}
@@ -485,7 +637,7 @@ export default function MapPage() {
             {dataset !== "plain" && (
                 <div className="absolute bottom-6 right-6 z-20">
                     <div className="bg-card/90 border border-white/20 px-4 py-2 backdrop-blur-sm">
-                        <p className="text-xs text-white/60 font-light">
+                        <p className="text-xs text-black font-light">
                             Hover for info • Click for details
                         </p>
                     </div>
