@@ -115,10 +115,25 @@ export default function SourcesPage() {
                             <h2 className="text-xl font-semibold text-stone-900">Map & Spatial Data</h2>
                         </div>
                         <div className="space-y-4">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-emerald-50 border border-emerald-200 hover:border-emerald-300 transition-colors">
+                                <div>
+                                    <h3 className="font-medium text-stone-900">2025 Ward Boundaries</h3>
+                                    <p className="text-sm text-stone-500 mt-1">Ward outline data by <strong>Abhijit Ekbote</strong> from City Resource. Used with permission.</p>
+                                </div>
+                                <a
+                                    href="https://cityresource.in/councillorwards2025/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 text-sm font-medium text-emerald-600 hover:text-emerald-700 whitespace-nowrap"
+                                >
+                                    Visit Source <ExternalLink className="w-4 h-4" />
+                                </a>
+                            </div>
+
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-lg bg-stone-50 border border-stone-100 hover:border-stone-200 transition-colors">
                                 <div>
                                     <h3 className="font-medium text-stone-900">Open City Ward Maps</h3>
-                                    <p className="text-sm text-stone-500 mt-1">Geospatial data for Mumbai electoral ward boundaries. We use the **2022 ward outlines** for all mapping visualizations.</p>
+                                    <p className="text-sm text-stone-500 mt-1">Additional geospatial data for Mumbai electoral ward boundaries.</p>
                                 </div>
                                 <a
                                     href="https://data.opencity.in/dataset/mumbai-wards-map/resource/0318c3e8-1530-4bf4-b29b-7281573dee8a"

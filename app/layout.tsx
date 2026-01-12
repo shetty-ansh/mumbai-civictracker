@@ -4,7 +4,6 @@ import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { FeedbackButton } from "@/components/feedback-button";
-
 import { GoogleAnalytics } from "@/components/google-analytics";
 
 const geistSans = Geist({
