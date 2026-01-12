@@ -6,6 +6,8 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { FeedbackButton } from "@/components/feedback-button";
 
+import { GoogleAnalytics } from "@/components/google-analytics";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -42,6 +44,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""} />
+        <Providers>
+          {children}
+          <FeedbackButton />
+        </Providers>
         <Providers>{children}</Providers>
         <Analytics />
         <SpeedInsights />
