@@ -21,7 +21,7 @@ import { showToast } from "@/lib/toast";
 const MUMBAI_CENTER: [number, number] = [72.8777, 19.076];
 const MUMBAI_ZOOM = 10.5;
 
-type DatasetType = "plain" | "admin" | "electoral";
+type DatasetType = "plain" | "electoral";
 
 // Helper to slugify ward name for URL
 function slugify(name: string): string {
@@ -392,6 +392,202 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
     return null;
 }
 
+// Electoral Wards 2025 Layer (New ward boundaries)
+function Electoral2025WardsLayer({ onWardClick }: { onWardClick: (name: string, id: string | number) => void }) {
+    const { map, isLoaded } = useMap();
+    const id = useId();
+    const sourceId = `electoral-2025-wards-source-${id}`;
+    const fillLayerId = `electoral-2025-wards-fill-${id}`;
+    const outlineLayerId = `electoral-2025-wards-outline-${id}`;
+    const labelLayerId = `electoral-2025-wards-labels-${id}`;
+    const [hoveredWard, setHoveredWard] = useState<{
+        wardNo: number;
+    } | null>(null);
+
+    // Build lookup from JSON
+    const reservationLookup = categoryReservationData.reduce((acc, item) => {
+        acc[item.ward_no] = { category: item.category, women_reserved: item.women_reserved };
+        return acc;
+    }, {} as Record<number, { category: string; women_reserved: boolean }>);
+
+    useEffect(() => {
+        if (!isLoaded || !map) return;
+
+        map.addSource(sourceId, {
+            type: "geojson",
+            data: "/2025-ward-data.geojson",
+        });
+
+        // Outline only - transparent fill with black outlines
+        map.addLayer({
+            id: fillLayerId,
+            type: "fill",
+            source: sourceId,
+            paint: {
+                "fill-color": "#000000",
+                "fill-opacity": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    0.15, // slight fill on hover for feedback
+                    0, // completely transparent normally
+                ],
+            },
+        });
+
+        map.addLayer({
+            id: outlineLayerId,
+            type: "line",
+            source: sourceId,
+            paint: {
+                "line-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    "#10B981", // green on hover
+                    "#333333", // darker gray normally for better visibility
+                ],
+                "line-width": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    3, // thicker on hover
+                    1.2, // thicker normally for visibility
+                ],
+            },
+        });
+
+        map.addLayer({
+            id: labelLayerId,
+            type: "symbol",
+            source: sourceId,
+            layout: {
+                "text-field": ["get", "note"],
+                "text-size": 12,
+                "text-anchor": "center",
+                "text-allow-overlap": false,
+                "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+            },
+            paint: {
+                "text-color": "#000000", // black text
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 2,
+            },
+        });
+
+        let hoveredFeatureId: string | number | undefined = undefined;
+
+        const handleMouseMove = async (
+            e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }
+        ) => {
+            if (e.features && e.features.length > 0) {
+                if (hoveredFeatureId !== undefined) {
+                    map.setFeatureState(
+                        { source: sourceId, id: hoveredFeatureId },
+                        { hover: false }
+                    );
+                }
+                hoveredFeatureId = e.features[0].id;
+                if (hoveredFeatureId !== undefined) {
+                    map.setFeatureState(
+                        { source: sourceId, id: hoveredFeatureId },
+                        { hover: true }
+                    );
+                }
+                const props = e.features[0].properties;
+                const wardNo = parseInt(props?.note) || 0;
+
+                setHoveredWard({
+                    wardNo: wardNo,
+                });
+
+                map.getCanvas().style.cursor = "pointer";
+            }
+        };
+
+        const handleMouseLeave = () => {
+            if (hoveredFeatureId !== undefined) {
+                map.setFeatureState(
+                    { source: sourceId, id: hoveredFeatureId },
+                    { hover: false }
+                );
+            }
+            hoveredFeatureId = undefined;
+            setHoveredWard(null);
+            map.getCanvas().style.cursor = "";
+        };
+
+        const handleClick = (
+            e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }
+        ) => {
+            if (e.features && e.features.length > 0) {
+                const props = e.features[0].properties;
+                const wardNo = parseInt(props?.note) || 0;
+                console.log("2025 Electoral Ward clicked:", {
+                    id: e.features[0].id,
+                    wardNo: wardNo,
+                });
+                onWardClick(`ward-${wardNo}`, e.features[0].id ?? "unknown");
+            }
+        };
+
+        map.on("mousemove", fillLayerId, handleMouseMove);
+        map.on("mouseleave", fillLayerId, handleMouseLeave);
+        map.on("click", fillLayerId, handleClick);
+        // Also listen to outline layer for better hover detection
+        map.on("mousemove", outlineLayerId, handleMouseMove);
+        map.on("mouseleave", outlineLayerId, handleMouseLeave);
+        map.on("click", outlineLayerId, handleClick);
+
+        return () => {
+            map.off("mousemove", fillLayerId, handleMouseMove);
+            map.off("mouseleave", fillLayerId, handleMouseLeave);
+            map.off("click", fillLayerId, handleClick);
+            map.off("mousemove", outlineLayerId, handleMouseMove);
+            map.off("mouseleave", outlineLayerId, handleMouseLeave);
+            map.off("click", outlineLayerId, handleClick);
+            try {
+                if (map.getLayer(labelLayerId)) map.removeLayer(labelLayerId);
+                if (map.getLayer(outlineLayerId)) map.removeLayer(outlineLayerId);
+                if (map.getLayer(fillLayerId)) map.removeLayer(fillLayerId);
+                if (map.getSource(sourceId)) map.removeSource(sourceId);
+            } catch {
+                // ignore
+            }
+        };
+    }, [isLoaded, map, sourceId, fillLayerId, outlineLayerId, labelLayerId, onWardClick]);
+
+    if (hoveredWard) {
+        const reservation = reservationLookup[hoveredWard.wardNo] || { category: 'GEN', women_reserved: false };
+        return (
+            <div className="absolute top-24 left-6 z-10 bg-white border border-emerald-200 rounded-xl px-5 py-4 shadow-lg min-w-[200px]">
+                <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">2025</span>
+                    <p className="text-xs text-stone-500 uppercase tracking-wider font-medium">Electoral Ward</p>
+                </div>
+                <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">#{hoveredWard.wardNo}</p>
+                <div className="mt-4 space-y-2 text-sm">
+                    <div className="flex justify-between gap-4">
+                        <span className="text-stone-500">Category</span>
+                        <span className={`font-semibold ${reservation.category === 'SC' ? 'text-blue-600' :
+                            reservation.category === 'ST' ? 'text-green-600' :
+                                reservation.category === 'OBC' ? 'text-amber-600' :
+                                    'text-stone-900'
+                            }`}>
+                            {reservation.category}
+                        </span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                        <span className="text-stone-500">Reservation</span>
+                        <span className={`font-semibold ${reservation.women_reserved ? 'text-pink-600' : 'text-stone-900'}`}>
+                            {reservation.women_reserved ? 'Women' : 'General'}
+                        </span>
+                    </div>
+                </div>
+                <p className="text-xs text-stone-400 mt-3">Click for details</p>
+            </div>
+        );
+    }
+    return null;
+}
+
 // My Ward Button - Black button with Pin icon
 function MyWardButton({
     setDataset,
@@ -427,7 +623,7 @@ function MyWardButton({
                         // Attempt to query all layers at the point
                         const features = map.queryRenderedFeatures(point);
                         const wardFeature = features.find(f =>
-                            f.source.includes("electoral-wards-source") &&
+                            (f.source.includes("electoral-wards-source") || f.source.includes("electoral-2025-wards-source")) &&
                             f.layer.type === 'fill'
                         );
 
@@ -439,7 +635,7 @@ function MyWardButton({
                             setTimeout(() => {
                                 const features = map.queryRenderedFeatures(point);
                                 const wardFeature = features.find(f =>
-                                    f.source.includes("electoral-wards-source") &&
+                                    (f.source.includes("electoral-wards-source") || f.source.includes("electoral-2025-wards-source")) &&
                                     f.layer.type === 'fill'
                                 );
                                 if (wardFeature) {
@@ -501,15 +697,16 @@ export default function MapPage() {
     // Callback for when My Ward finds a feature
     const handleWardFound = useCallback((feature: any) => {
         const props = feature.properties;
-        // Simulate click logs
+        // Support both 2022 (prabhag) and 2025 (note) property formats
+        const wardNo = props?.prabhag || props?.note;
         console.log("My Ward found:", {
             id: feature.id,
-            prabhag: props?.prabhag,
+            wardNo: wardNo,
         });
 
         // We use the same click handler logic
         // The ID in geojson is usually the feature id
-        handleWardClick(`ward-${props?.prabhag}`, feature.id ?? "unknown");
+        handleWardClick(`ward-${wardNo}`, feature.id ?? "unknown");
     }, [handleWardClick]);
 
     const handleLocate = useCallback((coords: { longitude: number; latitude: number }) => {
@@ -556,8 +753,7 @@ export default function MapPage() {
                         <MyWardButton setDataset={setDataset} onWardFound={handleWardFound} />
                     </div>
 
-                    {dataset === "admin" && <AdminWardsLayer onWardClick={handleWardClick} />}
-                    {dataset === "electoral" && <ElectoralWardsLayer onWardClick={handleWardClick} />}
+                    {dataset === "electoral" && <Electoral2025WardsLayer onWardClick={handleWardClick} />}
                     {/* Plain mode shows no layers - just base map */}
 
                     {/* User location marker */}
@@ -619,49 +815,7 @@ export default function MapPage() {
                 </div>
             )}
 
-            {/* Disclaimer Overlay */}
-            {showWarning && (
-                <div className="absolute bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-20 w-[95%] max-w-lg pointer-events-auto">
-                    <div className="relative bg-white/95 border border-amber-200 shadow-xl rounded-xl p-3 sm:p-4 backdrop-blur-md flex flex-col sm:flex-row gap-2 sm:gap-3 items-start sm:items-center text-left pr-8 sm:pr-4">
-                        <button
-                            onClick={() => setShowWarning(false)}
-                            className="absolute top-2 right-2 p-1 hover:bg-stone-100 rounded-full text-stone-400 hover:text-stone-600 transition-colors"
-                        >
-                            <X className="w-3.5 h-3.5" />
-                            <span className="sr-only">Close warning</span>
-                        </button>
-                        <div className="p-2 bg-amber-50 rounded-full flex-shrink-0 hidden sm:block">
-                            <AlertTriangle className="w-5 h-5 text-amber-600" />
-                        </div>
-                        <div className="flex-1">
-                            <div className="flex items-center gap-1.5 mb-0.5">
-                                <AlertTriangle className="w-3.5 h-3.5 text-amber-600 sm:hidden" />
-                                <p className="text-[10px] sm:text-xs font-bold text-amber-900 uppercase tracking-wide">
-                                    Data Outdated Warning
-                                </p>
-                            </div>
-                            <p className="text-[11px] sm:text-xs text-stone-600 leading-relaxed">
-                                The BMC has revised ward outlines for 2025. This map uses <strong>2022 boundaries</strong> which may not accurately reflect current jurisdictions. <span className="font-medium text-amber-700">We are actively updating to new outlines.</span>
-                            </p>
-                            <div className="flex flex-wrap items-center gap-1 mt-1.5 text-[11px] sm:text-xs text-stone-600">
-                                <span>First</span>
-                                <a
-                                    href="https://cityresource.in/councillorwards2025/"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="font-semibold text-amber-700 hover:underline flex items-center gap-0.5"
-                                >
-                                    check your new ward here <ExternalLink className="w-3 h-3" />
-                                </a>
-                                <span>then</span>
-                                <Link href="/candidates" className="font-semibold text-amber-700 hover:underline">
-                                    go to candidates
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 }

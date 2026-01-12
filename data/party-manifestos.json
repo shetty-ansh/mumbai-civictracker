@@ -20,6 +20,7 @@
         "partyName": "Bharatiya Janata Party, Shiv Sena, Nationalist Congress Party & Republican Party of India (Athawale)",
         "shortName": "Mahayuti (BJP, SS, NCP, RPI-A)",
         "manifestoStatus": "released",
+        "manifestoUrl": "https://drive.google.com/file/d/16UeIBWKki2QrqrQCZtsiWbGv7y3vhVXJ/view?usp=drivesdk",
         "summary": "Mahayuti (BJP, Shiv Sena, NCP & RPI-A) released their BMC election manifesto focusing on transforming Mumbai into a modern global city. Key highlights include interest-free loans up to ₹5 lakh for women under 'Ladki Bahin' scheme, slum-free Mumbai through rehabilitation and 30-35 lakh affordable homes, 50% BEST bus fare concession for women, tech-driven governance with AI, and Marathi pride with infrastructure development.",
         "keyPromises": [
             "Interest-free loans up to ₹5 lakh for women (Ladki Bahin)",
@@ -39,17 +40,103 @@
         "partyName": "Shiv Sena (Uddhav Balasaheb Thackeray) & Maharashtra Navnirman Sena",
         "shortName": "ShivSena(UBT) & MNS",
         "manifestoStatus": "released",
-        "summary": "ShivSena and MNS unveiled a joint BMC manifesto promising 100 units of free electricity per household, monthly financial support for women (including domestic workers and Koli community women), property tax relief for small homes, cheaper public transport, and a stronger focus on healthcare, education, and basic civic infrastructure to improve everyday life in Mumbai.",
+        "summary": "The alliance pledges 1 lakh affordable homes and ensures no municipal land goes to private developers. A major focus is on women's welfare with ₹1,500/month for domestic workers and 'Masaheb Kitchens' serving ₹10 meals. The manifesto promises free electricity (100 units), property tax waivers for homes up to 700 sq ft, and extensive education reforms including multi-board schools and digital learning. Infrastructure plans include 100% sewer coverage, new electric buses with affordable fares, and restoring Mumbai's status as a global financial hub.",
         "keyPromises": [
-            "100 units of free electricity per household",
-            "Monthly financial support for women",
-            "Support for domestic workers",
-            "Support for Koli community women",
-            "Property tax relief for small homes",
-            "Cheaper public transport",
-            "Focus on healthcare",
-            "Focus on education",
-            "Improved civic infrastructure"
+            "1 lakh affordable homes; No municipal land to private builders",
+            "₹1,500/month for registered women domestic workers",
+            "'Masaheb Kitchens' - meals at ₹10",
+            "Property tax waiver up to 700 sq ft",
+            "Free electricity up to 100 units",
+            "Multi-board school system (SSC, ICSE, CBSE, IB)",
+            "Hon. Shri Balasaheb Thackeray Self-Employment Scheme",
+            "₹5-10-15-20 BEST fare structure & 10,900 e-buses",
+            "Municipal cancer hospital & 24x7 Health-to-Home services",
+            "Pet parks, clinics, and ambulances",
+            "Close Kanjurmarg landfill in 10 years",
+            "Global financial & entrepreneurship hub status"
+        ],
+        "detailedSections": [
+            {
+                "title": "Housing",
+                "points": [
+                    "1 lakh affordable homes in 5 years",
+                    "No municipal land handed to private developers",
+                    "Government land earmarked for homes for govt, municipal, BEST, police staff and mill workers",
+                    "BMC to have its own housing authority"
+                ]
+            },
+            {
+                "title": "Mumbaikars' Self-Respect",
+                "points": [
+                    "Registration of domestic workers; ₹1,500/month allowance for registered women",
+                    "Registration & assistance for Koli fisherwomen vendors",
+                    "\"Masaheb Kitchens\" – meals at ₹10",
+                    "Women’s toilets every 2 km with vending machines & baby-care facilities",
+                    "Crèches (Childcare) in wards for children of working parents"
+                ]
+            },
+            {
+                "title": "Youth & Employment",
+                "points": [
+                    "Hon. Shri Balasaheb Thackeray Self-Employment Scheme: ₹25,000–₹1 lakh assistance for 1 lakh youth",
+                    "Interest-free e-bike loans for 25,000 gig workers & dabbawalas",
+                    "Fill essential BMC vacancies",
+                    "On-site apprenticeships for engineering students",
+                    "Hostels for Marathi youth",
+                    "C.D. Deshmukh Training Centres in every ward"
+                ]
+            },
+            {
+                "title": "Health",
+                "points": [
+                    "Rapid Bike Medical Assistance: Bike ambulances for narrow lanes & traffic, Golden-hour emergency care",
+                    "Expand municipal hospitals & OPD capacity",
+                    "Robotic surgery & advanced diagnostics",
+                    "Prevent privatisation; Free generic medicines",
+                    "24×7 Health-to-Home services",
+                    "Municipal cancer hospital"
+                ]
+            },
+            {
+                "title": "Tax Exemptions & Concessions",
+                "points": [
+                    "Property tax waiver up to 700 sq ft",
+                    "₹1 lakh subsidy for sustainable housing societies",
+                    "Bonus FSI for eco-friendly redevelopment",
+                    "Abolish garbage collection tax"
+                ]
+            },
+            {
+                "title": "Education Facilities",
+                "points": [
+                    "Municipal schools not handed to builders",
+                    "Junior colleges till Class 12 in BMC schools",
+                    "Multi-board system (SSC, ICSE, CBSE, IB)",
+                    "Education in 8 languages",
+                    "Tablets from Class 8",
+                    "VR, AR & AI-based learning",
+                    "Nutrition & fitness focus",
+                    "\"Bolto Marathi\" digital initiative; Modernised libraries"
+                ]
+            },
+            {
+                "title": "Infrastructure",
+                "points": [
+                    "Free electricity up to 100 units",
+                    "Expand BEST in east & west suburbs",
+                    "Roads: 15-year contractor guarantee, All roads under BMC, No work without permissions",
+                    "Water: Desalination projects, Reuse treated water, Stable water rates for all",
+                    "100% sewer coverage; Close Kanjurmarg landfill in 10 years"
+                ]
+            },
+            {
+                "title": "Governance & Future",
+                "points": [
+                    "One City, One Authority: Full city planning power to BMC",
+                    "Global financial & entrepreneurship hub; Olympic-level sports city",
+                    "Digital Twin Mumbai: 80+ civic services via chatbot"
+                ]
+            }
         ]
     }
 ]

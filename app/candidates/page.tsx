@@ -257,12 +257,20 @@ export default function CandidatesPage() {
                             <p className="text-sm text-stone-600">See all candidates in your area and compare them</p>
                         </div>
                     </div>
-                    <Link
-                        href="/map"
-                        className="w-full sm:w-auto bg-stone-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-stone-800 transition-colors text-center"
-                    >
-                        Explore Map
-                    </Link>
+                    <div className="flex gap-3 w-full sm:w-auto">
+                        <Link
+                            href="/manifestos"
+                            className="flex-1 sm:flex-none bg-white text-stone-900 border border-stone-300 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-stone-50 transition-colors text-center"
+                        >
+                            View Manifestos
+                        </Link>
+                        <Link
+                            href="/map"
+                            className="flex-1 sm:flex-none bg-stone-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-stone-800 transition-colors text-center"
+                        >
+                            Explore Map
+                        </Link>
+                    </div>
                 </div>
 
                 {/* Filters */}
