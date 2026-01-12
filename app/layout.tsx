@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+
 import "./globals.css";
 import { Providers } from "./providers";
 import { FeedbackButton } from "@/components/feedback-button";
