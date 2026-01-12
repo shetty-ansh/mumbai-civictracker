@@ -4,6 +4,7 @@ import { Navbar } from "@/components/ui/navbar";
 import { ExternalLink, Database, FileText, Scale, AlertTriangle, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { SupportPopup } from "@/components/support-popup";
 
 export default function SourcesPage() {
     const [isMessageOpen, setIsMessageOpen] = useState(false);
@@ -161,6 +162,7 @@ export default function SourcesPage() {
                     © {new Date().getFullYear()} Mumbai Civic Tracker. Open source for civic transparency.
                 </p>
             </footer>
+            <SupportPopup />
         </div>
     );
 }

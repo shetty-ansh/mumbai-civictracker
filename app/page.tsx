@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Twitter, Linkedin, Globe, AlertTriangle, CheckCircle } from "lucide-react";
 import { Loader } from "@/components/ui/loader";
+import { SupportPopup } from "@/components/support-popup";
 
 export default function LandingPage() {
   const router = useRouter();
@@ -197,6 +198,7 @@ export default function LandingPage() {
           </div>
         </div>
       )}
+      <SupportPopup />
     </div>
   );
 }
