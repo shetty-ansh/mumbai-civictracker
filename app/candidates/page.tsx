@@ -32,6 +32,8 @@ function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
             return '/images/party-symbols/bjp-logo.jpg';
         case 'Shiv Sena':
             return '/images/party-symbols/shivsena-logo.jpg';
+        case 'Nationalist Congress Party - Sharad Pawar':
+            return '/images/party-symbols/ncpsp-logo.png';
         case 'Nationalist Congress Party':
             return '/images/party-symbols/ncp-logo.jpg';
         case 'Bahujan Samaj Party':

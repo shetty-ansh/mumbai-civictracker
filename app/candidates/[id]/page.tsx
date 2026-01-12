@@ -20,6 +20,8 @@ function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
             return '/images/party-symbols/bjp-logo.jpg';
         case 'Shiv Sena':
             return '/images/party-symbols/shivsena-logo.jpg';
+        case 'Nationalist Congress Party - Sharad Pawar':
+            return '/images/party-symbols/ncpsp-logo.png';
         case 'Nationalist Congress Party':
             return '/images/party-symbols/ncp-logo.jpg';
         case 'Bahujan Samaj Party':
@@ -37,15 +39,27 @@ function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
     }
 }
 
+// Party to manifesto alliance mapping
+const partyToManifestoMap: Record<string, string> = {
+    // Congress + VBA Alliance
+    'Indian National Congress': 'congress-vba',
+    'Vanchit Bahujan Aghadi': 'congress-vba',
+    // Mahayuti Alliance (BJP + Shiv Sena)
+    'Bharatiya Janata Party': 'mahayuti',
+    'Shiv Sena': 'mahayuti',
+    // SS(UBT) + MNS + NCP(SP) Alliance
+    'Shiv Sena (Uddhav Balasaheb Thackeray)': 'shivsena-ubt-mns-ncpsp',
+    'Maharashtra Navnirman Sena': 'shivsena-ubt-mns-ncpsp',
+    'Nationalist Congress Party - Sharad Pawar': 'shivsena-ubt-mns-ncpsp',
+};
+
 // Get manifesto for a party
 function getPartyManifesto(partyName: string) {
-    // Try to find exact match first
-    const manifesto = manifestoData.find(m =>
-        m.partyName === partyName ||
-        m.partyName.includes(partyName) ||
-        partyName.includes(m.shortName.split(' ')[0])
-    );
-    return manifesto;
+    const manifestoId = partyToManifestoMap[partyName];
+    if (manifestoId) {
+        return manifestoData.find(m => m.id === manifestoId);
+    }
+    return null;
 }
 
 export default async function CandidatePage({

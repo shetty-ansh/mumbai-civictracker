@@ -3,9 +3,10 @@ import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { Users, AlertTriangle, GraduationCap, FileText, CheckCircle, XCircle } from "lucide-react";
+import { Users, AlertTriangle, GraduationCap, FileText } from "lucide-react";
 import manifestoData from "@/data/party-manifestos.json";
 import { ComparePageToast } from "./compare-toast";
+import { ManifestoCell } from "./manifesto-cell";
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
@@ -18,6 +19,8 @@ function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
             return '/images/party-symbols/bjp-logo.jpg';
         case 'Shiv Sena':
             return '/images/party-symbols/shivsena-logo.jpg';
+        case 'Nationalist Congress Party - Sharad Pawar':
+            return '/images/party-symbols/ncpsp-logo.png';
         case 'Nationalist Congress Party':
             return '/images/party-symbols/ncp-logo.jpg';
         case 'Bahujan Samaj Party':
@@ -35,14 +38,27 @@ function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
     }
 }
 
+// Party to manifesto alliance mapping
+const partyToManifestoMap: Record<string, string> = {
+    // Congress + VBA Alliance
+    'Indian National Congress': 'congress-vba',
+    'Vanchit Bahujan Aghadi': 'congress-vba',
+    // Mahayuti Alliance (BJP + Shiv Sena)
+    'Bharatiya Janata Party': 'mahayuti',
+    'Shiv Sena': 'mahayuti',
+    // SS(UBT) + MNS + NCP(SP) Alliance
+    'Shiv Sena (Uddhav Balasaheb Thackeray)': 'shivsena-ubt-mns-ncpsp',
+    'Maharashtra Navnirman Sena': 'shivsena-ubt-mns-ncpsp',
+    'Nationalist Congress Party - Sharad Pawar': 'shivsena-ubt-mns-ncpsp',
+};
+
 // Get manifesto for a party
 function getPartyManifesto(partyName: string) {
-    const manifesto = manifestoData.find(m =>
-        m.partyName === partyName ||
-        m.partyName.includes(partyName) ||
-        partyName.includes(m.shortName.split(' ')[0])
-    );
-    return manifesto;
+    const manifestoId = partyToManifestoMap[partyName];
+    if (manifestoId) {
+        return manifestoData.find(m => m.id === manifestoId);
+    }
+    return null;
 }
 
 // Convert party name to initials (multi-word) or keep as-is (single word)
@@ -199,7 +215,6 @@ export default async function CompareWardPage({
                                     const isLowEducation = !isNaN(eduNum) && eduNum <= 10;
 
                                     const hasCases = caseInfo && (caseInfo.active_cases > 0 || caseInfo.closed_cases > 0);
-                                    const hasManifesto = manifesto?.manifestoStatus === 'released';
 
                                     return (
                                         <tr
@@ -263,32 +278,7 @@ export default async function CompareWardPage({
 
                                             {/* Manifesto */}
                                             <td className="p-4">
-                                                {hasManifesto && manifesto?.keyPromises && manifesto.keyPromises.length > 0 ? (
-                                                    <div className="space-y-2">
-                                                        <div className="flex items-center gap-2 text-emerald-600 mb-2">
-                                                            <CheckCircle className="w-4 h-4" />
-                                                            <span className="text-xs font-medium">Key Promises</span>
-                                                        </div>
-                                                        <ul className="space-y-1 text-xs text-stone-700">
-                                                            {manifesto.keyPromises.slice(0, 3).map((promise, idx) => (
-                                                                <li key={idx} className="flex items-start gap-1.5">
-                                                                    <span className="text-amber-500 mt-0.5">•</span>
-                                                                    <span>{promise}</span>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                        {manifesto.keyPromises.length > 3 && (
-                                                            <p className="text-xs text-stone-400 mt-1">
-                                                                +{manifesto.keyPromises.length - 3} more promises
-                                                            </p>
-                                                        )}
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex items-center gap-2 text-stone-400">
-                                                        <XCircle className="w-4 h-4" />
-                                                        <span className="text-sm">Not Released</span>
-                                                    </div>
-                                                )}
+                                                <ManifestoCell manifesto={manifesto} />
                                             </td>
                                         </tr>
                                     );

@@ -1,8 +1,8 @@
 [
     {
-        "id": "congress",
-        "partyName": "Indian National Congress",
-        "shortName": "CONGRESS",
+        "id": "congress-vba",
+        "partyName": "Indian National Congress & Vanchit Bahujan Aghadi",
+        "shortName": "Congress + VBA",
         "manifestoStatus": "released",
         "summary": "Congress says it plans to tackle Mumbai's worsening air pollution with stronger controls and better urban planning, introduce universal health cards so residents can access free medicines and public healthcare without hassle, and reform the BMC to make it transparent and corruption-free, while significantly improving everyday civic services like roads, water supply, sanitation, and overall quality of life for Mumbaikars.",
         "keyPromises": [
@@ -17,11 +17,10 @@
     },
     {
         "id": "mahayuti",
-        "partyName": "Bharatiya Janata Party, Shiv Sena, Nationalist Congress Party & Republican Party of India (Athawale)",
-        "shortName": "Mahayuti (BJP, SS, NCP, RPI-A)",
+        "partyName": "Bharatiya Janata Party & Shiv Sena",
+        "shortName": "Mahayuti (BJP + Shiv Sena)",
         "manifestoStatus": "released",
-        "manifestoUrl": "https://drive.google.com/file/d/16UeIBWKki2QrqrQCZtsiWbGv7y3vhVXJ/view?usp=drivesdk",
-        "summary": "Mahayuti (BJP, Shiv Sena, NCP & RPI-A) released their BMC election manifesto focusing on transforming Mumbai into a modern global city. Key highlights include interest-free loans up to ₹5 lakh for women under 'Ladki Bahin' scheme, slum-free Mumbai through rehabilitation and 30-35 lakh affordable homes, 50% BEST bus fare concession for women, tech-driven governance with AI, and Marathi pride with infrastructure development.",
+        "summary": "Mahayuti (BJP & Shiv Sena) released their BMC election manifesto focusing on transforming Mumbai into a modern global city. Key highlights include interest-free loans up to ₹5 lakh for women under 'Ladki Bahin' scheme, slum-free Mumbai through rehabilitation and 30-35 lakh affordable homes, 50% BEST bus fare concession for women, tech-driven governance with AI, and Marathi pride with infrastructure development.",
         "keyPromises": [
             "Interest-free loans up to ₹5 lakh for women (Ladki Bahin)",
             "50% BEST bus fare concession for women",
@@ -36,10 +35,11 @@
         ]
     },
     {
-        "id": "shivsena-ubt-mns",
-        "partyName": "Shiv Sena (Uddhav Balasaheb Thackeray) & Maharashtra Navnirman Sena",
-        "shortName": "ShivSena(UBT) & MNS",
+        "id": "shivsena-ubt-mns-ncpsp",
+        "partyName": "Shiv Sena (Uddhav Balasaheb Thackeray), Maharashtra Navnirman Sena & NCP (Sharad Pawar)",
+        "shortName": "SS(UBT) + MNS + NCP(SP)",
         "manifestoStatus": "released",
+        "manifestoUrl": "https://drive.google.com/file/d/16UeIBWKki2QrqrQCZtsiWbGv7y3vhVXJ/view?usp=drivesdk",
         "summary": "The alliance pledges 1 lakh affordable homes and ensures no municipal land goes to private developers. A major focus is on women's welfare with ₹1,500/month for domestic workers and 'Masaheb Kitchens' serving ₹10 meals. The manifesto promises free electricity (100 units), property tax waivers for homes up to 700 sq ft, and extensive education reforms including multi-board schools and digital learning. Infrastructure plans include 100% sewer coverage, new electric buses with affordable fares, and restoring Mumbai's status as a global financial hub.",
         "keyPromises": [
             "1 lakh affordable homes; No municipal land to private builders",
