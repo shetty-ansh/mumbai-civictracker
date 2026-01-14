@@ -58,7 +58,6 @@ export function ManifestoCell({ manifesto }: ManifestoCellProps) {
             {/* Dialog for all promises */}
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogContent className="max-w-lg max-h-[80vh] overflow-hidden flex flex-col">
-                    <DialogClose onClose={() => setIsOpen(false)} />
                     <DialogHeader>
                         <DialogTitle className="text-lg font-semibold">
                             {manifesto.shortName} Key Promises
