@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Navbar } from "@/components/ui/navbar";
-import { Map, Users, MessageSquare, Newspaper, BarChart3 } from "lucide-react";
+import { Map, Users, MessageSquare, Newspaper, BarChart3, BookOpen, X } from "lucide-react";
 
 export default function HomePage() {
+    const [showHandbookToast, setShowHandbookToast] = useState(true);
     const features = [
         {
             Icon: Map,
@@ -128,6 +130,35 @@ export default function HomePage() {
                     Open data for civic transparency • <a href="/sources" className="hover:text-stone-800 underline underline-offset-4">Sources</a>
                 </p>
             </footer>
+
+            {/* Handbook Toast */}
+            {showHandbookToast && (
+                <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-sm w-[calc(100%-2rem)] animate-in slide-in-from-bottom-4 fade-in duration-300">
+                    <div className="bg-white border border-stone-200 rounded-xl shadow-lg p-4 flex items-center gap-3">
+                        <div className="p-2 bg-emerald-50 rounded-lg flex-shrink-0">
+                            <BookOpen className="w-5 h-5 text-emerald-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-stone-900">New to elections?</p>
+                            <a
+                                href="https://drive.google.com/file/d/1yWBvO8YkspZcZMjWRMc1hUc4FREfCG77/view?usp=drivesdk"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs text-emerald-600 hover:text-emerald-700 hover:underline"
+                            >
+                                Check out our Candidate Handbook →
+                            </a>
+                        </div>
+                        <button
+                            onClick={() => setShowHandbookToast(false)}
+                            className="p-1.5 hover:bg-stone-100 rounded-lg transition-colors flex-shrink-0"
+                            aria-label="Dismiss"
+                        >
+                            <X className="w-4 h-4 text-stone-400" />
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
