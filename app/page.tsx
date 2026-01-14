@@ -133,9 +133,9 @@ export default function LandingPage() {
         <p className="text-sm text-white/60 font-light tracking-wide mt-2 pt-2">Open data for civic transparency</p>
         <a
           href="/sources"
-          className="text-[10px] uppercase tracking-widest text-white border border-white px-3 py-1 rounded-full hover:bg-white/10 hover:text-white/80 transition-all"
+          className="text-[10px] uppercase tracking-widest text-white border border-white mt-2 px-3 py-1 rounded-full hover:bg-white/10 hover:text-white/80 transition-all"
         >
-          Sources
+          Resorces and Credits
         </a>
       </div>
 
