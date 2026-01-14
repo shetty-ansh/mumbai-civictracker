@@ -2,7 +2,7 @@
 
 import { BentoGrid, BentoCard } from "@/components/ui/bento-grid";
 import { Navbar } from "@/components/ui/navbar";
-import { Map, Users, MessageSquare, Newspaper, Heart } from "lucide-react";
+import { Map, Users, MessageSquare, Newspaper, BarChart3 } from "lucide-react";
 
 export default function HomePage() {
     const features = [
@@ -59,14 +59,13 @@ export default function HomePage() {
             className: "md:col-span-1 md:row-span-1",
         },
         {
-            Icon: Heart,
-            name: "Community",
-            description: "Connect with fellow citizens, share issues, and build a better Mumbai together.",
-            href: "/home", // Placeholder
-            cta: "Join Community",
+            Icon: BarChart3,
+            name: "Election Stats",
+            description: "Analyze candidate distribution, ward categories, and reservation breakdowns across all parties.",
+            href: "/stats",
+            cta: "View Statistics",
             background: <div className="absolute top-0 left-0 w-full h-full bg-[#fef9c3] z-0" />,
             className: "md:col-span-1 md:row-span-1",
-            comingSoon: true,
         },
     ];
 

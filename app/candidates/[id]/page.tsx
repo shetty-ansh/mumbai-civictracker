@@ -55,6 +55,8 @@ const partyToManifestoMap: Record<string, string> = {
     'Shiv Sena (Uddhav Balasaheb Thackeray)': 'shivsena-ubt-mns-ncpsp',
     'Maharashtra Navnirman Sena': 'shivsena-ubt-mns-ncpsp',
     'Nationalist Congress Party - Sharad Pawar': 'shivsena-ubt-mns-ncpsp',
+    // AAP Standalone
+    'Aam Aadmi Party': 'aap-manifesto',
 };
 
 // Get manifesto for a party
