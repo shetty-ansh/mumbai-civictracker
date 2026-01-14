@@ -10,6 +10,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { showToast } from "@/lib/toast";
 import categoryReservationData from "@/data/category-reservation.json";
+import { MultiSelect, Option } from "@/components/ui/multi-select";
 
 interface Candidate {
     id: string;
@@ -56,17 +57,17 @@ export default function CandidatesPage() {
     const [filteredCandidates, setFilteredCandidates] = useState<Candidate[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const [selectedParty, setSelectedParty] = useState<string>("all");
-    const [selectedWard, setSelectedWard] = useState<string>("all");
-    const [parties, setParties] = useState<string[]>([]);
-    const [partySearchQuery, setPartySearchQuery] = useState("");
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isWardDropdownOpen, setIsWardDropdownOpen] = useState(false);
+
+    // Multi-select states
+    const [selectedParties, setSelectedParties] = useState<string[]>([]);
+    const [selectedWards, setSelectedWards] = useState<string[]>([]);
+
+    // Options for MultiSelect
+    const [partyOptions, setPartyOptions] = useState<Option[]>([]);
+    const [wardOptions, setWardOptions] = useState<Option[]>([]);
+
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
-
-    // Get unique ward numbers
-    const wardNumbers = Array.from(new Set(candidates.map(c => c.ward_no))).sort((a, b) => a - b);
 
     useEffect(() => {
         const fetchCandidates = async () => {
@@ -105,9 +106,31 @@ export default function CandidatesPage() {
             setCandidates(allCandidates as Candidate[]);
             setFilteredCandidates(allCandidates as Candidate[]);
 
-            // Extract unique parties
+            // Calculate counts
+            const partyCounts: Record<string, number> = {};
+            const wardCounts: Record<number, number> = {};
+
+            allCandidates.forEach((c: Candidate) => {
+                partyCounts[c.party_name] = (partyCounts[c.party_name] || 0) + 1;
+                wardCounts[c.ward_no] = (wardCounts[c.ward_no] || 0) + 1;
+            });
+
+            // Extract unique parties for options
             const uniqueParties = Array.from(new Set(allCandidates.map((c: Candidate) => c.party_name))).sort();
-            setParties(uniqueParties);
+            setPartyOptions(uniqueParties.map(party => ({
+                label: party,
+                value: party,
+                count: partyCounts[party]
+            })));
+
+            // Extract unique wards for options
+            const uniqueWards = Array.from(new Set(allCandidates.map(c => c.ward_no))).sort((a, b) => a - b);
+            setWardOptions(uniqueWards.map(ward => ({
+                label: `Ward ${ward}`,
+                value: ward.toString(),
+                count: wardCounts[ward]
+            })));
+
             setLoading(false);
         };
 
@@ -118,41 +141,29 @@ export default function CandidatesPage() {
     useEffect(() => {
         let filtered = candidates;
 
-        // Filter by search query (name and party only)
+        // Filter by search query (name, party, and ward)
         if (searchQuery) {
             filtered = filtered.filter(
                 (candidate) =>
                     (candidate.candidate_name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-                    (candidate.party_name?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+                    (candidate.party_name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+                    (candidate.ward_no?.toString() || "").includes(searchQuery)
             );
         }
 
-        // Filter by party
-        if (selectedParty !== "all") {
-            filtered = filtered.filter((candidate) => candidate.party_name === selectedParty);
+        // Filter by selected parties
+        if (selectedParties.length > 0) {
+            filtered = filtered.filter((candidate) => selectedParties.includes(candidate.party_name));
         }
 
-        // Filter by ward
-        if (selectedWard !== "all") {
-            filtered = filtered.filter((candidate) => candidate.ward_no === parseInt(selectedWard));
+        // Filter by selected wards
+        if (selectedWards.length > 0) {
+            filtered = filtered.filter((candidate) => selectedWards.includes(candidate.ward_no.toString()));
         }
 
         setFilteredCandidates(filtered);
         setCurrentPage(1); // Reset to first page when filters change
-    }, [searchQuery, selectedParty, selectedWard, candidates]);
-
-    // Filter parties based on search query
-    const filteredParties = parties.filter((party) =>
-        party.toLowerCase().includes(partySearchQuery.toLowerCase())
-    );
-
-    const getSelectedPartyLabel = () => {
-        if (selectedParty === "all") {
-            return `All Parties (${candidates.length})`;
-        }
-        const count = candidates.filter((c) => c.party_name === selectedParty).length;
-        return `${selectedParty} (${count})`;
-    };
+    }, [searchQuery, selectedParties, selectedWards, candidates]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredCandidates.length / itemsPerPage);
@@ -179,72 +190,15 @@ export default function CandidatesPage() {
                         </p>
                     </div>
 
-                    {/* Party Filter Dropdown */}
-                    <div className="relative z-10">
-                        <button
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="flex items-center justify-between w-full md:w-64 px-4 py-2 text-sm border border-border rounded-md bg-background hover:bg-muted transition-colors shadow-sm"
-                        >
-                            <div className="flex items-center gap-2">
-                                <Filter className="w-4 h-4 text-muted-foreground" />
-                                <span className="truncate">{getSelectedPartyLabel()}</span>
-                            </div>
-                            <svg
-                                className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-
-                        {isDropdownOpen && (
-                            <div className="absolute top-full right-0 mt-2 w-full md:w-80 bg-background border border-border rounded-md shadow-lg z-50 max-h-96 flex flex-col">
-                                {/* Search within dropdown */}
-                                <div className="p-3 border-b border-border">
-                                    <Input
-                                        type="text"
-                                        placeholder="Search parties..."
-                                        value={partySearchQuery}
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPartySearchQuery(e.target.value)}
-                                        className="h-9"
-                                    />
-                                </div>
-
-                                {/* Dropdown options */}
-                                <div className="overflow-y-auto">
-                                    <button
-                                        onClick={() => {
-                                            setSelectedParty("all");
-                                            setIsDropdownOpen(false);
-                                            setPartySearchQuery("");
-                                        }}
-                                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${selectedParty === "all" ? "bg-accent/10 font-medium" : ""
-                                            }`}
-                                    >
-                                        All Parties ({candidates.length})
-                                    </button>
-                                    {filteredParties.map((party) => {
-                                        const count = candidates.filter((c) => c.party_name === party).length;
-                                        return (
-                                            <button
-                                                key={party}
-                                                onClick={() => {
-                                                    setSelectedParty(party);
-                                                    setIsDropdownOpen(false);
-                                                    setPartySearchQuery("");
-                                                }}
-                                                className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${selectedParty === party ? "bg-accent/10 font-medium" : ""
-                                                    }`}
-                                            >
-                                                {party} ({count})
-                                            </button>
-                                        );
-                                    })}
-                                </div>
-                            </div>
-                        )}
+                    {/* Party Filter - MultiSelect */}
+                    <div className="w-full md:w-72">
+                        <MultiSelect
+                            options={partyOptions}
+                            selected={selectedParties}
+                            onChange={setSelectedParties}
+                            placeholder="Select Parties..."
+                            className="bg-background"
+                        />
                     </div>
                 </div>
 
@@ -275,55 +229,29 @@ export default function CandidatesPage() {
                     </div>
                 </div>
 
-                {/* Filters */}
+                {/* Filters Row */}
                 <div className="mb-6 flex flex-col md:flex-row gap-4">
                     {/* Search - Name and Party only */}
                     <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                        <Search className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
                         <Input
                             type="text"
                             placeholder="Search by candidate name or party..."
                             value={searchQuery}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
-                            className="pl-10"
+                            className="pl-10 h-10"
                         />
                     </div>
 
-                    {/* Ward Filter Dropdown */}
-                    <div className="relative">
-                        <button
-                            onClick={() => { setIsWardDropdownOpen(!isWardDropdownOpen); setIsDropdownOpen(false); }}
-                            className="flex items-center justify-between w-full md:w-40 px-4 py-2 text-sm border border-border rounded-md bg-background hover:bg-muted transition-colors"
-                        >
-                            <span>{selectedWard === "all" ? "All Wards" : `Ward ${selectedWard}`}</span>
-                            <svg
-                                className={`w-4 h-4 transition-transform ${isWardDropdownOpen ? 'rotate-180' : ''}`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                            >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                        </button>
-                        {isWardDropdownOpen && (
-                            <div className="absolute top-full left-0 mt-2 w-full md:w-48 bg-background border border-border rounded-md shadow-lg z-50 max-h-64 overflow-y-auto">
-                                <button
-                                    onClick={() => { setSelectedWard("all"); setIsWardDropdownOpen(false); }}
-                                    className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${selectedWard === "all" ? "bg-accent/10 font-medium" : ""}`}
-                                >
-                                    All Wards
-                                </button>
-                                {wardNumbers.map((ward) => (
-                                    <button
-                                        key={ward}
-                                        onClick={() => { setSelectedWard(ward.toString()); setIsWardDropdownOpen(false); }}
-                                        className={`w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors ${selectedWard === ward.toString() ? "bg-accent/10 font-medium" : ""}`}
-                                    >
-                                        Ward {ward}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+                    {/* Ward Filter - MultiSelect */}
+                    <div className="w-full md:w-60">
+                        <MultiSelect
+                            options={wardOptions}
+                            selected={selectedWards}
+                            onChange={setSelectedWards}
+                            placeholder="Select Wards..."
+                            className="bg-background"
+                        />
                     </div>
                 </div>
 

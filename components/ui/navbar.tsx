@@ -51,6 +51,15 @@ export function Navbar() {
                     >
                         News
                     </Link>
+                    <Link
+                        href="/polling-stations"
+                        className={`text-base transition-colors ${pathname === '/polling-stations'
+                            ? 'font-semibold text-foreground'
+                            : 'font-medium text-muted-foreground hover:text-accent'
+                            }`}
+                    >
+                        Polling
+                    </Link>
                     {/* <Link
                         href="/stats"
                         className={`text-base transition-colors ${pathname === '/stats'

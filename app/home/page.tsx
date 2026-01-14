@@ -34,13 +34,12 @@ export default function HomePage() {
         },
         {
             Icon: MessageSquare,
-            name: "Ask Questions",
-            description: "Engage in civic discussions and ask questions to your local representatives.",
-            href: "/home", // Placeholder
-            cta: "Coming Soon",
+            name: "Ask Mumbai AI",
+            description: "Get instant answers about wards, candidates, elections, and civic processes. Powered by AI.",
+            href: "/chat",
+            cta: "Chat Now",
             background: <div className="absolute top-0 left-0 w-full h-full bg-[#dcfce7] z-0" />,
             className: "md:col-span-1 md:row-span-1",
-            comingSoon: true,
         },
         {
             Icon: Newspaper,

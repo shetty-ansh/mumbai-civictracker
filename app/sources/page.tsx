@@ -53,7 +53,7 @@ export default function SourcesPage() {
                     <div>
                         <h3 className="font-semibold text-amber-900 mb-2">Important Notice on Data Accuracy</h3>
                         <p className="text-sm text-amber-800 mb-3 leading-relaxed">
-                            We have currently covered detailed candidate-level data (Education, Criminal Record, etc.) explicitly for <strong>Congress, BJP, Shiv Sena, Shiv Sena (UBT), MNS, and NCP</strong>.
+                            We have currently covered detailed candidate-level data (Education, Legal Record, etc.) explicitly for <strong>Congress, BJP, Shiv Sena, Shiv Sena (UBT), MNS, NCP, Aam Aadmi Party, Bahujan Samaj Party, Samajwadi Party, and VBA - Vanchit Bahujan Aghadi</strong>.
                         </p>
                         <p className="text-sm text-amber-800 mb-3 leading-relaxed">
                             <strong>Note on Education:</strong> We count education based on the highest <em>completed</em> degree. For example, if a candidate is in the second year of BCom but has not graduated, we classify their education level as <strong>12th Pass</strong>.

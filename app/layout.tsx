@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import "./globals.css";
 import { Providers } from "./providers";
@@ -43,6 +44,7 @@ export default function RootLayout({
         suppressHydrationWarning
       >
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""} />
+        <Analytics />
         <Providers>
           {children}
           <FeedbackButton />
