@@ -16,6 +16,11 @@ const MAJOR_PARTIES = [
     "Shiv Sena (Uddhav Balasaheb Thackeray)",
     "Maharashtra Navnirman Sena",
     "Nationalist Congress Party",
+    "Nationalist Congress Party - Sharad Pawar",
+    "Aam Aadmi Party",
+    "Samajwadi Party",
+    "Bahujan Samaj Party",
+    "Vanchit Bahujan Aghadi",
 ];
 
 const PARTY_SHORT_NAMES: Record<string, string> = {
@@ -25,6 +30,11 @@ const PARTY_SHORT_NAMES: Record<string, string> = {
     "Shiv Sena (Uddhav Balasaheb Thackeray)": "Shiv Sena (UBT)",
     "Maharashtra Navnirman Sena": "MNS",
     "Nationalist Congress Party": "NCP",
+    "Nationalist Congress Party - Sharad Pawar": "NCP (SP)",
+    "Aam Aadmi Party": "AAP",
+    "Samajwadi Party": "SP",
+    "Bahujan Samaj Party": "BSP",
+    "Vanchit Bahujan Aghadi": "VBA",
 };
 
 const PARTY_COLORS: Record<string, string> = {
@@ -34,6 +44,11 @@ const PARTY_COLORS: Record<string, string> = {
     "Shiv Sena (Uddhav Balasaheb Thackeray)": "#0066CC",
     "Maharashtra Navnirman Sena": "#FFCC00",
     "Nationalist Congress Party": "#008000",
+    "Nationalist Congress Party - Sharad Pawar": "#1E40AF",
+    "Aam Aadmi Party": "#0072B8",
+    "Samajwadi Party": "#E53935",
+    "Bahujan Samaj Party": "#1565C0",
+    "Vanchit Bahujan Aghadi": "#6A1B9A",
     "Others": "#9CA3AF",
 };
 
@@ -48,6 +63,7 @@ interface Candidate {
 export default function StatsPage() {
     const [candidates, setCandidates] = useState<Candidate[]>([]);
     const [loading, setLoading] = useState(true);
+    const [selectedParty, setSelectedParty] = useState<string>(MAJOR_PARTIES[0]);
 
     useEffect(() => {
         const fetchCandidates = async () => {
@@ -151,28 +167,43 @@ export default function StatsPage() {
     };
 
     // Pie chart options generator
-    const getPieOptions = (title: string, data: { name: string; y: number; color: string }[], size = "100%"): Highcharts.Options => ({
+    const getPieOptions = (title: string, data: { name: string; y: number; color: string }[], size = "90%"): Highcharts.Options => ({
         chart: {
             type: "pie",
             backgroundColor: "transparent",
-            height: 280,
+            height: 380,
+            style: {
+                fontFamily: "inherit",
+            },
         },
         title: {
             text: title,
-            style: { fontSize: "14px", fontWeight: "600", color: "#1C1917" },
+            style: { fontSize: "18px", fontWeight: "700", color: "#1C1917" },
         },
         tooltip: {
-            pointFormat: "<b>{point.y}</b> ({point.percentage:.1f}%)",
+            headerFormat: "",
+            pointFormat: '<span style="color:{point.color}">\u25CF</span> <b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)',
+            style: { fontSize: "14px" },
         },
         plotOptions: {
             pie: {
                 allowPointSelect: true,
                 cursor: "pointer",
                 size: size,
+                borderWidth: 2,
+                borderColor: "#FFFFFF",
                 dataLabels: {
                     enabled: true,
-                    format: "{point.name}: {point.y}",
-                    style: { fontSize: "11px", fontWeight: "normal" },
+                    format: "<b>{point.name}</b><br/>{point.y}",
+                    style: {
+                        fontSize: "13px",
+                        fontWeight: "600",
+                        textOutline: "2px contrast",
+                        color: "#44403C",
+                    },
+                    distance: 20,
+                    connectorWidth: 2,
+                    connectorColor: "#A8A29E",
                 },
             },
         },
@@ -216,11 +247,10 @@ export default function StatsPage() {
                 <div className="mb-8 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
                     <Info className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                     <div>
-                        <p className="font-medium text-amber-800">Detailed Data Available</p>
+                        <p className="font-medium text-amber-800">For Educational Purposes Only</p>
                         <p className="text-sm text-amber-700 mt-1">
-                            We have detailed candidate information for: <strong>Congress</strong>, <strong>BJP</strong>,{" "}
-                            <strong>Shiv Sena</strong>, <strong>Shiv Sena (UBT)</strong>, <strong>MNS</strong>, and{" "}
-                            <strong>NCP</strong>. Other parties are grouped as "Others" in the statistics below.
+                            This data is compiled for civic awareness and should <strong>not be quoted or cited</strong> as official statistics.
+                            We track 11 major parties including Congress, BJP, Shiv Sena, SS(UBT), MNS, NCP, NCP(SP), AAP, SP, BSP, and VBA.
                         </p>
                     </div>
                 </div>
@@ -236,71 +266,168 @@ export default function StatsPage() {
                     </div>
                 </div>
 
-                {/* Party Insights Grid */}
+                {/* Party Insights Section */}
                 <div className="mb-8">
-                    <h2 className="text-xl font-semibold mb-4">Party Insights</h2>
+                    <h2 className="text-xl font-semibold mb-2">Party Insights</h2>
                     <p className="text-stone-500 text-sm mb-4">
                         Ward category and women reservation breakdown for each major party
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {MAJOR_PARTIES.map((party) => {
+                    {/* Mobile: Highlighted Dropdown */}
+                    <div className="md:hidden mb-4">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-amber-700 mb-2">
+                            Select a Party to View
+                        </label>
+                        <select
+                            value={selectedParty}
+                            onChange={(e) => setSelectedParty(e.target.value)}
+                            className="w-full p-3 text-lg font-semibold border-2 border-amber-400 bg-amber-50 rounded-xl text-stone-900 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm"
+                        >
+                            {MAJOR_PARTIES.map((party) => {
+                                const count = candidates.filter((c) => c.party_name === party).length;
+                                if (count === 0) return null;
+                                return (
+                                    <option key={party} value={party}>
+                                        {PARTY_SHORT_NAMES[party]} ({count})
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </div>
+
+                    {/* Mobile: Single Party Card */}
+                    <div className="md:hidden">
+                        {(() => {
+                            const party = selectedParty;
                             const partyCandidates = candidates.filter((c) => c.party_name === party);
                             if (partyCandidates.length === 0) return null;
 
                             return (
-                                <div key={party} className="bg-white border border-stone-200 rounded-xl p-4">
-                                    <div className="flex items-center gap-2 mb-3 pb-3 border-b border-stone-100">
+                                <div className="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+                                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-stone-100">
                                         <div
-                                            className="w-3 h-3 rounded-full"
+                                            className="w-4 h-4 rounded-full"
                                             style={{ backgroundColor: PARTY_COLORS[party] }}
                                         />
-                                        <h3 className="font-semibold text-stone-800">
+                                        <h3 className="text-lg font-bold text-stone-900">
                                             {PARTY_SHORT_NAMES[party]}
                                         </h3>
-                                        <span className="ml-auto text-sm text-stone-500">
+                                        <span className="ml-auto text-sm font-semibold text-stone-600">
                                             {partyCandidates.length} candidates
                                         </span>
                                     </div>
-
-                                    {/* Ward Category Pie */}
-                                    <div className="mb-2">
+                                    <div className="mb-4">
                                         <HighchartsReact
                                             highcharts={Highcharts}
                                             options={{
-                                                ...getPieOptions("Ward Categories", getPartyWardCategoryData(party), "70%"),
-                                                chart: { ...getPieOptions("", [], "70%").chart, height: 200 },
-                                                title: { text: "Ward Categories", style: { fontSize: "12px" } },
+                                                ...getPieOptions("Ward Categories", getPartyWardCategoryData(party), "80%"),
+                                                chart: { ...getPieOptions("", [], "80%").chart, height: 240 },
+                                                title: { text: "Ward Categories", style: { fontSize: "14px", fontWeight: "700" } },
                                                 plotOptions: {
                                                     pie: {
-                                                        size: "70%",
+                                                        size: "80%",
+                                                        borderWidth: 2,
+                                                        borderColor: "#FFFFFF",
                                                         dataLabels: {
                                                             enabled: true,
-                                                            format: "{point.name}: {point.y}",
-                                                            style: { fontSize: "9px" },
-                                                            distance: 5,
+                                                            format: "<b>{point.name}</b>: {point.y}",
+                                                            style: { fontSize: "11px", fontWeight: "600", color: "#44403C" },
+                                                            distance: 10,
+                                                            connectorWidth: 1,
                                                         },
                                                     },
                                                 },
                                             }}
                                         />
                                     </div>
-
-                                    {/* Women Reserved Pie */}
                                     <HighchartsReact
                                         highcharts={Highcharts}
                                         options={{
-                                            ...getPieOptions("Seat Reservation", getPartyWomenReservedData(party), "70%"),
-                                            chart: { ...getPieOptions("", [], "70%").chart, height: 200 },
-                                            title: { text: "Seat Type", style: { fontSize: "12px" } },
+                                            ...getPieOptions("Seat Reservation", getPartyWomenReservedData(party), "80%"),
+                                            chart: { ...getPieOptions("", [], "80%").chart, height: 240 },
+                                            title: { text: "Seat Type", style: { fontSize: "14px", fontWeight: "700" } },
                                             plotOptions: {
                                                 pie: {
-                                                    size: "70%",
+                                                    size: "80%",
+                                                    borderWidth: 2,
+                                                    borderColor: "#FFFFFF",
                                                     dataLabels: {
                                                         enabled: true,
-                                                        format: "{point.name}: {point.y}",
-                                                        style: { fontSize: "9px" },
-                                                        distance: 5,
+                                                        format: "<b>{point.name}</b>: {point.y}",
+                                                        style: { fontSize: "11px", fontWeight: "600", color: "#44403C" },
+                                                        distance: 10,
+                                                        connectorWidth: 1,
+                                                    },
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </div>
+                            );
+                        })()}
+                    </div>
+
+                    {/* Desktop: Full Grid */}
+                    <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {MAJOR_PARTIES.map((party) => {
+                            const partyCandidates = candidates.filter((c) => c.party_name === party);
+                            if (partyCandidates.length === 0) return null;
+
+                            return (
+                                <div key={party} className="bg-white border border-stone-200 rounded-xl p-5 shadow-sm">
+                                    <div className="flex items-center gap-3 mb-4 pb-4 border-b border-stone-100">
+                                        <div
+                                            className="w-4 h-4 rounded-full"
+                                            style={{ backgroundColor: PARTY_COLORS[party] }}
+                                        />
+                                        <h3 className="text-lg font-bold text-stone-900">
+                                            {PARTY_SHORT_NAMES[party]}
+                                        </h3>
+                                        <span className="ml-auto text-sm font-semibold text-stone-600">
+                                            {partyCandidates.length} candidates
+                                        </span>
+                                    </div>
+                                    <div className="mb-4">
+                                        <HighchartsReact
+                                            highcharts={Highcharts}
+                                            options={{
+                                                ...getPieOptions("Ward Categories", getPartyWardCategoryData(party), "80%"),
+                                                chart: { ...getPieOptions("", [], "80%").chart, height: 240 },
+                                                title: { text: "Ward Categories", style: { fontSize: "14px", fontWeight: "700" } },
+                                                plotOptions: {
+                                                    pie: {
+                                                        size: "80%",
+                                                        borderWidth: 2,
+                                                        borderColor: "#FFFFFF",
+                                                        dataLabels: {
+                                                            enabled: true,
+                                                            format: "<b>{point.name}</b>: {point.y}",
+                                                            style: { fontSize: "11px", fontWeight: "600", color: "#44403C" },
+                                                            distance: 10,
+                                                            connectorWidth: 1,
+                                                        },
+                                                    },
+                                                },
+                                            }}
+                                        />
+                                    </div>
+                                    <HighchartsReact
+                                        highcharts={Highcharts}
+                                        options={{
+                                            ...getPieOptions("Seat Reservation", getPartyWomenReservedData(party), "80%"),
+                                            chart: { ...getPieOptions("", [], "80%").chart, height: 240 },
+                                            title: { text: "Seat Type", style: { fontSize: "14px", fontWeight: "700" } },
+                                            plotOptions: {
+                                                pie: {
+                                                    size: "80%",
+                                                    borderWidth: 2,
+                                                    borderColor: "#FFFFFF",
+                                                    dataLabels: {
+                                                        enabled: true,
+                                                        format: "<b>{point.name}</b>: {point.y}",
+                                                        style: { fontSize: "11px", fontWeight: "600", color: "#44403C" },
+                                                        distance: 10,
+                                                        connectorWidth: 1,
                                                     },
                                                 },
                                             },

@@ -8,6 +8,7 @@ import manifestoData from "@/data/party-manifestos.json";
 import wardAffidavits from "@/data/ward-affidavits.json";
 import { CandidatePageToast } from "./candidate-toast";
 import { ManifestoSection } from "./manifesto-section";
+import { BackButton } from "./back-button";
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
@@ -44,13 +45,18 @@ const partyToManifestoMap: Record<string, string> = {
     // Congress + VBA Alliance
     'Indian National Congress': 'congress-vba',
     'Vanchit Bahujan Aghadi': 'congress-vba',
-    // Mahayuti Alliance (BJP + Shiv Sena)
+    // Mahayuti Alliance (BJP + Shiv Sena + RPI)
     'Bharatiya Janata Party': 'mahayuti',
     'Shiv Sena': 'mahayuti',
+    'Nationalist Congress Party': 'mahayuti',
+    'Republican Party of India (A)': 'mahayuti',
+    'Republican Party of India': 'mahayuti',
     // SS(UBT) + MNS + NCP(SP) Alliance
     'Shiv Sena (Uddhav Balasaheb Thackeray)': 'shivsena-ubt-mns-ncpsp',
     'Maharashtra Navnirman Sena': 'shivsena-ubt-mns-ncpsp',
     'Nationalist Congress Party - Sharad Pawar': 'shivsena-ubt-mns-ncpsp',
+    // AAP Standalone
+    'Aam Aadmi Party': 'aap-manifesto',
 };
 
 // Get manifesto for a party
@@ -107,13 +113,7 @@ export default async function CandidatePage({
 
             <main className="max-w-5xl mx-auto px-4 py-8">
                 {/* Back Button */}
-                <Link
-                    href="/candidates"
-                    className="inline-flex items-center gap-2 text-sm text-black hover:text-stone-900 mb-6 transition-colors"
-                >
-                    <ArrowLeftIcon className="w-6 h-6" />
-                    Back to Candidates
-                </Link>
+                <BackButton />
 
                 {/* Bento Grid Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:min-h-[500px]">

@@ -23,7 +23,7 @@ export function Navbar() {
                         <div className="text-xl leading-none font-bold" style={{ fontFamily: 'serif' }}>मुंबई</div>
                     </div>
                 </Link>
-                <nav className="flex items-center gap-8">
+                <nav className="flex items-center gap-4 md:gap-8">
                     <Link
                         href="/map"
                         className={`text-base transition-colors ${pathname?.startsWith('/map')
@@ -50,6 +50,15 @@ export function Navbar() {
                             }`}
                     >
                         News
+                    </Link>
+                    <Link
+                        href="/polling-stations"
+                        className={`text-base transition-colors ${pathname === '/polling-stations'
+                            ? 'font-semibold bg-stone-900 text-white px-3 py-1.5 rounded-md'
+                            : 'font-semibold bg-stone-900 text-white px-3 py-1.5 rounded-md hover:bg-stone-800'
+                            }`}
+                    >
+                        Polling
                     </Link>
                     {/* <Link
                         href="/stats"

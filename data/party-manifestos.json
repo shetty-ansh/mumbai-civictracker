@@ -17,21 +17,71 @@
     },
     {
         "id": "mahayuti",
-        "partyName": "Bharatiya Janata Party & Shiv Sena",
-        "shortName": "Mahayuti (BJP + Shiv Sena)",
+        "partyName": "BJP – Shiv Sena – RPI (A)",
+        "shortName": "Mahayuti",
         "manifestoStatus": "released",
-        "summary": "Mahayuti (BJP & Shiv Sena) released their BMC election manifesto focusing on transforming Mumbai into a modern global city. Key highlights include interest-free loans up to ₹5 lakh for women under 'Ladki Bahin' scheme, slum-free Mumbai through rehabilitation and 30-35 lakh affordable homes, 50% BEST bus fare concession for women, tech-driven governance with AI, and Marathi pride with infrastructure development.",
+        "manifestoUrl": "https://www.devendrafadnavis.in/bmc26manifesto-english/",
+        "summary": "Mahayuti (BJP, Shiv Sena, and RPI-A) presents a comprehensive vision for Mumbai to be Clean, Green, Safe, Fast, Sustainable, Prosperous, and Happy. The manifesto emphasizes world-class infrastructure, 24x7 water supply, AI-powered education and healthcare, and robust women's empowerment through financial support and safety initiatives.",
         "keyPromises": [
-            "Interest-free loans up to ₹5 lakh for women (Ladki Bahin)",
+            "100% Cement Concrete (CC) roads for stretches > 9m",
+            "24x7x365 clean drinking water supply; end tanker mafia",
+            "100% electric BEST bus fleet by 2029 (10,000 buses)",
+            "₹5 lakh interest-free loans for women entrepreneurs",
             "50% BEST bus fare concession for women",
-            "30-35 lakh homes under slum rehabilitation",
-            "Slum-free Mumbai initiative",
-            "AI-driven identification of illegal immigrants",
-            "Tech-driven transparent governance",
-            "Affordable housing initiatives",
-            "Improved civic infrastructure",
-            "Marathi pride promotion",
-            "Position Mumbai as a global city"
+            "AI laboratories and international standards in all BMC schools",
+            "Digital Health Cards and free annual checkups for seniors",
+            "Dialysis and chemotherapy centres in every ward",
+            "Speedy redevelopment of Koliwadas and Gaothans",
+            "Four new underground water detention tanks for flood control"
+        ],
+        "detailedSections": [
+            {
+                "title": "Infrastructure & Roads",
+                "points": [
+                    "Roads > 9m will be Cement Concrete (CC) with utility ducts",
+                    "Asphalting of roads < 9m and in private layouts",
+                    "Coastal Road, Metro Line 3, and Thane-Borivali tunnel completion",
+                    "Digital traffic display boards for real-time traffic flow"
+                ]
+            },
+            {
+                "title": "Water & Flooding",
+                "points": [
+                    "Increase water supply from 3,800 MLD to 4,700 MLD",
+                    "Gargai, Pinjal, Damanganga projects completion in 5 years",
+                    "Desalination plant at Gorai; 8% water tariff hike frozen",
+                    "Japanese tech & IIT expertise to make Mumbai flood-free in 5 years",
+                    "Four new underground water detention tanks"
+                ]
+            },
+            {
+                "title": "Health & Education",
+                "points": [
+                    "AI health cards & modernisation of BMC hospitals to AIIMS standards",
+                    "Aapla Dawakhana expansion (30-40 free tests + medicines)",
+                    "AI labs in all BMC schools; teaching the Constitution",
+                    "Upgrading municipal schools to international standards"
+                ]
+            },
+            {
+                "title": "Women & Youth",
+                "points": [
+                    "₹5 lakh interest-free loans for women entrepreneurs",
+                    "Night patrol squads and mobile safety app for women",
+                    "Olympic-size swimming pools in wards",
+                    "Startup hubs and ₹100 crore fund of funds for youth",
+                    "50% concession for women passengers on electric BEST buses"
+                ]
+            },
+            {
+                "title": "Housing & Governance",
+                "points": [
+                    "Special redevelopment policies for Koliwadas and Villages",
+                    "Housing schemes for police and government employees",
+                    "Dedicated Marathi language department in BMC",
+                    "Zero Waste Wards and environmental master plan"
+                ]
+            }
         ]
     },
     {
@@ -135,6 +185,67 @@
                     "One City, One Authority: Full city planning power to BMC",
                     "Global financial & entrepreneurship hub; Olympic-level sports city",
                     "Digital Twin Mumbai: 80+ civic services via chatbot"
+                ]
+            }
+        ]
+    },
+    {
+        "id": "aap-manifesto",
+        "partyName": "Aam Aadmi Party",
+        "shortName": "AAP",
+        "manifestoStatus": "released",
+        "manifestoUrl": "https://indianexpress.com/article/cities/mumbai/bmc-elections-2026-aap-poll-manifesto-kejriwalchi-guarantees-10446942/",
+        "summary": "AAP's 'Kejriwalchi Guarantee' for Mumbai promises to replicate its Delhi model with free basic services and world-class public infrastructure. Key pillars include free 24x7 water supply, zero electricity bills up to 200 units, establishing 1,000 Mohalla Clinics for free primary healthcare, and revolutionizing BMC schools with modern facilities. The manifesto also addresses women's safety with free bus travel and financial support, alongside a commitment to corruption-free governance.",
+        "keyPromises": [
+            "Free & 24x7 water up to 20,000 liters/month",
+            "Zero electricity bills up to 200 units",
+            "1,000 Mohalla Clinics for free healthcare",
+            "Top-tier BMC schools & free student transport",
+            "Free BEST travel for women & students",
+            "₹5,000/month for low-income pregnant women",
+            "10,000 electric buses for BEST",
+            "Pothole-free roads",
+            "Gender-neutral bathrooms in public facilities"
+        ],
+        "detailedSections": [
+            {
+                "title": "Water & Electricity",
+                "points": [
+                    "Free water up to 20,000 litres per household per month",
+                    "24x7 water supply with 100% sewage treatment",
+                    "Leak-control plan for water distribution",
+                    "Zero electricity bills up to 200 units per family via BEST",
+                    "Free meter installations & shift to decentralised solar power"
+                ]
+            },
+            {
+                "title": "Health & Education",
+                "points": [
+                    "1,000 Mohalla Clinics: Free consultations, medicines, and tests",
+                    "Robust three-tier healthcare system",
+                    "Revolutionise BMC schools: ₹1 crore budget per school for infrastructure",
+                    "Free BEST bus passes for all students",
+                    "Sanitary napkin vending machines in every school"
+                ]
+            },
+            {
+                "title": "Transport & Infrastructure",
+                "points": [
+                    "Revival of BEST with 10,000 electric buses",
+                    "Free transport for women and students",
+                    "Pothole-free roads across Mumbai",
+                    "Creation of 280 hawking zones",
+                    "Rest shelters for gig workers"
+                ]
+            },
+            {
+                "title": "Social Welfare & Governance",
+                "points": [
+                    "₹5,000/month for low-income pregnant women (until child turns 1)",
+                    "2 lakh new public toilets",
+                    "Gender-neutral bathrooms at all public facilities",
+                    "One-time registration for shop licenses",
+                    "Discrimination-free civic interface with sensitised staff"
                 ]
             }
         ]
