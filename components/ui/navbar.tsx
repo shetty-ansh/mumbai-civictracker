@@ -26,7 +26,7 @@ export function Navbar() {
                 <nav className="flex items-center gap-4 md:gap-8">
                     <Link
                         href="/map"
-                        className={`text-base transition-colors ${pathname?.startsWith('/map')
+                        className={`text-sm md:text-base transition-colors ${pathname?.startsWith('/map')
                             ? 'font-semibold text-foreground'
                             : 'font-medium text-muted-foreground hover:text-accent'
                             }`}
@@ -35,7 +35,7 @@ export function Navbar() {
                     </Link>
                     <Link
                         href="/candidates"
-                        className={`text-base transition-colors ${pathname === '/candidates'
+                        className={`text-sm md:text-base transition-colors ${pathname === '/candidates'
                             ? 'font-semibold text-foreground'
                             : 'font-medium text-muted-foreground hover:text-accent'
                             }`}
@@ -44,7 +44,7 @@ export function Navbar() {
                     </Link>
                     <Link
                         href="/news"
-                        className={`text-base transition-colors ${pathname === '/news'
+                        className={`text-sm md:text-base transition-colors ${pathname === '/news'
                             ? 'font-semibold text-foreground'
                             : 'font-medium text-muted-foreground hover:text-accent'
                             }`}
@@ -53,9 +53,9 @@ export function Navbar() {
                     </Link>
                     <Link
                         href="/polling-stations"
-                        className={`text-base transition-colors ${pathname === '/polling-stations'
-                            ? 'font-semibold bg-stone-900 text-white px-3 py-1.5 rounded-md'
-                            : 'font-semibold bg-stone-900 text-white px-3 py-1.5 rounded-md hover:bg-stone-800'
+                        className={`text-sm md:text-base transition-colors ${pathname === '/polling-stations'
+                            ? 'font-semibold bg-stone-900 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md'
+                            : 'font-semibold bg-stone-900 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md hover:bg-stone-800'
                             }`}
                     >
                         Polling
