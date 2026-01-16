@@ -3,7 +3,7 @@
 import { useEffect, useId, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MapPin, AlertTriangle, ExternalLink, X } from "lucide-react";
+import { MapPin, AlertTriangle, ExternalLink, X, Trophy } from "lucide-react";
 import {
     Map,
     MapControls,
@@ -21,7 +21,7 @@ import { showToast } from "@/lib/toast";
 const MUMBAI_CENTER: [number, number] = [72.8777, 19.076];
 const MUMBAI_ZOOM = 10.5;
 
-type DatasetType = "plain" | "electoral";
+type DatasetType = "plain" | "electoral" | "results";
 
 // Helper to slugify ward name for URL
 function slugify(name: string): string {
@@ -664,20 +664,333 @@ function MyWardButton({
         <button
             onClick={handleFindWard}
             disabled={finding}
-            className="bg-black text-white px-4 py-2 text-sm font-medium rounded-full shadow-lg hover:bg-stone-800 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-wait"
+            className="bg-black text-white px-3 sm:px-4 py-2 text-sm font-medium rounded-full shadow-lg hover:bg-stone-800 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-wait"
         >
             {finding ? (
                 <>
                     <span className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Finding...
+                    <span className="hidden sm:inline">Finding...</span>
                 </>
             ) : (
                 <>
                     <MapPin className="w-4 h-4" />
-                    My Ward
+                    <span className="hidden sm:inline">My Ward</span>
                 </>
             )}
         </button>
+    );
+}
+
+// Coalition color mappings for election results
+const COALITION_COLORS: Record<string, { color: string; name: string; parties: string[] }> = {
+    mahayuti: {
+        color: "#FF6B35", // Saffron
+        name: "Mahayuti",
+        parties: ["Bharatiya Janata Party", "Shiv Sena", "Republican Party of India (A)", "Nationalist Congress Party"]
+    },
+    mva: {
+        color: "#1E88E5", // Blue
+        name: "MVA",
+        parties: ["Shiv Sena (Uddhav Balasaheb Thackeray)", "Maharashtra Navnirman Sena", "Nationalist Congress Party - Sharad Pawar"]
+    },
+    congress: {
+        color: "#43A047", // Green
+        name: "Congress+",
+        parties: ["Indian National Congress", "Vanchit Bahujan Aghadi"]
+    },
+    aap: {
+        color: "#00ACC1", // Teal
+        name: "AAP",
+        parties: ["Aam Aadmi Party"]
+    },
+    other: {
+        color: "#757575", // Gray
+        name: "Other",
+        parties: []
+    }
+};
+
+// Get coalition for a party
+function getCoalitionForParty(partyName: string): string {
+    for (const [coalitionId, coalition] of Object.entries(COALITION_COLORS)) {
+        if (coalition.parties.some(p => partyName.includes(p) || p.includes(partyName))) {
+            return coalitionId;
+        }
+    }
+    // Check for independent
+    if (partyName.toLowerCase().includes("independent")) {
+        return "other";
+    }
+    return "other";
+}
+
+// Winner type
+interface WinnerData {
+    ward_no: number;
+    candidate_name: string;
+    party_name: string;
+    coalition: string;
+    color: string;
+}
+
+// Election Results Layer - Colors wards based on winning party
+function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id: string | number) => void }) {
+    const { map, isLoaded } = useMap();
+    const id = useId();
+    const sourceId = `election-results-source-${id}`;
+    const fillLayerId = `election-results-fill-${id}`;
+    const outlineLayerId = `election-results-outline-${id}`;
+    const labelLayerId = `election-results-labels-${id}`;
+
+    const [winners, setWinners] = useState<Record<number, WinnerData>>({});
+    const [hoveredWard, setHoveredWard] = useState<WinnerData | null>(null);
+    const [coalitionCounts, setCoalitionCounts] = useState<Record<string, number>>({});
+    const [loading, setLoading] = useState(true);
+
+    // Fetch winners on mount
+    useEffect(() => {
+        async function fetchWinners() {
+            setLoading(true);
+            const { data, error } = await supabase
+                .from('bmc_candidates')
+                .select('ward_no, candidate_name, party_name')
+                .eq('winnner', true);
+
+            if (error) {
+                console.error('Error fetching winners:', error);
+                setLoading(false);
+                return;
+            }
+
+            const winnersMap: Record<number, WinnerData> = {};
+            const counts: Record<string, number> = {};
+
+            for (const winner of data || []) {
+                const coalition = getCoalitionForParty(winner.party_name);
+                const color = COALITION_COLORS[coalition]?.color || COALITION_COLORS.other.color;
+
+                winnersMap[winner.ward_no] = {
+                    ward_no: winner.ward_no,
+                    candidate_name: winner.candidate_name,
+                    party_name: winner.party_name,
+                    coalition,
+                    color
+                };
+
+                counts[coalition] = (counts[coalition] || 0) + 1;
+            }
+
+            setWinners(winnersMap);
+            setCoalitionCounts(counts);
+            setLoading(false);
+        }
+
+        fetchWinners();
+    }, []);
+
+    useEffect(() => {
+        if (!isLoaded || !map || loading || Object.keys(winners).length === 0) return;
+
+        // Build color expression for fill
+        const colorExpression: any[] = ["match", ["to-number", ["get", "note"]]];
+
+        for (const [wardNo, winner] of Object.entries(winners)) {
+            colorExpression.push(parseInt(wardNo), winner.color);
+        }
+        // Default color for wards without winners
+        colorExpression.push("#E0E0E0");
+
+        map.addSource(sourceId, {
+            type: "geojson",
+            data: "/2025-ward-data.geojson",
+        });
+
+        // Colored fill based on winning coalition
+        map.addLayer({
+            id: fillLayerId,
+            type: "fill",
+            source: sourceId,
+            paint: {
+                "fill-color": colorExpression as any,
+                "fill-opacity": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    0.9,
+                    0.7,
+                ],
+            },
+        });
+
+        map.addLayer({
+            id: outlineLayerId,
+            type: "line",
+            source: sourceId,
+            paint: {
+                "line-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    "#000000", // Black on hover
+                    "#1a1a1a", // Dark gray normally for visibility
+                ],
+                "line-width": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    4, // Thick on hover
+                    2, // Prominent outline always visible
+                ],
+            },
+        });
+
+        map.addLayer({
+            id: labelLayerId,
+            type: "symbol",
+            source: sourceId,
+            layout: {
+                "text-field": ["get", "note"],
+                "text-size": 11,
+                "text-anchor": "center",
+                "text-allow-overlap": false,
+                "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+            },
+            paint: {
+                "text-color": "#000000",
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 2,
+            },
+        });
+
+        let hoveredFeatureId: string | number | undefined = undefined;
+
+        const handleMouseMove = (
+            e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }
+        ) => {
+            if (e.features && e.features.length > 0) {
+                if (hoveredFeatureId !== undefined) {
+                    map.setFeatureState(
+                        { source: sourceId, id: hoveredFeatureId },
+                        { hover: false }
+                    );
+                }
+                hoveredFeatureId = e.features[0].id;
+                if (hoveredFeatureId !== undefined) {
+                    map.setFeatureState(
+                        { source: sourceId, id: hoveredFeatureId },
+                        { hover: true }
+                    );
+                }
+                const props = e.features[0].properties;
+                const wardNo = parseInt(props?.note) || 0;
+                const winner = winners[wardNo];
+
+                if (winner) {
+                    setHoveredWard(winner);
+                } else {
+                    setHoveredWard(null);
+                }
+
+                map.getCanvas().style.cursor = "pointer";
+            }
+        };
+
+        const handleMouseLeave = () => {
+            if (hoveredFeatureId !== undefined) {
+                map.setFeatureState(
+                    { source: sourceId, id: hoveredFeatureId },
+                    { hover: false }
+                );
+            }
+            hoveredFeatureId = undefined;
+            setHoveredWard(null);
+            map.getCanvas().style.cursor = "";
+        };
+
+        const handleClick = (
+            e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }
+        ) => {
+            if (e.features && e.features.length > 0) {
+                const props = e.features[0].properties;
+                const wardNo = parseInt(props?.note) || 0;
+                onWardClick(`ward-${wardNo}`, e.features[0].id ?? "unknown");
+            }
+        };
+
+        map.on("mousemove", fillLayerId, handleMouseMove);
+        map.on("mouseleave", fillLayerId, handleMouseLeave);
+        map.on("click", fillLayerId, handleClick);
+
+        return () => {
+            map.off("mousemove", fillLayerId, handleMouseMove);
+            map.off("mouseleave", fillLayerId, handleMouseLeave);
+            map.off("click", fillLayerId, handleClick);
+            try {
+                if (map.getLayer(labelLayerId)) map.removeLayer(labelLayerId);
+                if (map.getLayer(outlineLayerId)) map.removeLayer(outlineLayerId);
+                if (map.getLayer(fillLayerId)) map.removeLayer(fillLayerId);
+                if (map.getSource(sourceId)) map.removeSource(sourceId);
+            } catch {
+                // ignore
+            }
+        };
+    }, [isLoaded, map, winners, loading, sourceId, fillLayerId, outlineLayerId, labelLayerId, onWardClick]);
+
+    return (
+        <>
+            {/* Hover Info Card */}
+            {hoveredWard && (
+                <div className="absolute top-24 left-6 z-10 bg-white border-2 rounded-xl px-5 py-4 shadow-xl min-w-[240px]" style={{ borderColor: hoveredWard.color }}>
+                    <div className="flex items-center gap-2 mb-2">
+                        <div className="w-4 h-4 rounded-full" style={{ backgroundColor: hoveredWard.color }} />
+                        <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: hoveredWard.color }}>
+                            {COALITION_COLORS[hoveredWard.coalition]?.name || "Other"}
+                        </span>
+                    </div>
+                    <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">
+                        #{hoveredWard.ward_no}
+                    </p>
+                    <div className="mt-3 space-y-1">
+                        <p className="text-sm font-semibold text-stone-800">{hoveredWard.candidate_name}</p>
+                        <p className="text-xs text-stone-500">{hoveredWard.party_name}</p>
+                    </div>
+                    <p className="text-xs text-stone-400 mt-3">Click for details</p>
+                </div>
+            )}
+
+            {/* Large Legend */}
+            <div className="absolute bottom-6 left-6 z-20 bg-white/95 border border-stone-300 rounded-2xl p-5 shadow-xl backdrop-blur-sm">
+                <h3 className="text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">
+                    <Trophy className="w-5 h-5 text-amber-500" />
+                    Election Results
+                </h3>
+                <div className="space-y-3">
+                    {Object.entries(COALITION_COLORS).map(([coalitionId, coalition]) => {
+                        const count = coalitionCounts[coalitionId] || 0;
+                        if (coalitionId === "other" && count === 0) return null;
+                        return (
+                            <div key={coalitionId} className="flex items-center justify-between gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div
+                                        className="w-6 h-6 rounded-md shadow-sm border border-black/10"
+                                        style={{ backgroundColor: coalition.color }}
+                                    />
+                                    <span className="text-sm font-semibold text-stone-800">{coalition.name}</span>
+                                </div>
+                                <span className="text-lg font-bold text-stone-900 min-w-[40px] text-right">
+                                    {count}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+                <div className="mt-4 pt-3 border-t border-stone-200">
+                    <div className="flex justify-between items-center">
+                        <span className="text-xs text-stone-500">Total Wards Declared</span>
+                        <span className="text-xl font-bold text-stone-900">
+                            {Object.values(coalitionCounts).reduce((a, b) => a + b, 0)}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 }
 
@@ -749,11 +1062,24 @@ export default function MapPage() {
                             >
                                 Plain
                             </button>
+                            <button
+                                onClick={() => {
+                                    setDataset("results");
+                                    showToast('info', 'Results Update', 'More winners will be added as results come in. Source: Indian Express');
+                                }}
+                                className={`px-5 py-2 text-sm font-medium transition-all rounded-full flex items-center gap-1.5 ${dataset === "results"
+                                    ? "bg-amber-500 text-white"
+                                    : "text-muted-foreground hover:text-amber-500 hover:bg-amber-50"
+                                    }`}
+                            >
+                                <Trophy className="w-4 h-4" /> Results
+                            </button>
                         </div>
                         <MyWardButton setDataset={setDataset} onWardFound={handleWardFound} />
                     </div>
 
                     {dataset === "electoral" && <Electoral2025WardsLayer onWardClick={handleWardClick} />}
+                    {dataset === "results" && <ElectionResultsLayer onWardClick={handleWardClick} />}
                     {/* Plain mode shows no layers - just base map */}
 
                     {/* User location marker */}

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Filter, User, Scale, MapPin } from "lucide-react";
+import { Search, Filter, User, Scale, MapPin, Trophy } from "lucide-react";
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -20,6 +20,7 @@ interface Candidate {
     symbol: string;
     ward_name: string;
     is_women_reserved: boolean;
+    winnner: boolean;
 }
 
 // Party logo mapping - matches exact database values
@@ -281,93 +282,55 @@ export default function CandidatesPage() {
                     <>
                         {/* Desktop: Grid layout | Mobile: List layout */}
                         <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {currentCandidates.map((candidate) => (
-                                <div
-                                    key={candidate.id}
-                                    className="flex flex-col bg-white border border-stone-200 rounded-xl overflow-hidden hover:shadow-md transition-all duration-300"
-                                >
-                                    <Link
-                                        href={`/candidates/${candidate.id}`}
-                                        className="group block flex-1"
+                            {currentCandidates.map((candidate) => {
+                                const isWinner = candidate.winnner === true;
+                                return (
+                                    <div
+                                        key={candidate.id}
+                                        className={`flex flex-col rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 relative ${isWinner
+                                            ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-400 shadow-lg shadow-amber-100'
+                                            : 'bg-white border border-stone-200'
+                                            }`}
                                     >
-                                        <div className="p-5 flex flex-col h-full">
-                                            <div className="flex items-start justify-between gap-4 mb-4">
-                                                <h3 className="text-xl font-normal leading-tight group-hover:text-stone-600 transition-colors font-[family-name:var(--font-fraunces)]">
-                                                    {candidate.candidate_name}
-                                                </h3>
-                                                <Image
-                                                    src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
-                                                    alt={candidate.party_name}
-                                                    width={48}
-                                                    height={48}
-                                                    className="w-12 h-12 object-contain border border-stone-200 rounded-full shrink-0"
-                                                />
+                                        {/* Winner Badge */}
+                                        {isWinner && (
+                                            <div className="absolute top-0 right-0 bg-amber-500 text-white px-3 py-1 rounded-bl-xl flex items-center gap-1.5 text-xs font-bold z-10">
+                                                <Trophy className="w-3.5 h-3.5" />
+                                                WINNER
                                             </div>
+                                        )}
+                                        <Link
+                                            href={`/candidates/${candidate.id}`}
+                                            className="group block flex-1"
+                                        >
+                                            <div className="p-5 flex flex-col h-full">
+                                                <div className="flex items-start justify-between gap-4 mb-4">
+                                                    <h3 className="text-xl font-normal leading-tight group-hover:text-stone-600 transition-colors font-[family-name:var(--font-fraunces)]">
+                                                        {candidate.candidate_name}
+                                                    </h3>
+                                                    <div className="relative">
+                                                        <Image
+                                                            src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
+                                                            alt={candidate.party_name}
+                                                            width={48}
+                                                            height={48}
+                                                            className={`w-12 h-12 object-contain rounded-full shrink-0 ${isWinner ? 'border-2 border-amber-400' : 'border border-stone-200'
+                                                                }`}
+                                                        />
+                                                        {isWinner && (
+                                                            <div className="absolute -bottom-1 -right-1 bg-amber-500 rounded-full p-1">
+                                                                <Trophy className="w-2.5 h-2.5 text-white" />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
 
-                                            <p className="text-stone-500 text-sm mb-4 line-clamp-1">
-                                                {candidate.party_name}
-                                            </p>
-
-                                            <div className="flex items-center justify-between mt-auto pt-3 border-t border-stone-100">
-                                                <span className="inline-flex items-center bg-stone-900 text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium">
-                                                    Ward {candidate.ward_no}
-                                                </span>
-                                                {(() => {
-                                                    const reservation = categoryReservationData.find(r => r.ward_no === candidate.ward_no);
-                                                    const category = reservation?.category || 'GEN';
-                                                    const isWomen = reservation?.women_reserved;
-                                                    return (
-                                                        <span className={`text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded ${category === 'SC' ? 'bg-blue-100 text-blue-600' :
-                                                            category === 'ST' ? 'bg-green-100 text-green-600' :
-                                                                category === 'OBC' ? 'bg-amber-100 text-amber-600' :
-                                                                    'bg-stone-100 text-stone-600'
-                                                            }`}>
-                                                            {category}{isWomen ? ' (W)' : ''}
-                                                        </span>
-                                                    );
-                                                })()}
-                                            </div>
-                                        </div>
-                                    </Link>
-                                    <Link
-                                        href={`/candidates/compare/${candidate.ward_no}`}
-                                        className="flex items-center justify-center gap-1 py-2 bg-stone-100 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
-                                    >
-                                        <Scale className="w-3 h-3" />
-                                        Compare Ward
-                                    </Link>
-                                </div>
-                            ))}
-                        </div>
-
-                        {/* Mobile: List layout */}
-                        <div className="md:hidden space-y-2">
-                            {currentCandidates.map((candidate) => (
-                                <div
-                                    key={candidate.id}
-                                    className="bg-white border border-stone-200 rounded-lg overflow-hidden"
-                                >
-                                    <Link
-                                        href={`/candidates/${candidate.id}`}
-                                        className="block p-4 hover:bg-stone-50 transition-colors"
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <Image
-                                                src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
-                                                alt={candidate.party_name}
-                                                width={44}
-                                                height={44}
-                                                className="w-11 h-11 object-contain border border-stone-200 rounded-full shrink-0"
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <h3 className="font-medium text-base leading-tight truncate font-[family-name:var(--font-fraunces)]">
-                                                    {candidate.candidate_name}
-                                                </h3>
-                                                <p className="text-xs text-stone-500 truncate">
+                                                <p className="text-stone-500 text-sm mb-4 line-clamp-1">
                                                     {candidate.party_name}
                                                 </p>
-                                                <div className="flex items-center gap-2 mt-1">
-                                                    <span className="text-xs text-amber-600 font-medium">
+
+                                                <div className="flex items-center justify-between mt-auto pt-3 border-t border-stone-100">
+                                                    <span className="inline-flex items-center bg-stone-900 text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium">
                                                         Ward {candidate.ward_no}
                                                     </span>
                                                     {(() => {
@@ -375,7 +338,7 @@ export default function CandidatesPage() {
                                                         const category = reservation?.category || 'GEN';
                                                         const isWomen = reservation?.women_reserved;
                                                         return (
-                                                            <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${category === 'SC' ? 'bg-blue-100 text-blue-600' :
+                                                            <span className={`text-[10px] font-medium uppercase tracking-wider px-2 py-0.5 rounded ${category === 'SC' ? 'bg-blue-100 text-blue-600' :
                                                                 category === 'ST' ? 'bg-green-100 text-green-600' :
                                                                     category === 'OBC' ? 'bg-amber-100 text-amber-600' :
                                                                         'bg-stone-100 text-stone-600'
@@ -386,17 +349,97 @@ export default function CandidatesPage() {
                                                     })()}
                                                 </div>
                                             </div>
-                                        </div>
-                                    </Link>
-                                    <Link
-                                        href={`/candidates/compare/${candidate.ward_no}`}
-                                        className="flex items-center justify-center gap-1 py-2 bg-stone-100 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
+                                        </Link>
+                                        <Link
+                                            href={`/candidates/compare/${candidate.ward_no}`}
+                                            className="flex items-center justify-center gap-1 py-2 bg-stone-100 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
+                                        >
+                                            <Scale className="w-3 h-3" />
+                                            Compare Ward
+                                        </Link>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Mobile: List layout */}
+                        <div className="md:hidden space-y-2">
+                            {currentCandidates.map((candidate) => {
+                                const isWinner = candidate.winnner === true;
+                                return (
+                                    <div
+                                        key={candidate.id}
+                                        className={`rounded-lg overflow-hidden relative ${isWinner
+                                                ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-400'
+                                                : 'bg-white border border-stone-200'
+                                            }`}
                                     >
-                                        <Scale className="w-3 h-3" />
-                                        Compare Ward Candidates
-                                    </Link>
-                                </div>
-                            ))}
+                                        {/* Winner Badge - Mobile */}
+                                        {isWinner && (
+                                            <div className="absolute top-0 right-0 bg-amber-500 text-white px-2 py-0.5 rounded-bl-lg flex items-center gap-1 text-[10px] font-bold z-10">
+                                                <Trophy className="w-3 h-3" />
+                                                WINNER
+                                            </div>
+                                        )}
+                                        <Link
+                                            href={`/candidates/${candidate.id}`}
+                                            className="block p-4 hover:bg-stone-50/50 transition-colors"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="relative">
+                                                    <Image
+                                                        src={getPartyLogo(candidate.party_name, candidate.is_women_reserved)}
+                                                        alt={candidate.party_name}
+                                                        width={44}
+                                                        height={44}
+                                                        className={`w-11 h-11 object-contain rounded-full shrink-0 ${isWinner ? 'border-2 border-amber-400' : 'border border-stone-200'
+                                                            }`}
+                                                    />
+                                                    {isWinner && (
+                                                        <div className="absolute -bottom-1 -right-1 bg-amber-500 rounded-full p-0.5">
+                                                            <Trophy className="w-2.5 h-2.5 text-white" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className="font-medium text-base leading-tight truncate font-[family-name:var(--font-fraunces)]">
+                                                        {candidate.candidate_name}
+                                                    </h3>
+                                                    <p className="text-xs text-stone-500 truncate">
+                                                        {candidate.party_name}
+                                                    </p>
+                                                    <div className="flex items-center gap-2 mt-1">
+                                                        <span className="text-xs text-amber-600 font-medium">
+                                                            Ward {candidate.ward_no}
+                                                        </span>
+                                                        {(() => {
+                                                            const reservation = categoryReservationData.find(r => r.ward_no === candidate.ward_no);
+                                                            const category = reservation?.category || 'GEN';
+                                                            const isWomen = reservation?.women_reserved;
+                                                            return (
+                                                                <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${category === 'SC' ? 'bg-blue-100 text-blue-600' :
+                                                                    category === 'ST' ? 'bg-green-100 text-green-600' :
+                                                                        category === 'OBC' ? 'bg-amber-100 text-amber-600' :
+                                                                            'bg-stone-100 text-stone-600'
+                                                                    }`}>
+                                                                    {category}{isWomen ? ' (W)' : ''}
+                                                                </span>
+                                                            );
+                                                        })()}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Link>
+                                        <Link
+                                            href={`/candidates/compare/${candidate.ward_no}`}
+                                            className="flex items-center justify-center gap-1 py-2 bg-stone-100 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
+                                        >
+                                            <Scale className="w-3 h-3" />
+                                            Compare Ward Candidates
+                                        </Link>
+                                    </div>
+                                );
+                            })}
                         </div>
 
 
