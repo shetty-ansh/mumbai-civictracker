@@ -4,7 +4,7 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { AlertTriangle, GraduationCap, Scale, Users } from "lucide-react";
+import { AlertTriangle, GraduationCap, Scale, Users, Trophy } from "lucide-react";
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
 import { showToast } from "@/lib/toast";
@@ -30,6 +30,7 @@ interface CandidateWithInfo {
     symbol: string;
     ward_name: string;
     is_women_reserved: boolean;
+    winnner: boolean;
     case_info: { education: string; active_cases: number; closed_cases: number }[] | { education: string; active_cases: number; closed_cases: number } | null;
 }
 
@@ -76,6 +77,7 @@ export default function WardDetailPage({ params }: WardPageProps) {
                 .from('bmc_candidates')
                 .select(`
                     *,
+                    winnner,
                     case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases)
                 `)
                 .ilike('ward_name', `%${wardName}%`);
@@ -96,6 +98,7 @@ export default function WardDetailPage({ params }: WardPageProps) {
                         .from('bmc_candidates')
                         .select(`
                             *,
+                            winnner,
                             case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases)
                         `)
                         .eq('ward_no', wardNumber);
@@ -106,7 +109,13 @@ export default function WardDetailPage({ params }: WardPageProps) {
             }
 
             if (data) {
-                setCandidates(data as CandidateWithInfo[]);
+                // Sort candidates so winners appear first
+                const sortedData = [...data].sort((a, b) => {
+                    if (a.winnner && !b.winnner) return -1;
+                    if (!a.winnner && b.winnner) return 1;
+                    return 0;
+                });
+                setCandidates(sortedData as CandidateWithInfo[]);
             }
             setLoading(false);
         };
@@ -213,13 +222,25 @@ export default function WardDetailPage({ params }: WardPageProps) {
                                 const caseInfo = Array.isArray(candidate.case_info) ? candidate.case_info[0] : candidate.case_info;
                                 const hasCases = caseInfo && (caseInfo.active_cases > 0 || caseInfo.closed_cases > 0);
                                 const education = caseInfo?.education || 'N/A';
+                                const isWinner = candidate.winnner === true;
 
                                 return (
                                     <Link
                                         key={candidate.id}
                                         href={`/candidates/${candidate.id}`}
-                                        className="group bg-white border border-stone-200 rounded-xl p-4 hover:shadow-md transition-all duration-300 overflow-hidden"
+                                        className={`group relative rounded-xl p-4 hover:shadow-md transition-all duration-300 overflow-hidden ${isWinner
+                                            ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-400 shadow-lg shadow-amber-100'
+                                            : 'bg-white border border-stone-200'
+                                            }`}
                                     >
+                                        {/* Winner Badge */}
+                                        {isWinner && (
+                                            <div className="absolute top-0 right-0 bg-amber-500 text-white px-3 py-1 rounded-bl-xl rounded-tr-xl flex items-center gap-1.5 text-xs font-bold">
+                                                <Trophy className="w-3.5 h-3.5" />
+                                                WINNER
+                                            </div>
+                                        )}
+
                                         <div className="flex items-center gap-4 w-full">
                                             {/* Party Logo */}
                                             <Image
@@ -227,15 +248,16 @@ export default function WardDetailPage({ params }: WardPageProps) {
                                                 alt={candidate.party_name}
                                                 width={56}
                                                 height={56}
-                                                className="w-14 h-14 object-contain border border-stone-200 rounded-full shrink-0 bg-white"
+                                                className={`w-14 h-14 object-contain rounded-full shrink-0 bg-white ${isWinner ? 'border-2 border-amber-400' : 'border border-stone-200'
+                                                    }`}
                                             />
 
                                             {/* Candidate Info */}
                                             <div className="flex-1 min-w-0">
-                                                <h3 className="text-lg font-medium leading-tight truncate group-hover:text-stone-600 transition-colors font-[family-name:var(--font-fraunces)]">
+                                                <h3 className={`text-lg font-medium leading-tight truncate transition-colors font-[family-name:var(--font-fraunces)] ${isWinner ? 'text-stone-900 group-hover:text-stone-700' : 'group-hover:text-stone-600'}`}>
                                                     {candidate.candidate_name}
                                                 </h3>
-                                                <p className="text-sm text-stone-500 truncate">
+                                                <p className={`text-sm truncate ${isWinner ? 'text-stone-700' : 'text-stone-500'}`}>
                                                     {candidate.party_name}
                                                 </p>
                                             </div>
