@@ -3,10 +3,13 @@ import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { Users, AlertTriangle, GraduationCap, FileText } from "lucide-react";
+import { Users, AlertTriangle, GraduationCap, FileText, Vote, Trophy } from "lucide-react";
 import manifestoData from "@/data/party-manifestos.json";
 import { ComparePageToast } from "./compare-toast";
 import { ManifestoCell } from "./manifesto-cell";
+
+// Enable ISR - revalidate every hour
+export const revalidate = 3600;
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
@@ -100,6 +103,8 @@ interface CandidateWithInfo {
     party_name: string;
     ward_name: string;
     is_women_reserved: boolean;
+    winnner?: boolean;
+    votes: number | null;
     case_info: { education: string; active_cases: number; closed_cases: number }[] | { education: string; active_cases: number; closed_cases: number } | null;
 }
 
@@ -111,14 +116,21 @@ export default async function CompareWardPage({
     const { ward } = await params;
     const wardNo = parseInt(ward);
 
-    const { data: candidatesRaw, error } = await supabase
+    const { data: candidatesRawData, error } = await supabase
         .from('bmc_candidates')
         .select(`
             *,
-            case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases)
+            case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases),
+            votes:bmc_candidate_votes!bmc_candidate_votes_candidate_fkey(votes)
         `)
         .eq('ward_no', wardNo)
         .order('party_name', { ascending: true });
+
+    // Transform votes from array to single value
+    const candidatesRaw = candidatesRawData?.map(c => ({
+        ...c,
+        votes: Array.isArray(c.votes) && c.votes.length > 0 ? c.votes[0].votes : null
+    }));
 
     // Sort candidates: Independents go to the end
     const candidates = candidatesRaw?.sort((a, b) => {
@@ -185,6 +197,12 @@ export default async function CompareWardPage({
                                         <div className="flex items-center gap-2">
                                             <GraduationCap className="w-4 h-4" />
                                             Education
+                                        </div>
+                                    </th>
+                                    <th className="text-left p-4 font-medium text-sm uppercase tracking-wider">
+                                        <div className="flex items-center gap-2">
+                                            <Vote className="w-4 h-4" />
+                                            Votes
                                         </div>
                                     </th>
                                     <th className="text-left p-4 font-medium text-sm uppercase tracking-wider">
@@ -258,6 +276,18 @@ export default async function CompareWardPage({
                                                     }`}>
                                                     {education.toUpperCase()}
                                                 </span>
+                                            </td>
+
+                                            {/* Votes */}
+                                            <td className="p-4">
+                                                {candidate.votes !== null ? (
+                                                    <div className={`flex items-center gap-2 ${candidate.winnner ? 'text-amber-600' : 'text-emerald-600'}`}>
+                                                        {candidate.winnner && <Trophy className="w-4 h-4 text-amber-500" />}
+                                                        <span className="font-bold text-lg">{candidate.votes.toLocaleString('en-IN')}</span>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-stone-400 text-sm italic">N/A</span>
+                                                )}
                                             </td>
 
                                             {/* Legal History */}

@@ -3,12 +3,15 @@ import { supabase } from "@/lib/supabase";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { User, AlertTriangle, Scale, Trophy } from "lucide-react";
+import { User, AlertTriangle, Scale, Trophy, Vote } from "lucide-react";
 import manifestoData from "@/data/party-manifestos.json";
 import wardAffidavits from "@/data/ward-affidavits.json";
 import { CandidatePageToast } from "./candidate-toast";
 import { ManifestoSection } from "./manifesto-section";
 import { BackButton } from "./back-button";
+
+// Enable ISR - revalidate every hour
+export const revalidate = 3600;
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
@@ -75,16 +78,23 @@ export default async function CandidatePage({
 }) {
     const { id } = await params;
 
-    const { data: candidate, error } = await supabase
+    const { data: candidateRaw, error } = await supabase
         .from('bmc_candidates')
         .select(`
             *,
             winnner,
             case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases),
-            reservation_category:reservation_categories(category_code, category_name_marathi, category_name_english, total_seats, women_reserved_seats)
+            reservation_category:reservation_categories(category_code, category_name_marathi, category_name_english, total_seats, women_reserved_seats),
+            votes:bmc_candidate_votes!bmc_candidate_votes_candidate_fkey(votes)
         `)
         .eq('id', id)
         .single();
+
+    // Transform votes from array to single value
+    const candidate = candidateRaw ? {
+        ...candidateRaw,
+        votes: Array.isArray(candidateRaw.votes) && candidateRaw.votes.length > 0 ? candidateRaw.votes[0].votes : null
+    } : null;
 
     if (error || !candidate) {
         return (
@@ -142,8 +152,19 @@ export default async function CandidatePage({
                             <p className={`text-lg mb-2 ${candidate.winnner ? 'text-stone-700' : 'text-stone-300'}`}>{candidate.party_name}</p>
                             <p className={`font-medium text-lg ${candidate.winnner ? 'text-stone-800' : 'text-amber-400'}`}>Ward {candidate.ward_no} • {candidate.ward_name}</p>
 
+                            {/* Votes Display */}
+                            {candidate.votes !== null && (
+                                <div className={`mt-4 flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg ${candidate.winnner ? 'bg-white/30' : 'bg-white/10'}`}>
+                                    <Vote className={`w-5 h-5 ${candidate.winnner ? 'text-stone-800' : 'text-emerald-400'}`} />
+                                    <span className={`text-2xl font-bold ${candidate.winnner ? 'text-stone-900' : 'text-white'}`}>
+                                        {candidate.votes.toLocaleString('en-IN')}
+                                    </span>
+                                    <span className={`text-sm ${candidate.winnner ? 'text-stone-700' : 'text-stone-300'}`}>votes</span>
+                                </div>
+                            )}
+
                             {candidate.is_women_reserved && (
-                                <span className={`mt-5 inline-flex items-center text-xs px-4 py-1.5 rounded-md ${candidate.winnner ? 'bg-stone-800/20 text-stone-800' : 'bg-pink-500/20 text-pink-300'
+                                <span className={`mt-4 inline-flex items-center text-xs px-4 py-1.5 rounded-md ${candidate.winnner ? 'bg-stone-800/20 text-stone-800' : 'bg-pink-500/20 text-pink-300'
                                     }`}>
                                     Women Reserved Seat
                                 </span>
