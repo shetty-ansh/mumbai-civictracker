@@ -6,7 +6,8 @@ import Link from "next/link";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Navbar } from "@/components/ui/navbar";
-import { Trophy, Vote, Users, TrendingUp, Award, ExternalLink } from "lucide-react";
+import { Trophy, Vote, Users, TrendingUp, Award, ExternalLink, Loader2, X } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface Winner {
     id: string;
@@ -93,6 +94,22 @@ function formatVotes(votes: number): string {
 }
 
 export default function ResultsClient({ winners }: ResultsClientProps) {
+    // Data Notice Popup
+    const [showNotice, setShowNotice] = useState(false);
+
+    useEffect(() => {
+        // Check if notice has been dismissed in this session
+        const hasDismissed = sessionStorage.getItem('results-notice-dismissed');
+        if (!hasDismissed) {
+            setShowNotice(true);
+        }
+    }, []);
+
+    const handleDismiss = () => {
+        sessionStorage.setItem('results-notice-dismissed', 'true');
+        setShowNotice(false);
+    };
+
     // Calculate stats
     const stats = useMemo(() => {
         const totalVotes = winners.reduce((sum, w) => sum + (w.votes || 0), 0);
@@ -260,6 +277,36 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
     return (
         <div className="min-h-screen bg-stone-50">
             <Navbar />
+
+            {/* Custom Data Notice Modal */}
+            {showNotice && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white border-2 border-amber-500 rounded-xl p-6 shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="bg-amber-100 p-2 rounded-full">
+                                <Loader2 className="w-6 h-6 text-amber-600 animate-spin" />
+                            </div>
+                            <h2 className="text-xl font-bold text-amber-700 leading-none">
+                                Live Data Updates
+                            </h2>
+                        </div>
+
+                        <div className="text-stone-600 text-base mb-6 space-y-2">
+                            <p>Election results are currently being entered into our system.</p>
+                            <p className="text-sm bg-amber-50 p-3 rounded-lg border border-amber-100 text-amber-800">
+                                <strong>Note:</strong> This is taking some time because we are adding detailed vote counts for every single candidate across all 227 wards. Please check back frequently for updates.
+                            </p>
+                        </div>
+
+                        <button
+                            onClick={handleDismiss}
+                            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg py-3 px-6 transition-colors shadow-md hover:shadow-lg active:scale-[0.98]"
+                        >
+                            Got it, show me results
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <main className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-8">
                 {/* Header */}

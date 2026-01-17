@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import ResultsClient from './results-client';
 
-// Enable ISR - revalidate every hour
-export const revalidate = 3600;
+// Enable ISR - revalidate set to 0 to show DB changes immediately during dev
+export const revalidate = 0;
 
 interface Winner {
     id: string;
