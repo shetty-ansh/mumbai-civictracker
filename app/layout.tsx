@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Fraunces } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
+import Script from "next/script";
 
 import "./globals.css";
 import { Providers } from "./providers";
@@ -45,6 +46,12 @@ export default function RootLayout({
       >
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || ""} />
         <Analytics />
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8355660084933685"
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
         <Providers>
           {children}
           <FeedbackButton />
