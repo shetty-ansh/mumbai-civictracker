@@ -23,7 +23,7 @@ export function Navbar() {
                         <div className="text-xl leading-none font-bold" style={{ fontFamily: 'serif' }}>मुंबई</div>
                     </div>
                 </Link>
-                <nav className="flex items-center gap-4 md:gap-8">
+                <nav className="flex items-center gap-4 md:gap-6">
                     <Link
                         href="/map"
                         className={`text-sm md:text-base transition-colors ${pathname?.startsWith('/map')
@@ -52,6 +52,15 @@ export function Navbar() {
                         News
                     </Link>
                     <Link
+                        href="/sources"
+                        className={`text-sm md:text-base transition-colors ${pathname === '/sources'
+                            ? 'font-semibold text-foreground'
+                            : 'font-medium text-muted-foreground hover:text-accent'
+                            }`}
+                    >
+                        Resources
+                    </Link>
+                    <Link
                         href="/results"
                         className={`text-sm md:text-base transition-colors ${pathname === '/results'
                             ? 'font-semibold bg-amber-500 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md'
@@ -60,15 +69,6 @@ export function Navbar() {
                     >
                         Results
                     </Link>
-                    {/* <Link
-                        href="/stats"
-                        className={`text-base transition-colors ${pathname === '/stats'
-                            ? 'font-semibold text-foreground'
-                            : 'font-medium text-muted-foreground hover:text-accent'
-                            }`}
-                    >
-                        Stats
-                    </Link> */}
                 </nav>
             </div>
         </header>
