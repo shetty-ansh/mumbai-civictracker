@@ -139,14 +139,12 @@ export default function HomePage() {
                             <BookOpen className="w-5 h-5 text-emerald-600" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-stone-900">New to elections?</p>
+                            <p className="text-sm font-medium text-stone-900">Election Results are Live 🔴</p>
                             <a
-                                href="https://drive.google.com/file/d/1yWBvO8YkspZcZMjWRMc1hUc4FREfCG77/view?usp=drivesdk"
-                                target="_blank"
-                                rel="noopener noreferrer"
+                                href="/map"
                                 className="text-xs text-emerald-600 hover:text-emerald-700 hover:underline"
                             >
-                                Check out our Candidate Handbook →
+                                Check your ward's winner →
                             </a>
                         </div>
                         <button
