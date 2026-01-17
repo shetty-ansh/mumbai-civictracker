@@ -52,13 +52,13 @@ export function Navbar() {
                         News
                     </Link>
                     <Link
-                        href="/polling-stations"
-                        className={`text-sm md:text-base transition-colors ${pathname === '/polling-stations'
-                            ? 'font-semibold bg-stone-900 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md'
-                            : 'font-semibold bg-stone-900 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md hover:bg-stone-800'
+                        href="/results"
+                        className={`text-sm md:text-base transition-colors ${pathname === '/results'
+                            ? 'font-semibold bg-amber-500 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md'
+                            : 'font-semibold bg-amber-500 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md hover:bg-amber-600'
                             }`}
                     >
-                        Polling
+                        Results
                     </Link>
                     {/* <Link
                         href="/stats"

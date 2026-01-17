@@ -403,12 +403,20 @@ function Electoral2025WardsLayer({ onWardClick }: { onWardClick: (name: string, 
     const [hoveredWard, setHoveredWard] = useState<{
         wardNo: number;
     } | null>(null);
+    const [isLayerLoaded, setIsLayerLoaded] = useState(false);
 
     // Build lookup from JSON
     const reservationLookup = categoryReservationData.reduce((acc, item) => {
         acc[item.ward_no] = { category: item.category, women_reserved: item.women_reserved };
         return acc;
     }, {} as Record<number, { category: string; women_reserved: boolean }>);
+
+    // Show loading toast while ward outlines load
+    useEffect(() => {
+        if (!isLayerLoaded && isLoaded) {
+            showToast('info', 'Loading Map', 'Ward outlines loading...');
+        }
+    }, [isLoaded, isLayerLoaded]);
 
     useEffect(() => {
         if (!isLoaded || !map) return;
@@ -417,6 +425,9 @@ function Electoral2025WardsLayer({ onWardClick }: { onWardClick: (name: string, 
             type: "geojson",
             data: "/2025-ward-data.geojson",
         });
+
+        // Mark layer as loaded after source is added
+        setIsLayerLoaded(true);
 
         // Outline only - transparent fill with black outlines
         map.addLayer({
@@ -747,6 +758,13 @@ function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id:
     const [coalitionCounts, setCoalitionCounts] = useState<Record<string, number>>({});
     const [loading, setLoading] = useState(true);
 
+    // Show loading toast while fetching results
+    useEffect(() => {
+        if (loading) {
+            showToast('info', 'Loading Results', 'Fetching election results...');
+        }
+    }, [loading]);
+
     // Fetch winners on mount
     useEffect(() => {
         async function fetchWinners() {
@@ -758,6 +776,7 @@ function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id:
 
             if (error) {
                 console.error('Error fetching winners:', error);
+                showToast('error', 'Error', 'Failed to load election results');
                 setLoading(false);
                 return;
             }
