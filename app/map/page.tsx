@@ -698,7 +698,7 @@ const COALITION_COLORS: Record<string, { color: string; name: string; parties: s
     mahayuti: {
         color: "#FF6B35", // Saffron/Orange
         name: "Mahayuti",
-        parties: ["Bharatiya Janata Party", "Shiv Sena", "Republican Party of India (A)", "Nationalist Congress Party"]
+        parties: ["Bharatiya Janata Party", "Shiv Sena", "Republican Party of India (A)"]
     },
     mva: {
         color: "#2196F3", // Vibrant Blue
@@ -708,7 +708,7 @@ const COALITION_COLORS: Record<string, { color: string; name: string; parties: s
     congress: {
         color: "#4CAF50", // Green
         name: "Congress+",
-        parties: ["Indian National Congress", "Vanchit Bahujan Aghadi", "Samajwadi Party"]
+        parties: ["Indian National Congress", "Vanchit Bahujan Aghadi"]
     },
     aimim: {
         color: "#00897B", // Teal
@@ -716,7 +716,7 @@ const COALITION_COLORS: Record<string, { color: string; name: string; parties: s
         parties: ["All India Majlis-E-Ittehadul Muslimeen"]
     },
     other: {
-        color: "#9E9E9E", // Gray
+        color: "#9E9E9E", // Gray - NCP, Samajwadi Party, AAP, Independents
         name: "Other",
         parties: []
     }
@@ -725,7 +725,8 @@ const COALITION_COLORS: Record<string, { color: string; name: string; parties: s
 // Get coalition for a party
 function getCoalitionForParty(partyName: string): string {
     for (const [coalitionId, coalition] of Object.entries(COALITION_COLORS)) {
-        if (coalition.parties.some(p => partyName.includes(p) || p.includes(partyName))) {
+        // Use exact match to avoid "Shiv Sena" matching "Shiv Sena (Uddhav Balasaheb Thackeray)"
+        if (coalition.parties.some(p => p === partyName)) {
             return coalitionId;
         }
     }

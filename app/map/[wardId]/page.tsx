@@ -70,6 +70,7 @@ export default function WardDetailPage({ params }: WardPageProps) {
     const [candidates, setCandidates] = useState<CandidateWithInfo[]>([]);
     const [loading, setLoading] = useState(true);
 
+
     useEffect(() => {
         const fetchCandidates = async () => {
             // Try to fetch candidates with case_info - search by ward_name first
