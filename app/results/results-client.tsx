@@ -56,8 +56,8 @@ const PARTY_COLORS: Record<string, string> = {
 };
 
 // Alliance groupings
-const MAHAYUTI_PARTIES = ["Bharatiya Janata Party", "Shiv Sena", "Nationalist Congress Party"];
-const MVA_PARTIES = ["Indian National Congress", "Shiv Sena (Uddhav Balasaheb Thackeray)", "Nationalist Congress Party - Sharad Pawar"];
+const MAHAYUTI_PARTIES = ["Bharatiya Janata Party", "Shiv Sena"];
+const MVA_PARTIES = ["Indian National Congress", "Shiv Sena (Uddhav Balasaheb Thackeray)", "Nationalist Congress Party - Sharad Pawar", "Maharashtra Navnirman Sena", "Vanchit Bahujan Aghadi"];
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
@@ -366,7 +366,7 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
                         {/* Mahayuti */}
                         <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-5">
                             <h3 className="font-bold text-lg text-orange-800 mb-1">Mahayuti</h3>
-                            <p className="text-xs text-orange-600 mb-3">BJP + Shiv Sena + NCP</p>
+                            <p className="text-xs text-orange-600 mb-3">BJP + Shiv Sena</p>
                             <div className="flex items-baseline gap-2">
                                 <span className="text-4xl font-bold text-orange-600">{stats.mahayutiSeats}</span>
                                 <span className="text-stone-500">seats</span>
@@ -382,7 +382,7 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
                         {/* MVA */}
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-5">
                             <h3 className="font-bold text-lg text-blue-800 mb-1">MVA</h3>
-                            <p className="text-xs text-blue-600 mb-3">Congress + SS(UBT) + NCP(SP)</p>
+                            <p className="text-xs text-blue-600 mb-3">Congress + SS(UBT) + NCP(SP) + MNS + VBA</p>
                             <div className="flex items-baseline gap-2">
                                 <span className="text-4xl font-bold text-blue-600">{stats.mvaSeats}</span>
                                 <span className="text-stone-500">seats</span>
