@@ -10,8 +10,8 @@ import { CandidatePageToast } from "./candidate-toast";
 import { ManifestoSection } from "./manifesto-section";
 import { BackButton } from "./back-button";
 
-// Enable ISR - revalidate every hour
-export const revalidate = 3600;
+// Enable ISR - revalidate set to 0 to show DB changes immediately during dev
+export const revalidate = 0;
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {

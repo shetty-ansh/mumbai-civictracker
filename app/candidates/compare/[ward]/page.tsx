@@ -8,8 +8,8 @@ import manifestoData from "@/data/party-manifestos.json";
 import { ComparePageToast } from "./compare-toast";
 import { ManifestoCell } from "./manifesto-cell";
 
-// Enable ISR - revalidate every hour
-export const revalidate = 3600;
+// Enable ISR - revalidate set to 0 to show DB changes immediately during dev
+export const revalidate = 0;
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {

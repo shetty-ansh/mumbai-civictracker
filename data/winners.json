@@ -1,0 +1,1137 @@
+[
+    {
+        "ward_no": 1,
+        "candidate_name": "Rekha Ram Yadav",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 2,
+        "candidate_name": "Tejasvi Abhishek Ghosalkar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 3,
+        "candidate_name": "Darekar Prakash Yashwant",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 4,
+        "candidate_name": "Pangare Mangesh Dattaram",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 5,
+        "candidate_name": "Sanjay Shankar Ghadi",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 6,
+        "candidate_name": "Karkar Diksha Harshad",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 7,
+        "candidate_name": "Ganesh Dattaram Khankar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 8,
+        "candidate_name": "Yogita Nilesh Patil",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 9,
+        "candidate_name": "Shivanand (Shiva) Shetty",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 10,
+        "candidate_name": "Jitendra Ambalal Patel",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 11,
+        "candidate_name": "Dr. Aditi Bhaskar Khursange",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 12,
+        "candidate_name": "Sarika Shashikant Zhore",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 13,
+        "candidate_name": "Rani Dwivedi Nighut",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 14,
+        "candidate_name": "Seema Kiran Shinde",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 15,
+        "candidate_name": "Mrs. Jignasa Nikunj Shah",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 16,
+        "candidate_name": "Shweta Sharad Korgaonkar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 17,
+        "candidate_name": "Dr. Shilpa Saurabh Sangore",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 18,
+        "candidate_name": "Sandhya Vipul Doshi (Sakre)",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 19,
+        "candidate_name": "Dakshata Shrikant Kavthankar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 20,
+        "candidate_name": "Dipak (Bala) Tawade",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 21,
+        "candidate_name": "Lina Patel Deherkar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 22,
+        "candidate_name": "Hemanshu Sunil Parekh",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 23,
+        "candidate_name": "Shivkumar Basukinath Jha",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 24,
+        "candidate_name": "Swati Sanjay Jaiswal",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 25,
+        "candidate_name": "Nisha Parulekar-Bangera",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 26,
+        "candidate_name": "Kale Dharmendra Rajaram",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 27,
+        "candidate_name": "Neelam Sunil Gurav",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 28,
+        "candidate_name": "Ajanta Ra. Yadav",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 29,
+        "candidate_name": "Sachin Balkrishna Patil",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 30,
+        "candidate_name": "Dhaval Vora",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 31,
+        "candidate_name": "Manisha Kamlesh Yadav",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 32,
+        "candidate_name": "Gita Kiran Bhandari",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 33,
+        "candidate_name": "Kamarjahan Moin Siddiqui",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 34,
+        "candidate_name": "Haiderali Aslam Shaikh",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 35,
+        "candidate_name": "Verma Yogesh Rajbahadur",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 36,
+        "candidate_name": "Siddharth Shrikant Sharma",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 37,
+        "candidate_name": "Kadam Yogita Prashant",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 38,
+        "candidate_name": "Surekha Parab",
+        "party_name": "Maharashtra Navnirman Sena"
+    },
+    {
+        "ward_no": 39,
+        "candidate_name": "Pushpa Ramesh Kalambe",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 40,
+        "candidate_name": "Tulshiram Dhondiba Shinde",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 41,
+        "candidate_name": "Adv. Suhas Chandrakant Wadkar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 42,
+        "candidate_name": "Dhanshree Vaibhav Bharadkar",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 43,
+        "candidate_name": "Ajit Balkrishna Ravrane",
+        "party_name": "Nationalist Congress Party - Sharad Pawar"
+    },
+    {
+        "ward_no": 44,
+        "candidate_name": "Sangeeta Gyanmurti Sharma",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 45,
+        "candidate_name": "Sanjay Namdev Kamble",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 46,
+        "candidate_name": "Yogita Sunil Koli",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 47,
+        "candidate_name": "Tejminder Satnamsingh Tiwana",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 48,
+        "candidate_name": "Rafique Iliyas Sheikh",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 49,
+        "candidate_name": "Koli Sangeeta Chandrakant",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 50,
+        "candidate_name": "Rajput Vikram Pratapsingh",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 51,
+        "candidate_name": "Varsha Swapnil Tembwalkar",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 52,
+        "candidate_name": "Preeti Manoj Satam",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 53,
+        "candidate_name": "Walvi Jitendra Hiralal",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 54,
+        "candidate_name": "Ankit Sunil Prabhu",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 55,
+        "candidate_name": "Harsh Bhargav Patel",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 56,
+        "candidate_name": "Laxmi Nitin Bhatia",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 57,
+        "candidate_name": "Pillai Shrikala Ramchandran",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 58,
+        "candidate_name": "Sandip Dilip Patel",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 59,
+        "candidate_name": "Yashodhar (Shailesh) P. Phanse",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 60,
+        "candidate_name": "Sayali Raghunath Kulkarni",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 61,
+        "candidate_name": "Divya Avnish Singh",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 62,
+        "candidate_name": "Zeeshan Changez Multani",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 63,
+        "candidate_name": "Rupesh Gajanan Savarkar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 64,
+        "candidate_name": "Khan Saba Harun Rashid",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 65,
+        "candidate_name": "Banderi Vitthal Tippanna",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 66,
+        "candidate_name": "Haider Meher Mohsin",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 67,
+        "candidate_name": "Deepak Jayram Kotekar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 68,
+        "candidate_name": "Rohan Rathod",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 69,
+        "candidate_name": "Sudha Shambhunath Singh",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 70,
+        "candidate_name": "Anish Naval Makwani",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 71,
+        "candidate_name": "Sunita Rajesh Mehta",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 72,
+        "candidate_name": "Mamata Pankaj Yadav",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 73,
+        "candidate_name": "Lona Rajendrasinh Rawat",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 74,
+        "candidate_name": "Vidya Bharat Arya-Kangane",
+        "party_name": "Maharashtra Navnirman Sena"
+    },
+    {
+        "ward_no": 75,
+        "candidate_name": "Shri. Pramod Pandurang Sawant",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 76,
+        "candidate_name": "Prakash Daulat Musale",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 77,
+        "candidate_name": "Sou. Shivani Shailesh Parab",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 78,
+        "candidate_name": "Sofi Naziya Abdul Jabbar",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 79,
+        "candidate_name": "Juwatkar Manasi Madhukar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 80,
+        "candidate_name": "Disha Sunil Yadav",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 81,
+        "candidate_name": "Kesharben Murji Patel",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 82,
+        "candidate_name": "Amin Jagdishvari Jagdish",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 83,
+        "candidate_name": "Sou. Sonali Samir Sabe",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 84,
+        "candidate_name": "Anjali Abhijit Samant",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 85,
+        "candidate_name": "Milind Ramnath Shinde",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 86,
+        "candidate_name": "Rai Ritesh Kamlesh",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 87,
+        "candidate_name": "Mahadeshwar Pooja Vishwanath",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 88,
+        "candidate_name": "Shravari Sada Parab",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 89,
+        "candidate_name": "Gitesh Vinayak Raut",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 90,
+        "candidate_name": "Adv. Tulip Brain Miranda",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 91,
+        "candidate_name": "Sagun Vasant Naik",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 92,
+        "candidate_name": "Mo. Ibrahim Qureshi",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 93,
+        "candidate_name": "Rohini Yogesh Kamble",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 94,
+        "candidate_name": "Pradnya Dipak Bhutkar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 95,
+        "candidate_name": "Hari Jagannath Shastri",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 96,
+        "candidate_name": "Khan Ayesha Shams",
+        "party_name": "Nationalist Congress Party"
+    },
+    {
+        "ward_no": 97,
+        "candidate_name": "Hetal Gala",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 98,
+        "candidate_name": "Alka Subhash Kerkar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 99,
+        "candidate_name": "Chintamani Dattaram Nivate",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 100,
+        "candidate_name": "Swapna Virendra Mhatre",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 101,
+        "candidate_name": "Karen Cecilia D mello",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 102,
+        "candidate_name": "Khan Rehbar Siraj (Raja)",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 103,
+        "candidate_name": "Dr. Hetal Gala Morvekar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 104,
+        "candidate_name": "Prakash Kashinath Gangadhare",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 105,
+        "candidate_name": "Anita Nandkumar Vaiti",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 106,
+        "candidate_name": "Prabhakar Shinde",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 107,
+        "candidate_name": "Dr. Neil Kirit Somaiya",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 108,
+        "candidate_name": "Dipika Sandesh Ghag",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 109,
+        "candidate_name": "Suresh Atyamaram Shinde",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 110,
+        "candidate_name": "Asha Suresh Koparkar",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 111,
+        "candidate_name": "Deepak Rajaram Sawant",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 112,
+        "candidate_name": "Sakshi Deepak Dalvi",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 113,
+        "candidate_name": "Badhe Deepmala Baban",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 114,
+        "candidate_name": "Rajul Sanjay Patil",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 115,
+        "candidate_name": "Rajbhoj Jyoti Anil",
+        "party_name": "Maharashtra Navnirman Sena"
+    },
+    {
+        "ward_no": 116,
+        "candidate_name": "Jagruti Pratik Patil",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 117,
+        "candidate_name": "Shweta Rajesh Pavaskar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 118,
+        "candidate_name": "Sunita Chandrashekhar Jadhav",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 119,
+        "candidate_name": "Rajesh Pandharinath Sonawale",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 120,
+        "candidate_name": "Vishwas Tukaram Shinde",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 121,
+        "candidate_name": "Thakare Priyadarshini Nagesh",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 122,
+        "candidate_name": "Sharma Chandan Chitranjan",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 123,
+        "candidate_name": "Sunil Sayaji More",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 124,
+        "candidate_name": "Sakina Ayub Sheikh",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 125,
+        "candidate_name": "Suresh Dnyanu Awale",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 126,
+        "candidate_name": "Archana Sanjay Bhalerao",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 127,
+        "candidate_name": "Swarupa Tukaram (Suresh) Patil",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 128,
+        "candidate_name": "Shikare Sai Sunil",
+        "party_name": "Maharashtra Navnirman Sena"
+    },
+    {
+        "ward_no": 129,
+        "candidate_name": "Ashwini Bharat Mate",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 130,
+        "candidate_name": "Dharmesh Bhupat Giri",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 131,
+        "candidate_name": "Rakhi Harihandra Jadhav",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 132,
+        "candidate_name": "Ritu Rajesh Tavde",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 133,
+        "candidate_name": "Nirmiti Bibishan Kanade",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 134,
+        "candidate_name": "Mehjabin Atiq Ahmad Khan",
+        "party_name": "All India Majlis-E-Ittehadul Muslimeen"
+    },
+    {
+        "ward_no": 135,
+        "candidate_name": "Navnath Uttam Ban",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 136,
+        "candidate_name": "Mo. Zamir Qureshi",
+        "party_name": "All India Majlis-E-Ittehadul Muslimeen"
+    },
+    {
+        "ward_no": 137,
+        "candidate_name": "Patel Shamir Ramzan",
+        "party_name": "All India Majlis-E-Ittehadul Muslimeen"
+    },
+    {
+        "ward_no": 138,
+        "candidate_name": "Roshan Irfan Sheikh",
+        "party_name": "All India Majlis-E-Ittehadul Muslimeen"
+    },
+    {
+        "ward_no": 139,
+        "candidate_name": "Shabana Atif Sheikh",
+        "party_name": "All India Majlis-E-Ittehadul Muslimeen"
+    },
+    {
+        "ward_no": 140,
+        "candidate_name": "Vijay Tatoba Ubale",
+        "party_name": "All India Majlis-E-Ittehadul Muslimeen"
+    },
+    {
+        "ward_no": 141,
+        "candidate_name": "Vitthal Govind Lokare",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 142,
+        "candidate_name": "Apeksha Gopal Khandekar",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 143,
+        "candidate_name": "Shabana Mohammad Faruk Qazi",
+        "party_name": "All India Majlis-E-Ittehadul Muslimeen"
+    },
+    {
+        "ward_no": 144,
+        "candidate_name": "Dinesh (Bablu) Panchal",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 145,
+        "candidate_name": "Khairnusa Akbar Husain",
+        "party_name": "All India Majlis-E-Ittehadul Muslimeen"
+    },
+    {
+        "ward_no": 146,
+        "candidate_name": "Samruddhi Ganesh Kate",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 147,
+        "candidate_name": "Pradnya Sunil Sadaphule",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 148,
+        "candidate_name": "Naik Anjali Sanjay",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 149,
+        "candidate_name": "Susham Gopal Sawant",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 150,
+        "candidate_name": "Vaishali Ajit Shandkar",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 151,
+        "candidate_name": "Kashish Rajesh Phulwaria",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 152,
+        "candidate_name": "Asha Subhash Marathe",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 153,
+        "candidate_name": "Minakshi Anil Patankar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 154,
+        "candidate_name": "Mahadev Shankar Shivgan",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 155,
+        "candidate_name": "Snehal Vishnu Shivkar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 156,
+        "candidate_name": "Ashwini Ashok Matekar",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 157,
+        "candidate_name": "Dr. Sarita Ravindra Mhaske",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 158,
+        "candidate_name": "Chitra Somnath Sangle",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 159,
+        "candidate_name": "More Prakash Devji",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 160,
+        "candidate_name": "Kiran (Bhau) Landge",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 161,
+        "candidate_name": "Vijayendra (Viju) Onkar Shinde",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 162,
+        "candidate_name": "Amir Nasim Khan",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 163,
+        "candidate_name": "Shaila Dilip Lande",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 164,
+        "candidate_name": "Harish Bhandigir",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 165,
+        "candidate_name": "Ashraf Azmi",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 166,
+        "candidate_name": "Minal Sanjay Turde",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 167,
+        "candidate_name": "Dr. Saman Arshad Azmi",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 168,
+        "candidate_name": "Dr. Saeeda Khan",
+        "party_name": "Nationalist Congress Party"
+    },
+    {
+        "ward_no": 169,
+        "candidate_name": "Praveena Manish Morajkar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 170,
+        "candidate_name": "Bushra Nadim (Kaptan) Malik",
+        "party_name": "Nationalist Congress Party"
+    },
+    {
+        "ward_no": 171,
+        "candidate_name": "Adv. Rani Swapnil Yerunkkar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 172,
+        "candidate_name": "Rajeshri Rajesh Shirwadkar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 173,
+        "candidate_name": "Shilpa Dayaram Keluskar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 174,
+        "candidate_name": "Kanojiya Sakshi Anil",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 175,
+        "candidate_name": "Satamkar Manasi Mangesh",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 176,
+        "candidate_name": "Rekha R.K. Yadav",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 177,
+        "candidate_name": "Kalpesha Jesal Kothari",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 178,
+        "candidate_name": "Amey Arun Ghole",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 179,
+        "candidate_name": "Ayesha Sufiyan Wanu",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 180,
+        "candidate_name": "Trishna Chandrakant Vidyasrao",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 181,
+        "candidate_name": "Anilbhau Tarabai Laxman Kadam",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 182,
+        "candidate_name": "Milind Dayaram Vaidya",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 183,
+        "candidate_name": "Asha Dipak Kale",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 184,
+        "candidate_name": "Sajidabi Babbu Khan",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 185,
+        "candidate_name": "T. M. Jagdish",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 186,
+        "candidate_name": "Archana Avirat Shinde",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 187,
+        "candidate_name": "Joseph Manvel Koli",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 188,
+        "candidate_name": "Bhaskar A. R. Shetty",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 189,
+        "candidate_name": "Harshala Ashish More",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 190,
+        "candidate_name": "Shital Suresh Gambhir",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 191,
+        "candidate_name": "Vishakha Sharad Raut",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 192,
+        "candidate_name": "Yashwant Maruti Killedar",
+        "party_name": "Maharashtra Navnirman Sena"
+    },
+    {
+        "ward_no": 193,
+        "candidate_name": "Varlikar Hemangi Hareshwar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 194,
+        "candidate_name": "Nishikant Govind Shinde",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 195,
+        "candidate_name": "Bhange Vijay Jagannath",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 196,
+        "candidate_name": "Chamburkar Pooja Ashish",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 197,
+        "candidate_name": "Narvankar Vanita Dayaram",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 198,
+        "candidate_name": "Aboli Gopal Khadye",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 199,
+        "candidate_name": "Kishori Kishor Pedanekar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 200,
+        "candidate_name": "Urmila Ulhas Panchal",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 201,
+        "candidate_name": "Iram Sajid Ahmed Siddiqui",
+        "party_name": "Samajwadi Party"
+    },
+    {
+        "ward_no": 202,
+        "candidate_name": "Shradha Shridhar Jadhav",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 203,
+        "candidate_name": "Shradha (Bharati) Shridhar Pedanekar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 204,
+        "candidate_name": "Kiran Prabhakar Tavade",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 205,
+        "candidate_name": "Supriya Dilip Dalvi",
+        "party_name": "Maharashtra Navnirman Sena"
+    },
+    {
+        "ward_no": 206,
+        "candidate_name": "Sachin (Bhau) Padwal",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 207,
+        "candidate_name": "Lokhande Rohidas Madhukar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 208,
+        "candidate_name": "Rahate Ramakant Sakharam",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 209,
+        "candidate_name": "Yamini Yashwant Jadhav",
+        "party_name": "Shiv Sena"
+    },
+    {
+        "ward_no": 210,
+        "candidate_name": "Sonam Manoj Jamsutkar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 211,
+        "candidate_name": "Wakkar Khan",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 212,
+        "candidate_name": "Afghani Amrin Shehzad",
+        "party_name": "Samajwadi Party"
+    },
+    {
+        "ward_no": 213,
+        "candidate_name": "Nasima Javed Juneja",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 214,
+        "candidate_name": "Ajay Kisan Patil",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 215,
+        "candidate_name": "Santosh Pandurang Dhale",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 216,
+        "candidate_name": "Bhatankar Rajshri Mahesh",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 217,
+        "candidate_name": "Gaurang Nutan Chetan Jhaveri",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 218,
+        "candidate_name": "Snehal Gaurav Tandulkar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 219,
+        "candidate_name": "Sunny Ravindra Sanap",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 220,
+        "candidate_name": "Sampada Vaibhav Mayekar",
+        "party_name": "Shiv Sena (Uddhav Balasaheb Thackeray)"
+    },
+    {
+        "ward_no": 221,
+        "candidate_name": "Akash Raj K. Purohit",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 222,
+        "candidate_name": "Rita Bharat Makwana",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 223,
+        "candidate_name": "Gyanraj Yashwant Nikam",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 224,
+        "candidate_name": "Parak Ruksana Nurul Amin",
+        "party_name": "Indian National Congress"
+    },
+    {
+        "ward_no": 225,
+        "candidate_name": "Harshita Ashwin Narvekar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 226,
+        "candidate_name": "Adv. Makarand Suresh Narvekar",
+        "party_name": "Bharatiya Janata Party"
+    },
+    {
+        "ward_no": 227,
+        "candidate_name": "Dr. Gaurvi Shivalkar Narvekar",
+        "party_name": "Bharatiya Janata Party"
+    }
+]

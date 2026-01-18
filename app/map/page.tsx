@@ -15,6 +15,7 @@ import type MapLibreGL from "maplibre-gl";
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
 import categoryReservationData from "@/data/category-reservation.json";
+import winnersData from "@/data/winners.json";
 import { showToast } from "@/lib/toast";
 
 // Mumbai center coordinates
@@ -695,27 +696,27 @@ function MyWardButton({
 // Coalition color mappings for election results
 const COALITION_COLORS: Record<string, { color: string; name: string; parties: string[] }> = {
     mahayuti: {
-        color: "#FF6B35", // Saffron
+        color: "#FF6B35", // Saffron/Orange
         name: "Mahayuti",
         parties: ["Bharatiya Janata Party", "Shiv Sena", "Republican Party of India (A)", "Nationalist Congress Party"]
     },
     mva: {
-        color: "#1E88E5", // Blue
+        color: "#2196F3", // Vibrant Blue
         name: "MVA",
         parties: ["Shiv Sena (Uddhav Balasaheb Thackeray)", "Maharashtra Navnirman Sena", "Nationalist Congress Party - Sharad Pawar"]
     },
     congress: {
-        color: "#43A047", // Green
+        color: "#4CAF50", // Green
         name: "Congress+",
-        parties: ["Indian National Congress", "Vanchit Bahujan Aghadi"]
+        parties: ["Indian National Congress", "Vanchit Bahujan Aghadi", "Samajwadi Party"]
     },
-    aap: {
-        color: "#00ACC1", // Teal
-        name: "AAP",
-        parties: ["Aam Aadmi Party"]
+    aimim: {
+        color: "#00897B", // Teal
+        name: "AIMIM",
+        parties: ["All India Majlis-E-Ittehadul Muslimeen"]
     },
     other: {
-        color: "#757575", // Gray
+        color: "#9E9E9E", // Gray
         name: "Other",
         parties: []
     }
@@ -756,59 +757,32 @@ function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id:
     const [winners, setWinners] = useState<Record<number, WinnerData>>({});
     const [hoveredWard, setHoveredWard] = useState<WinnerData | null>(null);
     const [coalitionCounts, setCoalitionCounts] = useState<Record<string, number>>({});
-    const [loading, setLoading] = useState(true);
-
-    // Show loading toast while fetching results
+    // Build winners map and counts from imported JSON
     useEffect(() => {
-        if (loading) {
-            showToast('info', 'Loading Results', 'Fetching election results...');
-        }
-    }, [loading]);
+        const winnersMap: Record<number, WinnerData> = {};
+        const counts: Record<string, number> = {};
 
-    // Fetch winners on mount
-    useEffect(() => {
-        async function fetchWinners() {
-            setLoading(true);
-            const { data, error } = await supabase
-                .from('bmc_candidates')
-                .select('ward_no, candidate_name, party_name')
-                .eq('winnner', true);
+        for (const winner of winnersData) {
+            const coalition = getCoalitionForParty(winner.party_name);
+            const color = COALITION_COLORS[coalition]?.color || COALITION_COLORS.other.color;
 
-            if (error) {
-                console.error('Error fetching winners:', error);
-                showToast('error', 'Error', 'Failed to load election results');
-                setLoading(false);
-                return;
-            }
+            winnersMap[winner.ward_no] = {
+                ward_no: winner.ward_no,
+                candidate_name: winner.candidate_name,
+                party_name: winner.party_name,
+                coalition,
+                color
+            };
 
-            const winnersMap: Record<number, WinnerData> = {};
-            const counts: Record<string, number> = {};
-
-            for (const winner of data || []) {
-                const coalition = getCoalitionForParty(winner.party_name);
-                const color = COALITION_COLORS[coalition]?.color || COALITION_COLORS.other.color;
-
-                winnersMap[winner.ward_no] = {
-                    ward_no: winner.ward_no,
-                    candidate_name: winner.candidate_name,
-                    party_name: winner.party_name,
-                    coalition,
-                    color
-                };
-
-                counts[coalition] = (counts[coalition] || 0) + 1;
-            }
-
-            setWinners(winnersMap);
-            setCoalitionCounts(counts);
-            setLoading(false);
+            counts[coalition] = (counts[coalition] || 0) + 1;
         }
 
-        fetchWinners();
+        setWinners(winnersMap);
+        setCoalitionCounts(counts);
     }, []);
 
     useEffect(() => {
-        if (!isLoaded || !map || loading || Object.keys(winners).length === 0) return;
+        if (!isLoaded || !map || Object.keys(winners).length === 0) return;
 
         // Build color expression for fill
         const colorExpression: any[] = ["match", ["to-number", ["get", "note"]]];
@@ -950,7 +924,7 @@ function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id:
                 // ignore
             }
         };
-    }, [isLoaded, map, winners, loading, sourceId, fillLayerId, outlineLayerId, labelLayerId, onWardClick]);
+    }, [isLoaded, map, winners, sourceId, fillLayerId, outlineLayerId, labelLayerId, onWardClick]);
 
     return (
         <>
@@ -1084,7 +1058,7 @@ export default function MapPage() {
                             <button
                                 onClick={() => {
                                     setDataset("results");
-                                    showToast('info', 'Results Update', 'More winners will be added as results come in. Source: Indian Express');
+                                    showToast('info', 'Election Results', 'Showing all 227 ward winners');
                                 }}
                                 className={`px-5 py-2 text-sm font-medium transition-all rounded-full flex items-center gap-1.5 ${dataset === "results"
                                     ? "bg-amber-500 text-white"

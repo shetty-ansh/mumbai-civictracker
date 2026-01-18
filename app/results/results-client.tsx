@@ -6,7 +6,7 @@ import Link from "next/link";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Navbar } from "@/components/ui/navbar";
-import { Trophy, Vote, Users, TrendingUp, Award, ExternalLink } from "lucide-react";
+import { Trophy, Vote, Users, TrendingUp, Award, ExternalLink, FileText } from "lucide-react";
 
 interface Winner {
     id: string;
@@ -55,8 +55,8 @@ const PARTY_COLORS: Record<string, string> = {
 };
 
 // Alliance groupings
-const MAHAYUTI_PARTIES = ["Bharatiya Janata Party", "Shiv Sena", "Nationalist Congress Party"];
-const MVA_PARTIES = ["Indian National Congress", "Shiv Sena (Uddhav Balasaheb Thackeray)", "Nationalist Congress Party - Sharad Pawar"];
+const MAHAYUTI_PARTIES = ["Bharatiya Janata Party", "Shiv Sena"];
+const MVA_PARTIES = ["Indian National Congress", "Shiv Sena (Uddhav Balasaheb Thackeray)", "Nationalist Congress Party - Sharad Pawar", "Maharashtra Navnirman Sena", "Vanchit Bahujan Aghadi"];
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
@@ -286,11 +286,11 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
 
                     <div className="bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl p-4 md:p-6 text-white">
                         <div className="flex items-center gap-2 mb-2">
-                            <Vote className="w-5 h-5 opacity-80" />
-                            <span className="text-xs md:text-sm font-medium opacity-90">Total Votes</span>
+                            <Users className="w-5 h-5 opacity-80" />
+                            <span className="text-xs md:text-sm font-medium opacity-90">Parties</span>
                         </div>
-                        <p className="text-3xl md:text-4xl font-bold">{(stats.totalVotes / 100000).toFixed(1)}L</p>
-                        <p className="text-xs opacity-75 mt-1">{formatVotes(stats.totalVotes)} votes</p>
+                        <p className="text-3xl md:text-4xl font-bold">{stats.sortedParties.length}</p>
+                        <p className="text-xs opacity-75 mt-1">with winning candidates</p>
                     </div>
 
                     <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl p-4 md:p-6 text-white">
@@ -319,7 +319,7 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
                         {/* Mahayuti */}
                         <div className="bg-gradient-to-br from-orange-50 to-amber-50 border-2 border-orange-200 rounded-xl p-5">
                             <h3 className="font-bold text-lg text-orange-800 mb-1">Mahayuti</h3>
-                            <p className="text-xs text-orange-600 mb-3">BJP + Shiv Sena + NCP</p>
+                            <p className="text-xs text-orange-600 mb-3">BJP + Shiv Sena</p>
                             <div className="flex items-baseline gap-2">
                                 <span className="text-4xl font-bold text-orange-600">{stats.mahayutiSeats}</span>
                                 <span className="text-stone-500">seats</span>
@@ -335,7 +335,7 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
                         {/* MVA */}
                         <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-5">
                             <h3 className="font-bold text-lg text-blue-800 mb-1">MVA</h3>
-                            <p className="text-xs text-blue-600 mb-3">Congress + SS(UBT) + NCP(SP)</p>
+                            <p className="text-xs text-blue-600 mb-3">Congress + SS(UBT) + NCP(SP) + MNS + VBA</p>
                             <div className="flex items-baseline gap-2">
                                 <span className="text-4xl font-bold text-blue-600">{stats.mvaSeats}</span>
                                 <span className="text-stone-500">seats</span>
@@ -492,6 +492,28 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                {/* Disclaimer */}
+                <div className="mt-8 bg-white border border-stone-200 rounded-xl p-4 flex items-start gap-3">
+                    <div className="p-2 bg-amber-50 rounded-lg flex-shrink-0">
+                        <FileText className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div className="flex-1">
+                        <p className="text-sm font-medium text-stone-900 mb-1">Verify Official Vote Counts</p>
+                        <p className="text-xs text-stone-500 mb-2">
+                            For exact and verified vote counts, please refer to the official election documents.
+                        </p>
+                        <a
+                            href="https://drive.google.com/file/d/1R8-9uvlpEmgX6S9NprX_1tSixT4-yTOs/view?usp=drivesdk"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-amber-600 hover:text-amber-700 hover:underline font-medium inline-flex items-center gap-1"
+                        >
+                            View Official Results Document
+                            <ExternalLink className="w-3 h-3" />
+                        </a>
                     </div>
                 </div>
             </main>
