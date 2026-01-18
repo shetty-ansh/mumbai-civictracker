@@ -51,7 +51,7 @@ export function Navbar() {
                     >
                         News
                     </Link>
-                    <Link
+                    {/* <Link
                         href="/sources"
                         className={`text-sm md:text-base transition-colors ${pathname === '/sources'
                             ? 'font-semibold text-foreground'
@@ -59,7 +59,7 @@ export function Navbar() {
                             }`}
                     >
                         Resources
-                    </Link>
+                    </Link> */}
                     <Link
                         href="/results"
                         className={`text-sm md:text-base transition-colors ${pathname === '/results'

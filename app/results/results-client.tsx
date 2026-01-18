@@ -6,8 +6,7 @@ import Link from "next/link";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { Navbar } from "@/components/ui/navbar";
-import { Trophy, Vote, Users, TrendingUp, Award, ExternalLink, Loader2, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Trophy, Vote, Users, TrendingUp, Award, ExternalLink, FileText } from "lucide-react";
 
 interface Winner {
     id: string;
@@ -94,22 +93,6 @@ function formatVotes(votes: number): string {
 }
 
 export default function ResultsClient({ winners }: ResultsClientProps) {
-    // Data Notice Popup
-    const [showNotice, setShowNotice] = useState(false);
-
-    useEffect(() => {
-        // Check if notice has been dismissed in this session
-        const hasDismissed = sessionStorage.getItem('results-notice-dismissed');
-        if (!hasDismissed) {
-            setShowNotice(true);
-        }
-    }, []);
-
-    const handleDismiss = () => {
-        sessionStorage.setItem('results-notice-dismissed', 'true');
-        setShowNotice(false);
-    };
-
     // Calculate stats
     const stats = useMemo(() => {
         const totalVotes = winners.reduce((sum, w) => sum + (w.votes || 0), 0);
@@ -278,36 +261,6 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
         <div className="min-h-screen bg-stone-50">
             <Navbar />
 
-            {/* Custom Data Notice Modal */}
-            {showNotice && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white border-2 border-amber-500 rounded-xl p-6 shadow-2xl max-w-md w-full animate-in zoom-in-95 duration-200">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="bg-amber-100 p-2 rounded-full">
-                                <Loader2 className="w-6 h-6 text-amber-600 animate-spin" />
-                            </div>
-                            <h2 className="text-xl font-bold text-amber-700 leading-none">
-                                Live Data Updates
-                            </h2>
-                        </div>
-
-                        <div className="text-stone-600 text-base mb-6 space-y-2">
-                            <p>Election results are currently being entered into our system.</p>
-                            <p className="text-sm bg-amber-50 p-3 rounded-lg border border-amber-100 text-amber-800">
-                                <strong>Note:</strong> This is taking some time because we are adding detailed vote counts for every single candidate across all 227 wards. Please check back frequently for updates.
-                            </p>
-                        </div>
-
-                        <button
-                            onClick={handleDismiss}
-                            className="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-lg py-3 px-6 transition-colors shadow-md hover:shadow-lg active:scale-[0.98]"
-                        >
-                            Got it, show me results
-                        </button>
-                    </div>
-                </div>
-            )}
-
             <main className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-8">
                 {/* Header */}
                 <div className="mb-6 md:mb-8">
@@ -333,11 +286,11 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
 
                     <div className="bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl p-4 md:p-6 text-white">
                         <div className="flex items-center gap-2 mb-2">
-                            <Vote className="w-5 h-5 opacity-80" />
-                            <span className="text-xs md:text-sm font-medium opacity-90">Total Votes</span>
+                            <Users className="w-5 h-5 opacity-80" />
+                            <span className="text-xs md:text-sm font-medium opacity-90">Parties</span>
                         </div>
-                        <p className="text-3xl md:text-4xl font-bold">{(stats.totalVotes / 100000).toFixed(1)}L</p>
-                        <p className="text-xs opacity-75 mt-1">{formatVotes(stats.totalVotes)} votes</p>
+                        <p className="text-3xl md:text-4xl font-bold">{stats.sortedParties.length}</p>
+                        <p className="text-xs opacity-75 mt-1">with winning candidates</p>
                     </div>
 
                     <div className="bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl p-4 md:p-6 text-white">
@@ -539,6 +492,28 @@ export default function ResultsClient({ winners }: ResultsClientProps) {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </div>
+
+                {/* Disclaimer */}
+                <div className="mt-8 bg-white border border-stone-200 rounded-xl p-4 flex items-start gap-3">
+                    <div className="p-2 bg-amber-50 rounded-lg flex-shrink-0">
+                        <FileText className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div className="flex-1">
+                        <p className="text-sm font-medium text-stone-900 mb-1">Verify Official Vote Counts</p>
+                        <p className="text-xs text-stone-500 mb-2">
+                            For exact and verified vote counts, please refer to the official election documents.
+                        </p>
+                        <a
+                            href="https://drive.google.com/file/d/1R8-9uvlpEmgX6S9NprX_1tSixT4-yTOs/view?usp=drivesdk"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs text-amber-600 hover:text-amber-700 hover:underline font-medium inline-flex items-center gap-1"
+                        >
+                            View Official Results Document
+                            <ExternalLink className="w-3 h-3" />
+                        </a>
                     </div>
                 </div>
             </main>
