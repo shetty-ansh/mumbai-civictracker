@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import StatsClient from './stats-client';
 
-// Enable ISR - revalidate every hour (reduces Supabase calls dramatically)
-export const revalidate = 3600;
+// Static generation - data is fetched once at build time
+export const dynamic = 'force-static';
 
 interface Candidate {
     id: string;
