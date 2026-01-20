@@ -1,5 +1,6 @@
 import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
@@ -10,8 +11,37 @@ import { CandidatePageToast } from "./candidate-toast";
 import { ManifestoSection } from "./manifesto-section";
 import { BackButton } from "./back-button";
 
-// Enable ISR - revalidate set to 0 to show DB changes immediately during dev
-export const revalidate = 0;
+// Static generation - pre-build all candidate pages at build time
+export const dynamic = 'force-static';
+
+// Pre-generate all candidate pages at build time
+export async function generateStaticParams() {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+    const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+    let allIds: { id: string }[] = [];
+    let from = 0;
+    const pageSize = 1000;
+    let hasMore = true;
+
+    while (hasMore) {
+        const { data } = await supabaseClient
+            .from('bmc_candidates')
+            .select('id')
+            .range(from, from + pageSize - 1);
+
+        if (data && data.length > 0) {
+            allIds = [...allIds, ...data];
+            from += pageSize;
+            if (data.length < pageSize) hasMore = false;
+        } else {
+            hasMore = false;
+        }
+    }
+
+    return allIds.map((c) => ({ id: c.id }));
+}
 
 // Party logo mapping
 function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {

@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 import CandidatesClient from './candidates-client';
 
-// Enable ISR - revalidate set to 0 to show DB changes immediately during dev
-export const revalidate = 0;
+// Static generation - data is fetched once at build time
+export const dynamic = 'force-static';
 
 interface Candidate {
     id: string;
