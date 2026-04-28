@@ -363,7 +363,7 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
         return (
             <div className="absolute top-24 left-6 z-10 bg-white border border-stone-200 rounded-xl px-5 py-4 shadow-lg min-w-[200px]">
                 <p className="text-xs text-stone-500 uppercase tracking-wider font-medium">Electoral Ward</p>
-                <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">#{hoveredWard.prabhag}</p>
+                <p className="text-4xl font-bold text-stone-900 ">#{hoveredWard.prabhag}</p>
                 <div className="mt-4 space-y-2 text-sm">
                     <div className="flex justify-between gap-4">
                         <span className="text-stone-500">Population</span>
@@ -574,7 +574,7 @@ function Electoral2025WardsLayer({ onWardClick }: { onWardClick: (name: string, 
                     <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">2025</span>
                     <p className="text-xs text-stone-500 uppercase tracking-wider font-medium">Electoral Ward</p>
                 </div>
-                <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">#{hoveredWard.wardNo}</p>
+                <p className="text-4xl font-bold text-stone-900 ">#{hoveredWard.wardNo}</p>
                 <div className="mt-4 space-y-2 text-sm">
                     <div className="flex justify-between gap-4">
                         <span className="text-stone-500">Category</span>
@@ -938,7 +938,7 @@ function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id:
                             {COALITION_COLORS[hoveredWard.coalition]?.name || "Other"}
                         </span>
                     </div>
-                    <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">
+                    <p className="text-4xl font-bold text-stone-900 ">
                         #{hoveredWard.ward_no}
                     </p>
                     <div className="mt-3 space-y-1">
@@ -1139,3 +1139,4 @@ export default function MapPage() {
         </div>
     );
 }
+

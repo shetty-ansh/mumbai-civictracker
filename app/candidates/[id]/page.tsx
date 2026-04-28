@@ -8,7 +8,7 @@ import { User, AlertTriangle, Scale, Trophy, Vote } from "lucide-react";
 import manifestoData from "@/data/party-manifestos.json";
 import wardAffidavits from "@/data/ward-affidavits.json";
 import { CandidatePageToast } from "./candidate-toast";
-import { ManifestoSection } from "./manifesto-section";
+import { PromisesManifestoToggle } from "./promises-manifesto-toggle";
 import { BackButton } from "./back-button";
 
 // Static generation - pre-build all candidate pages at build time
@@ -108,17 +108,23 @@ export default async function CandidatePage({
 }) {
     const { id } = await params;
 
-    const { data: candidateRaw, error } = await supabase
-        .from('bmc_candidates')
-        .select(`
-            *,
-            winnner,
-            case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases),
-            reservation_category:reservation_categories(category_code, category_name_marathi, category_name_english, total_seats, women_reserved_seats),
-            votes:bmc_candidate_votes!bmc_candidate_votes_candidate_fkey(votes)
-        `)
-        .eq('id', id)
-        .single();
+    const [{ data: candidateRaw, error }, { data: promisesData }] = await Promise.all([
+        supabase
+            .from('bmc_candidates')
+            .select(`
+                *,
+                winnner,
+                case_info:bmc_candidate_case_info!bmc_candidate_case_info_candidate_id_fkey(education, active_cases, closed_cases),
+                reservation_category:reservation_categories(category_code, category_name_marathi, category_name_english, total_seats, women_reserved_seats),
+                votes:bmc_candidate_votes!bmc_candidate_votes_candidate_fkey(votes)
+            `)
+            .eq('id', id)
+            .single(),
+        supabase
+            .from('candidate_promises')
+            .select('promise_text, category')
+            .eq('candidate_id', id),
+    ]);
 
     // Transform votes from array to single value
     const candidate = candidateRaw ? {
@@ -146,6 +152,7 @@ export default async function CandidatePage({
 
     const caseInfo = Array.isArray(candidate.case_info) ? candidate.case_info[0] : candidate.case_info;
     const manifesto = getPartyManifesto(candidate.party_name);
+    const promises = promisesData || [];
 
     return (
         <div className="min-h-screen bg-stone-50">
@@ -308,14 +315,8 @@ export default async function CandidatePage({
                             })()}
                         </div>
 
-                        {/* Bottom - Party Manifesto Card */}
-                        <div className="bg-white border border-stone-200 rounded-xl p-6 flex-1 flex flex-col">
-                            <p className="text-[18px] font-medium text-black uppercase tracking-widest mb-4">Party Manifesto</p>
-
-                            <div className="flex-1">
-                                <ManifestoSection manifesto={manifesto} />
-                            </div>
-                        </div>
+                        {/* Bottom - Promises / Party Manifesto Toggle */}
+                        <PromisesManifestoToggle promises={promises} manifesto={manifesto} />
                     </div>
                 </div>
             </main>

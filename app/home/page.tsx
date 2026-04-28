@@ -78,7 +78,7 @@ export default function HomePage() {
             <main className="max-w-7xl mx-auto px-3 py-6 flex flex-col items-center">
                 {/* Header Section */}
                 <div className="w-full text-center mb-6 space-y-4">
-                    <h1 className="text-4xl md:text-6xl font-semibold tracking-tight font-[var(--font-fraunces)]">
+                    <h1 className="text-4xl md:text-6xl font-semibold tracking-tight ">
                         Know your Mumbai
                     </h1>
                     <p className="text-xl text-stone-500 font-light" suppressHydrationWarning>Waking up the city that never sleeps!</p>
@@ -97,25 +97,25 @@ export default function HomePage() {
                 <div className="w-full max-w-5xl px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10 border-t border-stone-200">
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">24</p>
+                            <p className="text-4xl font-semibold text-stone-800 ">24</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Admin Wards
                             </p>
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">227</p>
+                            <p className="text-4xl font-semibold text-stone-800 ">227</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Electoral Wards
                             </p>
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">1700+</p>
+                            <p className="text-4xl font-semibold text-stone-800 ">1700+</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Candidates
                             </p>
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">2 Crore+</p>
+                            <p className="text-4xl font-semibold text-stone-800 ">2 Crore+</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Population
                             </p>

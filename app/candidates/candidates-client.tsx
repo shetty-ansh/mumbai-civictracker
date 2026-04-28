@@ -264,7 +264,7 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                         >
                                             <div className="p-5 flex flex-col h-full">
                                                 <div className="flex items-start justify-between gap-4 mb-4">
-                                                    <h3 className="text-xl font-normal leading-tight group-hover:text-stone-600 transition-colors font-[family-name:var(--font-fraunces)]">
+                                                    <h3 className="text-xl font-normal leading-tight group-hover:text-stone-600 transition-colors ">
                                                         {candidate.candidate_name}
                                                     </h3>
                                                     <div className="relative">
@@ -370,7 +370,7 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                                     )}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <h3 className="font-medium text-base leading-tight truncate font-[family-name:var(--font-fraunces)]">
+                                                    <h3 className="font-medium text-base leading-tight truncate ">
                                                         {candidate.candidate_name}
                                                     </h3>
                                                     <p className="text-xs text-stone-500 truncate">
@@ -472,3 +472,4 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
         </div>
     );
 }
+

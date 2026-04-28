@@ -30,7 +30,7 @@ export const CustomToast = ({
 
     return (
         <div className={cn(
-            "w-full rounded-lg border border-stone-200 bg-white p-4 shadow-lg font-[family-name:var(--font-fraunces)]",
+            "w-full rounded-lg border border-stone-200 bg-white p-4 shadow-lg ",
             "flex flex-col gap-3"
         )}>
             <div className="flex items-start gap-4">
@@ -69,3 +69,4 @@ export const CustomToast = ({
         </div>
     )
 }
+

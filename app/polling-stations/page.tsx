@@ -115,7 +115,7 @@ export default function PollingStationsPage() {
             <main className="max-w-6xl mx-auto px-6 py-8">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-3xl font-bold mb-2 font-[family-name:var(--font-fraunces)]">Find Polling Stations</h1>
+                    <h1 className="text-3xl font-bold mb-2 ">Find Polling Stations</h1>
                     <p className="text-stone-600">
                         Search {allStations.length.toLocaleString()} polling stations across {uniquePincodes} pincodes in Mumbai
                     </p>
@@ -285,7 +285,7 @@ export default function PollingStationsPage() {
                         <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm border border-stone-100">
                             <MapPin className="w-10 h-10 text-stone-200" strokeWidth={1.5} />
                         </div>
-                        <p className="text-xl font-bold text-stone-900 mb-2 font-[family-name:var(--font-fraunces)]">Search for Polling Stations</p>
+                        <p className="text-xl font-bold text-stone-900 mb-2 ">Search for Polling Stations</p>
                         <p className="text-stone-500 max-w-sm mx-auto leading-relaxed">
                             Enter your 6-digit pincode above to discover the exact polling booth locations assigned to your area.
                         </p>
@@ -302,3 +302,4 @@ export default function PollingStationsPage() {
         </div>
     );
 }
+
