@@ -41,8 +41,8 @@ export default function LandingPage() {
         <source src="/images/mumbai-video.mp4" type="video/mp4" />
       </video>
 
-      {/* Mobile Video */}
-      <video
+      {/* Mobile Video (Commented out) */}
+      {/* <video
         autoPlay
         loop
         muted
@@ -50,7 +50,14 @@ export default function LandingPage() {
         className="block md:hidden absolute inset-0 w-full h-full object-cover"
       >
         <source src="/images/mumbai-video-phone.mp4" type="video/mp4" />
-      </video>
+      </video> */}
+
+      {/* Mobile Background Image */}
+      <img
+        src="/images/phone-new-2.jpeg"
+        alt="Mumbai Mobile Background"
+        className="block md:hidden absolute inset-0 w-full h-full object-cover"
+      />
 
       {/* Subtle Blur Overlay */}
       <div className="absolute inset-0 bg-black/20 backdrop-blur-[2px]" />
@@ -107,14 +114,14 @@ export default function LandingPage() {
           Know your ward. Know your corporator.
         </p>
 
-        <p className="text-base md:text-lg text-white/70 font-light mb-12 max-w-2xl">
+        {/* <p className="text-base md:text-lg text-white/70 font-light mb-12 max-w-2xl">
           Navigate through 227 electoral wards and hold your representatives accountable
-        </p>
+        </p> */}
 
         {/* CTA Button */}
         <button
           onClick={handleExplore}
-          className="group px-8 py-3.5 md:px-12 md:py-5 bg-white text-black hover:bg-white/90 active:scale-95 transition-all duration-150 text-base md:text-lg font-medium tracking-wide flex items-center gap-3 shadow-lg hover:shadow-xl"
+          className="group mt-12 px-8 py-3.5 md:px-12 md:py-5 bg-white text-black hover:bg-white/90 active:scale-95 transition-all duration-150 text-base md:text-lg font-medium tracking-wide flex items-center gap-3 shadow-lg hover:shadow-xl"
         >
           <Image
             src="/images/kaali-peeli.png"

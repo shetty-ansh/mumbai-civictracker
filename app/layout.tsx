@@ -21,6 +21,38 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "aamchi मुंबई - Mumbai Civic Tracker",
   description: "Know your ward, know your corporator. Navigate through 227 electoral wards and hold your representatives accountable.",
+  keywords: [
+    "Mumbai",
+    "BMC",
+    "Mumbai Corporator",
+    "Mumbai Wards",
+    "Elections",
+    "aamchi mumbai",
+    "Corporator Data",
+    "Manifestos",
+    "BMC Elections",
+    "Corporator Education Data",
+    "BMC Records",
+    "Mumbai Politics",
+    "Mumbai Corporators",
+    "Mumbai Civic Data",
+    "Contact BMC Corporator",
+    "Mumbai Corporator Contact",
+    "Ansh Shetty"
+
+  ],
+  openGraph: {
+    title: "aamchi मुंबई - Mumbai Civic Tracker",
+    description: "Know your ward, know your corporator. Navigate through 227 electoral wards and hold your representatives accountable.",
+    siteName: "aamchi मुंबई",
+    locale: "en_IN",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "aamchi मुंबई - Mumbai Civic Tracker",
+    description: "Know your ward, know your corporator. Navigate through 227 electoral wards and hold your representatives accountable.",
+  },
   icons: {
     icon: "/images/kaali-peeli.png",
     apple: "/images/kaali-peeli.png",

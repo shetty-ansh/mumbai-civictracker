@@ -66,6 +66,7 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
     // Multi-select states
     const [selectedParties, setSelectedParties] = useState<string[]>([]);
     const [selectedWards, setSelectedWards] = useState<string[]>([]);
+    const [showWinnersOnly, setShowWinnersOnly] = useState(true);
 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
@@ -101,6 +102,11 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
     const filteredCandidates = useMemo(() => {
         let filtered = initialCandidates;
 
+        // Filter for winners if toggle is active
+        if (showWinnersOnly) {
+            filtered = filtered.filter(candidate => candidate.winnner === true);
+        }
+
         // Filter by search query (name, party, and ward)
         if (searchQuery) {
             filtered = filtered.filter(
@@ -122,12 +128,12 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
         }
 
         return filtered;
-    }, [searchQuery, selectedParties, selectedWards, initialCandidates]);
+    }, [searchQuery, selectedParties, selectedWards, showWinnersOnly, initialCandidates]);
 
     // Reset to first page when filters change
     useEffect(() => {
         setCurrentPage(1);
-    }, [searchQuery, selectedParties, selectedWards]);
+    }, [searchQuery, selectedParties, selectedWards, showWinnersOnly]);
 
     // Pagination calculations
     const totalPages = Math.ceil(filteredCandidates.length / itemsPerPage);
@@ -148,9 +154,12 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                 {/* Header */}
                 <div className="mb-8 flex flex-col md:flex-row md:items-start justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-bold mb-2">BMC Election Candidates 2026</h1>
-                        <p className="text-muted-foreground">
+                        <h1 className="text-3xl font-bold mb-2">BMC Elections 2026</h1>
+                        {/* <p className="text-muted-foreground">
                             Browse all {initialCandidates.length} candidates standing for the upcoming BMC elections
+                        </p> */}
+                        <p className="text-muted-foreground">
+                            Browse all 227 corporators or the candidates who stood against them!
                         </p>
                     </div>
 
@@ -174,7 +183,7 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                         </div>
                         <div>
                             <p className="font-semibold text-stone-900">Find your ward on the map</p>
-                            <p className="text-sm text-stone-600">See all candidates in your area and compare them</p>
+                            <p className="text-sm text-stone-600">See your corporator's details and <Link href="/manifestos" className="text-stone-900 font-bold underline">what they had promised</Link></p>
                         </div>
                     </div>
                     <div className="flex gap-3 w-full sm:w-auto">
@@ -195,6 +204,23 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
 
                 {/* Filters Row */}
                 <div className="mb-6 flex flex-col md:flex-row gap-4">
+                    {/* View Toggle */}
+                    <div className="flex bg-stone-100 p-1 rounded-lg shrink-0 w-full md:w-auto h-10 items-center">
+                        <button
+                            onClick={() => setShowWinnersOnly(true)}
+                            className={`flex-1 md:flex-none px-4 h-8 rounded-md text-sm font-medium transition-all flex items-center justify-center gap-2 ${showWinnersOnly ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
+                        >
+                            <Trophy className="w-3.5 h-3.5" />
+                            Winners
+                        </button>
+                        <button
+                            onClick={() => setShowWinnersOnly(false)}
+                            className={`flex-1 md:flex-none px-4 h-8 rounded-md text-sm font-medium transition-all flex items-center justify-center ${!showWinnersOnly ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
+                        >
+                            All Candidates
+                        </button>
+                    </div>
+
                     {/* Search - Name and Party only */}
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-2.5 w-5 h-5 text-muted-foreground" />
@@ -246,18 +272,8 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                 return (
                                     <div
                                         key={candidate.id}
-                                        className={`flex flex-col rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 relative ${isWinner
-                                            ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-400 shadow-lg shadow-amber-100'
-                                            : 'bg-white border border-stone-200'
-                                            }`}
+                                        className="flex flex-col rounded-xl overflow-hidden hover:shadow-md transition-all duration-300 relative bg-white border border-stone-200"
                                     >
-                                        {/* Winner Badge */}
-                                        {isWinner && (
-                                            <div className="absolute top-0 right-0 bg-amber-500 text-white px-3 py-1 rounded-bl-xl flex items-center gap-1.5 text-xs font-bold z-10">
-                                                <Trophy className="w-3.5 h-3.5" />
-                                                WINNER
-                                            </div>
-                                        )}
                                         <Link
                                             href={`/candidates/${candidate.id}`}
                                             className="group block flex-1"
@@ -273,14 +289,8 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                                             alt={candidate.party_name}
                                                             width={48}
                                                             height={48}
-                                                            className={`w-12 h-12 object-contain rounded-full shrink-0 ${isWinner ? 'border-2 border-amber-400' : 'border border-stone-200'
-                                                                }`}
+                                                            className="w-12 h-12 object-contain rounded-full shrink-0 border border-stone-200"
                                                         />
-                                                        {isWinner && (
-                                                            <div className="absolute -bottom-1 -right-1 bg-amber-500 rounded-full p-1">
-                                                                <Trophy className="w-2.5 h-2.5 text-white" />
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 </div>
 
@@ -290,7 +300,7 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
 
                                                 {/* Votes Display */}
                                                 {candidate.votes !== null && (
-                                                    <div className={`flex items-center gap-1.5 mb-4 ${isWinner ? 'text-stone-800' : 'text-emerald-600'}`}>
+                                                    <div className="flex items-center gap-1.5 mb-4 text-emerald-600">
                                                         <Vote className="w-4 h-4" />
                                                         <span className="text-sm font-semibold">{formatVotes(candidate.votes)}</span>
                                                         <span className="text-xs text-stone-400">votes</span>
@@ -337,18 +347,8 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                 return (
                                     <div
                                         key={candidate.id}
-                                        className={`rounded-lg overflow-hidden relative ${isWinner
-                                            ? 'bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-400'
-                                            : 'bg-white border border-stone-200'
-                                            }`}
+                                        className="rounded-lg overflow-hidden relative bg-white border border-stone-200"
                                     >
-                                        {/* Winner Badge - Mobile */}
-                                        {isWinner && (
-                                            <div className="absolute top-0 right-0 bg-amber-500 text-white px-2 py-0.5 rounded-bl-lg flex items-center gap-1 text-[10px] font-bold z-10">
-                                                <Trophy className="w-3 h-3" />
-                                                WINNER
-                                            </div>
-                                        )}
                                         <Link
                                             href={`/candidates/${candidate.id}`}
                                             className="block p-4 hover:bg-stone-50/50 transition-colors"
@@ -360,14 +360,8 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                                         alt={candidate.party_name}
                                                         width={44}
                                                         height={44}
-                                                        className={`w-11 h-11 object-contain rounded-full shrink-0 ${isWinner ? 'border-2 border-amber-400' : 'border border-stone-200'
-                                                            }`}
+                                                        className="w-11 h-11 object-contain rounded-full shrink-0 border border-stone-200"
                                                     />
-                                                    {isWinner && (
-                                                        <div className="absolute -bottom-1 -right-1 bg-amber-500 rounded-full p-0.5">
-                                                            <Trophy className="w-2.5 h-2.5 text-white" />
-                                                        </div>
-                                                    )}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <h3 className="font-medium text-base leading-tight truncate ">
@@ -381,7 +375,7 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                                             Ward {candidate.ward_no}
                                                         </span>
                                                         {candidate.votes !== null && (
-                                                            <span className={`text-xs font-semibold flex items-center gap-1 ${isWinner ? 'text-amber-700' : 'text-emerald-600'}`}>
+                                                            <span className="text-xs font-semibold flex items-center gap-1 text-emerald-600">
                                                                 <Vote className="w-3 h-3" />
                                                                 {formatVotes(candidate.votes)}
                                                             </span>
