@@ -15,6 +15,7 @@ interface DetailedSection {
 }
 
 interface PromisesManifestoToggleProps {
+    candidateName: string;
     promises: CandidatePromise[];
     manifesto: {
         partyName: string;
@@ -27,7 +28,7 @@ interface PromisesManifestoToggleProps {
     } | null | undefined;
 }
 
-export function PromisesManifestoToggle({ promises, manifesto }: PromisesManifestoToggleProps) {
+export function PromisesManifestoToggle({ candidateName, promises, manifesto }: PromisesManifestoToggleProps) {
     const [activeTab, setActiveTab] = useState<"promises" | "manifesto">("promises");
 
     return (
@@ -37,17 +38,17 @@ export function PromisesManifestoToggle({ promises, manifesto }: PromisesManifes
                 <button
                     onClick={() => setActiveTab("promises")}
                     className={`flex-1 text-sm font-semibold uppercase tracking-wider py-2.5 rounded-md transition-all duration-200 cursor-pointer ${activeTab === "promises"
-                            ? "bg-stone-900 text-white shadow-sm"
-                            : "text-stone-500 hover:text-stone-700"
+                        ? "bg-stone-900 text-white shadow-sm"
+                        : "text-stone-500 hover:text-stone-700"
                         }`}
                 >
-                    Promises
+                    Their Promises
                 </button>
                 <button
                     onClick={() => setActiveTab("manifesto")}
                     className={`flex-1 text-sm font-semibold uppercase tracking-wider py-2.5 rounded-md transition-all duration-200 cursor-pointer ${activeTab === "manifesto"
-                            ? "bg-stone-900 text-white shadow-sm"
-                            : "text-stone-500 hover:text-stone-700"
+                        ? "bg-stone-900 text-white shadow-sm"
+                        : "text-stone-500 hover:text-stone-700"
                         }`}
                 >
                     Party Manifesto
@@ -57,7 +58,7 @@ export function PromisesManifestoToggle({ promises, manifesto }: PromisesManifes
             {/* Content */}
             <div className="flex-1">
                 {activeTab === "promises" ? (
-                    <PromisesSection promises={promises} />
+                    <PromisesSection candidateName={candidateName} promises={promises} />
                 ) : (
                     <ManifestoSection manifesto={manifesto} />
                 )}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { ChevronRight } from "lucide-react";
 
 interface CandidatePromise {
     promise_text: string;
@@ -9,6 +10,7 @@ interface CandidatePromise {
 }
 
 interface PromisesSectionProps {
+    candidateName: string;
     promises: CandidatePromise[];
 }
 
@@ -28,21 +30,21 @@ const categoryLabels: Record<string, string> = {
 };
 
 const categoryColors: Record<string, string> = {
-    sanitation: "bg-emerald-50 text-emerald-700 border-emerald-200",
-    healthcare: "bg-red-50 text-red-700 border-red-200",
-    water: "bg-blue-50 text-blue-700 border-blue-200",
-    infrastructure: "bg-stone-100 text-stone-700 border-stone-300",
-    electricity: "bg-yellow-50 text-yellow-700 border-yellow-200",
-    public_transport: "bg-violet-50 text-violet-700 border-violet-200",
-    education: "bg-indigo-50 text-indigo-700 border-indigo-200",
-    employment: "bg-orange-50 text-orange-700 border-orange-200",
-    women_empowerment: "bg-pink-50 text-pink-700 border-pink-200",
-    senior_citizens: "bg-amber-50 text-amber-700 border-amber-200",
-    environment: "bg-teal-50 text-teal-700 border-teal-200",
-    other: "bg-stone-50 text-stone-600 border-stone-200",
+    sanitation: "text-emerald-700 border-emerald-200",
+    healthcare: "text-red-700 border-red-200",
+    water: "text-blue-700 border-blue-200",
+    infrastructure: "text-stone-700 border-stone-300",
+    electricity: "text-yellow-700 border-yellow-200",
+    public_transport: "text-violet-700 border-violet-200",
+    education: "text-indigo-700 border-indigo-200",
+    employment: "text-orange-700 border-orange-200",
+    women_empowerment: "text-pink-700 border-pink-200",
+    senior_citizens: "text-amber-700 border-amber-200",
+    environment: "text-teal-700 border-teal-200",
+    other: "text-stone-600 border-stone-200",
 };
 
-export function PromisesSection({ promises }: PromisesSectionProps) {
+export function PromisesSection({ candidateName, promises }: PromisesSectionProps) {
     const [isOpen, setIsOpen] = useState(false);
 
     if (!promises || promises.length === 0) {
@@ -78,8 +80,10 @@ export function PromisesSection({ promises }: PromisesSectionProps) {
                     return (
                         <span
                             key={index}
-                            className={`inline-flex items-center text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium border ${colorClass}`}
+                            className={`inline-flex items-start text-[12px] px-3 py-1 tracking-widest font-medium ${colorClass}`}
                         >
+                            <ChevronRight className="w-3 h-3 mt-[3px] mr-1 shrink-0 opacity-80" />
+
                             {promise.promise_text}
                         </span>
                     );
@@ -94,34 +98,34 @@ export function PromisesSection({ promises }: PromisesSectionProps) {
                 )}
             </div>
 
-            {/* Dialog for all promises grouped by category */}
             <Dialog open={isOpen} onOpenChange={setIsOpen}>
-                <DialogContent className="max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
+                <DialogContent className="w-[calc(100%-2rem)] md:w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
                     <DialogHeader className="pb-4 border-b">
                         <DialogTitle className="text-xl font-bold font-[family-name:var(--font-fraunces)]">
-                            Candidate Promises
+                            {candidateName}&apos;s Promises
                         </DialogTitle>
                         <p className="text-sm text-stone-500 mt-1">
                             {promises.length} promises across {categories.length} categories
                         </p>
                     </DialogHeader>
 
-                    <div className="flex-1 overflow-y-auto py-4 space-y-6 pr-2 custom-scrollbar">
+                    <div className="flex-1 overflow-y-auto py-2 space-y-6 pr-2 custom-scrollbar">
                         {categories.map((category) => (
                             <div key={category} className="space-y-3">
                                 <h3 className="text-sm font-bold uppercase tracking-wider text-stone-900 flex items-center gap-2">
                                     <div className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
                                     {categoryLabels[category] || category}
                                 </h3>
-                                <div className="grid grid-cols-1 gap-2">
+                                <div className="grid grid-cols-1 gap-1">
                                     {grouped[category].map((text, pIdx) => {
                                         const colorClass = categoryColors[category] || categoryColors.other;
                                         return (
                                             <div
                                                 key={pIdx}
-                                                className={`border rounded-lg p-3 text-sm leading-relaxed shadow-sm ${colorClass}`}
+                                                className={`py-1 px-2 text-sm leading-relaxed ${colorClass} flex items-start gap-1.5`}
                                             >
-                                                {text}
+                                                <ChevronRight className="w-3.5 h-3.5 mt-1 shrink-0 opacity-80" />
+                                                <span>{text}</span>
                                             </div>
                                         );
                                     })}
@@ -132,8 +136,7 @@ export function PromisesSection({ promises }: PromisesSectionProps) {
 
                     <div className="pt-4 border-t flex justify-between items-center bg-white">
                         <p className="text-[10px] text-stone-400 uppercase tracking-widest font-bold">
-                            Candidate-Specific Promises
-                        </p>
+                            Promises taken from their Election Affidavit</p>
                     </div>
                 </DialogContent>
             </Dialog>

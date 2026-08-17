@@ -3,11 +3,12 @@
 import { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Scale, User, MapPin, Trophy, Vote } from "lucide-react";
+import { Search, Scale, User, MapPin, Trophy, Vote, HeartHandshake } from "lucide-react";
 import { Navbar } from "@/components/ui/navbar";
 import { Input } from "@/components/ui/input";
 import categoryReservationData from "@/data/category-reservation.json";
 import { MultiSelect, Option } from "@/components/ui/multi-select";
+import { Button } from "@/components/ui/button";
 
 interface Candidate {
     id: string;
@@ -211,7 +212,7 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                             className={`flex-1 md:flex-none px-4 h-8 rounded-md text-sm font-medium transition-all flex items-center justify-center gap-2 ${showWinnersOnly ? 'bg-white text-stone-900 shadow-sm' : 'text-stone-500 hover:text-stone-700'}`}
                         >
                             <Trophy className="w-3.5 h-3.5" />
-                            Winners
+                            Corporators
                         </button>
                         <button
                             onClick={() => setShowWinnersOnly(false)}
@@ -328,13 +329,17 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                                 </div>
                                             </div>
                                         </Link>
-                                        <Link
+                                        {/* <Link
                                             href={`/candidates/compare/${candidate.ward_no}`}
                                             className="flex items-center justify-center gap-1 py-2 bg-stone-100 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
                                         >
                                             <Scale className="w-3 h-3" />
                                             Compare Ward
-                                        </Link>
+                                        </Link> */}
+                                        <Button className="flex items-center justify-center gap-1 py-2 bg-stone-200 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200">
+                                            <HeartHandshake className="w-4 h-4" />
+                                            View Promises
+                                        </Button>
                                     </div>
                                 );
                             })}
@@ -371,15 +376,15 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                                         {candidate.party_name}
                                                     </p>
                                                     <div className="flex items-center gap-2 mt-1">
-                                                        <span className="text-xs text-amber-600 font-medium">
+                                                        <span className="text-s text-amber-600 font-medium">
                                                             Ward {candidate.ward_no}
                                                         </span>
-                                                        {candidate.votes !== null && (
+                                                        {/* {candidate.votes !== null && (
                                                             <span className="text-xs font-semibold flex items-center gap-1 text-emerald-600">
                                                                 <Vote className="w-3 h-3" />
                                                                 {formatVotes(candidate.votes)}
                                                             </span>
-                                                        )}
+                                                        )} */}
                                                         {(() => {
                                                             const reservation = categoryReservationData.find(r => r.ward_no === candidate.ward_no);
                                                             const category = reservation?.category || 'GEN';
@@ -398,12 +403,19 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                                 </div>
                                             </div>
                                         </Link>
-                                        <Link
+                                        {/* <Link
                                             href={`/candidates/compare/${candidate.ward_no}`}
                                             className="flex items-center justify-center gap-1 py-2 bg-stone-100 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
                                         >
                                             <Scale className="w-3 h-3" />
                                             Compare Ward Candidates
+                                        </Link> */}
+                                        <Link
+                                            href={`/candidates/compare/${candidate.ward_no}`}
+                                            className="flex items-center justify-center gap-1 py-2 bg-stone-200 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
+                                        >
+                                            <HeartHandshake className="w-4 h-4" />
+                                            View Promises
                                         </Link>
                                     </div>
                                 );
