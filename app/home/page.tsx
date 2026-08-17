@@ -27,7 +27,7 @@ export default function HomePage() {
         },
         {
             Icon: Users,
-            name: "Representatives",
+            name: "Corporators",
             description: "Get detailed information about your Corporators. Reach out to them.",
             href: "/candidates",
             cta: "View Leaders",

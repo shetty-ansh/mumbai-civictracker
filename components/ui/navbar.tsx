@@ -40,7 +40,7 @@ export function Navbar() {
                             : 'font-medium text-muted-foreground hover:text-accent'
                             }`}
                     >
-                        Candidates
+                        Corporators
                     </Link>
                     <Link
                         href="/news"
@@ -60,7 +60,7 @@ export function Navbar() {
                     >
                         Resources
                     </Link> */}
-                    <Link
+                    {/* <Link
                         href="/results"
                         className={`text-sm md:text-base transition-colors ${pathname === '/results'
                             ? 'font-semibold bg-amber-500 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-md'
@@ -68,7 +68,7 @@ export function Navbar() {
                             }`}
                     >
                         Results
-                    </Link>
+                    </Link> */}
                 </nav>
             </div>
         </header>
