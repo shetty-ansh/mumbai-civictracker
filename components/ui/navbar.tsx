@@ -3,9 +3,29 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createClient } from "@/utils/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 export function Navbar() {
     const pathname = usePathname();
+    const [user, setUser] = useState<User | null>(null);
+
+    useEffect(() => {
+        const supabase = createClient();
+        
+        // Initial fetch
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user ?? null);
+        });
+
+        // Listen for changes
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => subscription.unsubscribe();
+    }, []);
 
     return (
         <header className="border-b border-border px-6 py-4 bg-background/80 backdrop-blur-md">
@@ -69,6 +89,25 @@ export function Navbar() {
                     >
                         Results
                     </Link> */}
+                    
+                    {user ? (
+                        <Link
+                            href="/profile"
+                            className={`text-sm md:text-base transition-colors ${pathname === '/profile'
+                                ? 'font-semibold text-amber-600'
+                                : 'font-medium text-stone-600 hover:text-amber-600'
+                                }`}
+                        >
+                            Profile
+                        </Link>
+                    ) : (
+                        <Link
+                            href="/auth"
+                            className={`text-sm md:text-base transition-colors font-medium bg-stone-900 text-white px-4 py-2 rounded-full hover:bg-stone-800`}
+                        >
+                            Sign In
+                        </Link>
+                    )}
                 </nav>
             </div>
         </header>
