@@ -11,7 +11,7 @@ export default function HomePage() {
         {
             Icon: Map,
             name: "Interactive Map",
-            description: "Explore Mumbai's 24 administrative wards and 227 electoral wards. Find your representatives and ward statistics.",
+            description: "Explore Mumbai, ward-wise. Find your representatives and ward statistics.",
             href: "/map",
             cta: "Explore Map",
             background: (
@@ -28,19 +28,10 @@ export default function HomePage() {
         {
             Icon: Users,
             name: "Representatives",
-            description: "Get detailed information about your Corporators, MLAs, and MPs. Hold them accountable.",
+            description: "Get detailed information about your Corporators. Reach out to them.",
             href: "/candidates",
             cta: "View Leaders",
             background: <div className="absolute top-0 left-0 w-full h-full bg-[#ffedd5] z-0" />,
-            className: "md:col-span-1 md:row-span-1",
-        },
-        {
-            Icon: MessageSquare,
-            name: "Ask Mumbai AI",
-            description: "Get instant answers about wards, candidates, elections, and civic processes. Powered by AI.",
-            href: "/chat",
-            cta: "Chat Now",
-            background: <div className="absolute top-0 left-0 w-full h-full bg-[#dcfce7] z-0" />,
             className: "md:col-span-1 md:row-span-1",
         },
         {
@@ -61,6 +52,16 @@ export default function HomePage() {
             className: "md:col-span-1 md:row-span-1",
         },
         {
+            Icon: MessageSquare,
+            name: "Ask Mumbai AI",
+            description: "Get instant answers about wards, candidates, elections, and civic processes. Powered by AI.",
+            href: "/chat",
+            cta: "Chat Now",
+            background: <div className="absolute top-0 left-0 w-full h-full bg-[#dcfce7] z-0" />,
+            className: "md:col-span-1 md:row-span-1",
+        },
+
+        {
             Icon: BarChart3,
             name: "Election Stats",
             description: "Analyze candidate distribution, ward categories, and reservation breakdowns across all parties.",
@@ -78,7 +79,7 @@ export default function HomePage() {
             <main className="max-w-7xl mx-auto px-3 py-6 flex flex-col items-center">
                 {/* Header Section */}
                 <div className="w-full text-center mb-6 space-y-4">
-                    <h1 className="text-4xl md:text-6xl font-semibold tracking-tight font-[var(--font-fraunces)]">
+                    <h1 className="text-4xl md:text-6xl font-semibold tracking-tight ">
                         Know your Mumbai
                     </h1>
                     <p className="text-xl text-stone-500 font-light" suppressHydrationWarning>Waking up the city that never sleeps!</p>
@@ -97,25 +98,25 @@ export default function HomePage() {
                 <div className="w-full max-w-5xl px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10 border-t border-stone-200">
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">24</p>
+                            <p className="text-4xl font-semibold text-stone-800 ">24</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Admin Wards
                             </p>
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">227</p>
+                            <p className="text-4xl font-semibold text-stone-800 ">227</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Electoral Wards
                             </p>
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">1700+</p>
+                            <p className="text-4xl font-semibold text-stone-800 ">1700+</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Candidates
                             </p>
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-4xl font-semibold text-stone-800 font-[var(--font-fraunces)]">2 Crore+</p>
+                            <p className="text-4xl font-semibold text-stone-800 ">2 Crore+</p>
                             <p className="text-sm font-medium text-stone-500 uppercase tracking-wide">
                                 Population
                             </p>
@@ -132,7 +133,7 @@ export default function HomePage() {
             </footer>
 
             {/* Handbook Toast */}
-            {showHandbookToast && (
+            {/* {showHandbookToast && (
                 <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 max-w-sm w-[calc(100%-2rem)] animate-in slide-in-from-bottom-4 fade-in duration-300">
                     <div className="bg-white border border-stone-200 rounded-xl shadow-lg p-4 flex items-center gap-3">
                         <div className="p-2 bg-emerald-50 rounded-lg flex-shrink-0">
@@ -156,7 +157,7 @@ export default function HomePage() {
                         </button>
                     </div>
                 </div>
-            )}
+            )} */}
         </div>
     );
 }

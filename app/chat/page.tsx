@@ -33,7 +33,7 @@ export default function ChatPage() {
                     <div className="absolute inset-0 flex items-center p-6 md:p-8">
                         <div className="space-y-2">
                             <div className="flex items-center gap-3">
-                                <h1 className="text-2xl md:text-4xl font-bold font-[family-name:var(--font-fraunces)] text-white">
+                                <h1 className="text-2xl md:text-4xl font-bold text-white">
                                     Ask Mumbai AI
                                 </h1>
                                 <Badge className="bg-amber-100 text-amber-800 border-0 font-medium">
@@ -63,7 +63,7 @@ export default function ChatPage() {
                         </Badge>
 
                         {/* Title */}
-                        <h2 className="text-2xl md:text-3xl font-bold font-[family-name:var(--font-fraunces)] text-stone-900 mb-3">
+                        <h2 className="text-2xl md:text-3xl font-bold text-stone-900 mb-3">
                             AI Chat is Under Development
                         </h2>
 
@@ -109,3 +109,4 @@ export default function ChatPage() {
         </div>
     );
 }
+

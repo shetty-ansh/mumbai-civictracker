@@ -3,7 +3,8 @@
 import { useEffect, useId, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { MapPin, AlertTriangle, ExternalLink, X, Trophy } from "lucide-react";
+import Image from "next/image";
+import { MapPin, AlertTriangle, ExternalLink, X, Trophy, Cloud, ChevronDown, Layers, HelpCircle, ArrowRight, ChevronLeft, ChevronRight, Droplets } from "lucide-react";
 import {
     Map,
     MapControls,
@@ -16,13 +17,119 @@ import { Navbar } from "@/components/ui/navbar";
 import { supabase } from "@/lib/supabase";
 import categoryReservationData from "@/data/category-reservation.json";
 import winnersData from "@/data/winners.json";
+import floodingData from "@/data/flooding-data.json";
+import wardZoneMap from "@/data/ward-zone-map.json";
+import wardCentroids from "@/data/ward-centroids.json";
 import { showToast } from "@/lib/toast";
+import { getAllWardCenters } from "@/lib/ward-utils";
+import { WhatsThisPopup, MapTypeConfig } from "@/components/whats-this-popup";
 
 // Mumbai center coordinates
 const MUMBAI_CENTER: [number, number] = [72.8777, 19.076];
 const MUMBAI_ZOOM = 10.5;
 
-type DatasetType = "plain" | "electoral" | "results";
+type DatasetType = "forecast" | "electoral" | "results" | "flooding";
+
+// Map type configuration for dropdown and carousel
+const MAP_TYPES: MapTypeConfig[] = [
+    {
+        id: "electoral",
+        label: "Electoral Wards",
+        icon: <Layers className="w-5 h-5" />,
+        description: "Explore all 227 electoral ward boundaries with reservation and demographic data.",
+        color: "#FF8C00",
+    },
+    {
+        id: "results",
+        label: "Election Results",
+        icon: <Trophy className="w-5 h-5" />,
+        description: "See who won each ward — color-coded by coalition with full candidate details.",
+        color: "#F59E0B",
+    },
+    {
+        id: "forecast",
+        label: "Weather & AQI",
+        icon: <Cloud className="w-5 h-5" />,
+        description: "Live air quality and weather data mapped across Mumbai's wards.",
+        color: "#3B82F6",
+    },
+    {
+        id: "flooding",
+        label: "Flooding Risk",
+        icon: <Droplets className="w-5 h-5" />,
+        description: "View areas with historical and forecasted flooding risks across Mumbai.",
+        color: "#0ea5e9",
+    },
+];
+
+// Map Type Dropdown component
+function MapTypeDropdown({ dataset, setDataset }: { dataset: DatasetType; setDataset: (d: DatasetType) => void }) {
+    const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
+    const current = MAP_TYPES.find(m => m.id === dataset) || MAP_TYPES[0];
+
+    // Close on outside click
+    useEffect(() => {
+        const handler = (e: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
+    return (
+        <div ref={dropdownRef} className="relative">
+            <button
+                onClick={() => setOpen(!open)}
+                className="flex items-center gap-2 bg-white border border-stone-200 px-3 py-2 sm:px-4 sm:py-2.5 rounded-full shadow-lg hover:shadow-xl transition-all text-sm font-medium text-stone-800"
+            >
+                <span className="flex items-center gap-2" style={{ color: current.color }}>
+                    {current.icon}
+                </span>
+                <span className="hidden sm:inline">{current.label}</span>
+                <span className="sm:hidden">{current.label.split(' ')[0]}</span>
+                <ChevronDown className={`w-4 h-4 text-stone-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown menu */}
+            {open && (
+                <div className="absolute top-full left-0 mt-2 w-56 sm:w-64 bg-white border border-stone-200 rounded-2xl shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="px-3 py-2 border-b border-stone-100">
+                        <p className="text-[10px] uppercase tracking-widest text-stone-400 font-semibold">Select Map Type</p>
+                    </div>
+                    {MAP_TYPES.map((mapType) => (
+                        <button
+                            key={mapType.id}
+                            onClick={() => {
+                                setDataset(mapType.id);
+                                setOpen(false);
+                                if (mapType.id === 'results') {
+                                    showToast('info', 'Election Results', 'Showing all 227 ward winners');
+                                }
+                            }}
+                            className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all hover:bg-stone-50 ${dataset === mapType.id ? 'bg-stone-50' : ''
+                                }`}
+                        >
+                            <span className="flex items-center justify-center w-8 h-8 rounded-lg" style={{ color: mapType.color, backgroundColor: `${mapType.color}15` }}>
+                                {mapType.icon}
+                            </span>
+                            <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-semibold ${dataset === mapType.id ? 'text-stone-900' : 'text-stone-700'
+                                    }`}>{mapType.label}</p>
+                                <p className="text-xs text-stone-400 truncate">{mapType.description.slice(0, 50)}...</p>
+                            </div>
+                            {dataset === mapType.id && (
+                                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: mapType.color }} />
+                            )}
+                        </button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
 
 // Helper to slugify ward name for URL
 function slugify(name: string): string {
@@ -363,7 +470,7 @@ function ElectoralWardsLayer({ onWardClick }: { onWardClick: (name: string, id: 
         return (
             <div className="absolute top-24 left-6 z-10 bg-white border border-stone-200 rounded-xl px-5 py-4 shadow-lg min-w-[200px]">
                 <p className="text-xs text-stone-500 uppercase tracking-wider font-medium">Electoral Ward</p>
-                <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">#{hoveredWard.prabhag}</p>
+                <p className="text-4xl font-bold text-stone-900 ">#{hoveredWard.prabhag}</p>
                 <div className="mt-4 space-y-2 text-sm">
                     <div className="flex justify-between gap-4">
                         <span className="text-stone-500">Population</span>
@@ -574,7 +681,7 @@ function Electoral2025WardsLayer({ onWardClick }: { onWardClick: (name: string, 
                     <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">2025</span>
                     <p className="text-xs text-stone-500 uppercase tracking-wider font-medium">Electoral Ward</p>
                 </div>
-                <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">#{hoveredWard.wardNo}</p>
+                <p className="text-4xl font-bold text-stone-900 ">#{hoveredWard.wardNo}</p>
                 <div className="mt-4 space-y-2 text-sm">
                     <div className="flex justify-between gap-4">
                         <span className="text-stone-500">Category</span>
@@ -938,7 +1045,7 @@ function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id:
                             {COALITION_COLORS[hoveredWard.coalition]?.name || "Other"}
                         </span>
                     </div>
-                    <p className="text-4xl font-bold text-stone-900 font-[family-name:var(--font-fraunces)]">
+                    <p className="text-4xl font-bold text-stone-900 ">
                         #{hoveredWard.ward_no}
                     </p>
                     <div className="mt-3 space-y-1">
@@ -985,6 +1092,575 @@ function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id:
                 </div>
             </div>
         </>
+    );
+}
+
+// Weather Forecast Layer - Shows AQI data for each ward
+
+
+function WeatherForecastLayer({ onWardClick }: { onWardClick: (name: string, id: string | number) => void }) {
+    const { map, isLoaded } = useMap();
+    const id = useId();
+    const sourceId = `weather-forecast-source-${id}`;
+    const fillLayerId = `weather-forecast-fill-${id}`;
+    const outlineLayerId = `weather-forecast-outline-${id}`;
+    const labelLayerId = `weather-forecast-labels-${id}`;
+
+    // ── State ────────────────────────────────────────────────────────────────
+
+    // Zone-level AQI used to color all 227 polygons on load
+    const [zoneAQI, setZoneAQI] = useState<Record<string, number>>({});
+    // City-wide weather shown in the corner widget
+    const [weather, setWeather] = useState<{
+        temp: number;
+        feels_like: number;
+        humidity: number;
+        wind_kmh: number;
+        condition: string;
+        description: string;
+        icon_url: string;
+        rainfall_1h: number;
+    } | null>(null);
+    // Per-ward AQI loaded on click
+    const [wardAQI, setWardAQI] = useState<{
+        wardNo: number;
+        aqi: number;
+        label: string;
+        color: string;
+        components: {
+            co: number; no2: number; o3: number;
+            so2: number; pm2_5: number; pm10: number;
+        };
+    } | null>(null);
+
+    const [wardWeather, setWardWeather] = useState<{
+        temp: number;
+        feels_like: number;
+        humidity: number;
+        wind_kmh: number;
+        condition: string;
+        description: string;
+        icon_url: string;
+        rainfall_1h: number;
+    } | null>(null);
+
+    const [wardAQILoading, setWardAQILoading] = useState(false);
+
+    const [hoveredWardNo, setHoveredWardNo] = useState<number | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    // ── Static lookup tables (imported JSON) ─────────────────────────────────
+
+
+    // AQI level → color  (OpenWeatherMap 1–5 scale)
+    const AQI_COLORS: Record<number, string> = {
+        1: "#00C853",  // Good — green
+        2: "#8BC34A",  // Fair — light green
+        3: "#FFC107",  // Moderate — amber
+        4: "#FF5722",  // Poor — orange
+        5: "#B71C1C",  // Very Poor — red
+    };
+
+    const AQI_LABELS: Record<number, string> = {
+        1: "Good",
+        2: "Fair",
+        3: "Moderate",
+        4: "Poor",
+        5: "Very Poor",
+    };
+
+    // ── Fetch environment data on mount ──────────────────────────────────────
+    useEffect(() => {
+        const fetchEnvironmentData = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await fetch("/api/environment");
+                if (!res.ok) throw new Error(`API returned ${res.status}`);
+                const data = await res.json();
+
+                // Extract zone → aqi number map
+                const zoneAQIMap: Record<string, number> = {};
+                for (const [zone, info] of Object.entries(data.zones)) {
+                    zoneAQIMap[zone] = (info as any).aqi;
+                }
+                setZoneAQI(zoneAQIMap);
+                setWeather(data.weather);
+            } catch (err) {
+                console.error("Environment fetch failed:", err);
+                setError("Could not load weather & AQI data.");
+                showToast("error", "Environment Error", "Failed to load weather data.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (isLoaded) fetchEnvironmentData();
+    }, [isLoaded]);
+
+    // ── Add MapLibre layers once zone data is ready ──────────────────────────
+    useEffect(() => {
+        if (!isLoaded || !map || Object.keys(zoneAQI).length === 0) return;
+
+        // Build MapLibre match expression:
+        // ["match", ["to-number", ["get", "note"]], wardNo, color, wardNo, color, ..., defaultColor]
+        const colorExpression: any[] = ["match", ["to-number", ["get", "note"]]];
+
+        // For each ward, look up its zone, then the zone's AQI color
+        for (let wardNo = 1; wardNo <= 227; wardNo++) {
+            const zone = (wardZoneMap as Record<string, string>)[String(wardNo)];
+            const aqiLevel = zone ? (zoneAQI[zone] ?? 1) : 1;
+            const color = AQI_COLORS[aqiLevel] ?? "#E0E0E0";
+            colorExpression.push(wardNo, color);
+        }
+        colorExpression.push("#E0E0E0"); // default for any unmapped ward
+
+        map.addSource(sourceId, {
+            type: "geojson",
+            data: "/2025-ward-data.geojson",
+        });
+
+        map.addLayer({
+            id: fillLayerId,
+            type: "fill",
+            source: sourceId,
+            paint: {
+                "fill-color": colorExpression as any,
+                "fill-opacity": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    0.95,
+                    0.72,
+                ],
+            },
+        });
+
+        map.addLayer({
+            id: outlineLayerId,
+            type: "line",
+            source: sourceId,
+            paint: {
+                "line-color": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    "#000000",
+                    "#555555",
+                ],
+                "line-width": [
+                    "case",
+                    ["boolean", ["feature-state", "hover"], false],
+                    3,
+                    1,
+                ],
+            },
+        });
+
+        map.addLayer({
+            id: labelLayerId,
+            type: "symbol",
+            source: sourceId,
+            layout: {
+                "text-field": ["get", "note"],
+                "text-size": 11,
+                "text-anchor": "center",
+                "text-allow-overlap": false,
+                "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+            },
+            paint: {
+                "text-color": "#000000",
+                "text-halo-color": "#ffffff",
+                "text-halo-width": 2,
+            },
+        });
+
+        let hoveredFeatureId: string | number | undefined = undefined;
+
+        const handleMouseMove = (
+            e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }
+        ) => {
+            if (e.features && e.features.length > 0) {
+                if (hoveredFeatureId !== undefined) {
+                    map.setFeatureState({ source: sourceId, id: hoveredFeatureId }, { hover: false });
+                }
+                hoveredFeatureId = e.features[0].id;
+                if (hoveredFeatureId !== undefined) {
+                    map.setFeatureState({ source: sourceId, id: hoveredFeatureId }, { hover: true });
+                }
+                const wardNo = parseInt(e.features[0].properties?.note) || 0;
+                setHoveredWardNo(wardNo);
+                map.getCanvas().style.cursor = "pointer";
+            }
+        };
+
+        const handleMouseLeave = () => {
+            if (hoveredFeatureId !== undefined) {
+                map.setFeatureState({ source: sourceId, id: hoveredFeatureId }, { hover: false });
+            }
+            hoveredFeatureId = undefined;
+            setHoveredWardNo(null);
+            map.getCanvas().style.cursor = "";
+        };
+
+        const handleClick = async (
+            e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }
+        ) => {
+            if (!e.features || e.features.length === 0) return;
+
+            const wardNo = parseInt(e.features[0].properties?.note) || 0;
+            const featureId = e.features[0].id ?? "unknown";
+            const centroid = (wardCentroids as Record<string, { lat: number; lon: number }>)[String(wardNo)];
+
+            if (centroid) {
+                setWardAQILoading(true);
+                setWardAQI(null);
+                setWardWeather(null);
+
+                // Fire both AQI and weather calls for this ward in parallel
+                const [aqiRes, weatherRes] = await Promise.allSettled([
+                    fetch(`/api/ward-aqi?lat=${centroid.lat}&lon=${centroid.lon}`),
+                    fetch(`/api/ward-weather?lat=${centroid.lat}&lon=${centroid.lon}`),
+                ]);
+
+                // Handle AQI response
+                if (aqiRes.status === "fulfilled" && aqiRes.value.ok) {
+                    const aqiData = await aqiRes.value.json();
+                    setWardAQI({ wardNo, ...aqiData });
+                }
+
+                // Handle weather response
+                if (weatherRes.status === "fulfilled" && weatherRes.value.ok) {
+                    const data = await weatherRes.value.json();
+                    setWardWeather(data);
+                }
+
+                setWardAQILoading(false);
+            }
+
+
+        };
+
+        map.on("mousemove", fillLayerId, handleMouseMove);
+        map.on("mouseleave", fillLayerId, handleMouseLeave);
+        map.on("click", fillLayerId, handleClick);
+
+        return () => {
+            map.off("mousemove", fillLayerId, handleMouseMove);
+            map.off("mouseleave", fillLayerId, handleMouseLeave);
+            map.off("click", fillLayerId, handleClick);
+            try {
+                if (map.getLayer(labelLayerId)) map.removeLayer(labelLayerId);
+                if (map.getLayer(outlineLayerId)) map.removeLayer(outlineLayerId);
+                if (map.getLayer(fillLayerId)) map.removeLayer(fillLayerId);
+                if (map.getSource(sourceId)) map.removeSource(sourceId);
+            } catch {
+                // ignore cleanup errors
+            }
+        };
+    }, [isLoaded, map, zoneAQI, sourceId, fillLayerId, outlineLayerId, labelLayerId, onWardClick]);
+
+    // ── Derived hover display values ──────────────────────────────────────────
+    const hoveredZone = hoveredWardNo
+        ? (wardZoneMap as Record<string, string>)[String(hoveredWardNo)]
+        : null;
+    const hoveredAQILevel = hoveredZone ? (zoneAQI[hoveredZone] ?? 1) : 1;
+    const hoveredColor = AQI_COLORS[hoveredAQILevel] ?? "#E0E0E0";
+    const hoveredLabel = AQI_LABELS[hoveredAQILevel] ?? "Unknown";
+
+    // ── Render ────────────────────────────────────────────────────────────────
+    return (
+        <>
+            {/* ── Loading state ── */}
+            {loading && (
+                <div className="absolute top-24 left-6 z-10 bg-white border border-stone-200 rounded-xl px-5 py-4 shadow-lg">
+                    <div className="flex items-center gap-3">
+                        <div className="w-4 h-4 border-2 border-stone-300 border-t-blue-500 rounded-full animate-spin" />
+                        <span className="text-sm text-stone-600">Loading weather & AQI...</span>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Error state ── */}
+            {error && !loading && (
+                <div className="absolute top-24 left-6 z-10 bg-white border border-red-200 rounded-xl px-5 py-4 shadow-lg">
+                    <div className="flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 text-red-500" />
+                        <span className="text-sm text-red-600">{error}</span>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Hover tooltip — shows zone-level AQI while hovering ── */}
+            {hoveredWardNo && !loading && (
+                <div
+                    className="absolute top-24 left-6 z-10 bg-white border-2 rounded-xl px-5 py-4 shadow-xl min-w-[200px]"
+                    style={{ borderColor: hoveredColor }}
+                >
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: hoveredColor }} />
+                        <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: hoveredColor }}>
+                            {hoveredLabel}
+                        </span>
+                    </div>
+                    <p className="text-4xl font-bold text-stone-900">#{hoveredWardNo}</p>
+                    <div className="mt-3 flex justify-between gap-4">
+                        <span className="text-sm text-stone-500">AQI Level</span>
+                        <span className="font-bold text-lg" style={{ color: hoveredColor }}>
+                            {hoveredAQILevel} / 5
+                        </span>
+                    </div>
+                    <p className="text-xs text-stone-400 mt-2">Click for precise ward data</p>
+                </div>
+            )}
+
+            {/* ── Combined ward panel — AQI + Weather for clicked ward ── */}
+            {(wardAQILoading || wardAQI) && (
+                <div
+                    className="absolute top-4 right-4 sm:right-6 z-20 bg-white border-2 rounded-2xl shadow-xl min-w-[260px] max-w-[300px] overflow-hidden"
+                    style={{ borderColor: wardAQI?.color ?? "#E0E0E0" }}
+                >
+                    {wardAQILoading ? (
+                        <div className="flex items-center gap-3 px-5 py-4">
+                            <div className="w-4 h-4 border-2 border-stone-300 border-t-blue-500 rounded-full animate-spin" />
+                            <span className="text-sm text-stone-500">Fetching ward data...</span>
+                        </div>
+                    ) : wardAQI && (
+                        <>
+                            {/* Header */}
+                            <div
+                                className="px-5 py-3 flex items-center justify-between"
+                                style={{ backgroundColor: `${wardAQI.color}18` }}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: wardAQI.color }} />
+                                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: wardAQI.color }}>
+                                        {wardAQI.label}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-lg font-bold text-stone-800">
+                                        Ward #{wardAQI.wardNo}
+                                    </span>
+                                    <button
+                                        onClick={() => { setWardAQI(null); setWardWeather(null); }}
+                                        className="text-stone-400 hover:text-stone-700 ml-1"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="px-5 py-4 space-y-4">
+
+                                {/* AQI level prominent display */}
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-stone-400 uppercase tracking-widest font-semibold">AQI Level</p>
+                                        <p className="text-4xl font-bold" style={{ color: wardAQI.color }}>
+                                            {wardAQI.aqi}
+                                            <span className="text-sm text-stone-400 font-normal ml-1">/ 5</span>
+                                        </p>
+                                    </div>
+                                    {/* Weather icon + temp if available */}
+                                    {wardWeather && (
+                                        <div className="flex flex-col items-center">
+                                            <img src={wardWeather.icon_url} alt={wardWeather.condition} className="w-10 h-10" />
+                                            <p className="text-xl font-bold text-stone-800 -mt-1">{wardWeather.temp}°C</p>
+                                            <p className="text-xs text-stone-400 capitalize text-center">{wardWeather.description}</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Pollutants */}
+                                <div>
+                                    <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
+                                        Pollutants
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                                        {[
+                                            { key: "pm2_5", label: "PM2.5" },
+                                            { key: "pm10", label: "PM10" },
+                                            { key: "no2", label: "NO₂" },
+                                            { key: "o3", label: "O₃" },
+                                            { key: "so2", label: "SO₂" },
+                                            { key: "co", label: "CO" },
+                                        ].map(({ key, label }) => (
+                                            <div key={key} className="flex justify-between gap-2">
+                                                <span className="text-xs text-stone-500">{label}</span>
+                                                <span className="text-xs font-semibold text-stone-800">
+                                                    {wardAQI.components[key as keyof typeof wardAQI.components].toFixed(1)}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <p className="text-[10px] text-stone-400 mt-1">All values in μg/m³</p>
+                                </div>
+
+                                {/* Weather details — only if ward weather loaded */}
+                                {wardWeather && (
+                                    <div className="border-t border-stone-100 pt-3">
+                                        <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
+                                            Ward Weather
+                                        </p>
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                                            <div className="flex justify-between gap-2">
+                                                <span className="text-xs text-stone-500">Feels like</span>
+                                                <span className="text-xs font-semibold text-stone-800">{wardWeather.feels_like}°C</span>
+                                            </div>
+                                            <div className="flex justify-between gap-2">
+                                                <span className="text-xs text-stone-500">Humidity</span>
+                                                <span className="text-xs font-semibold text-stone-800">{wardWeather.humidity}%</span>
+                                            </div>
+                                            <div className="flex justify-between gap-2">
+                                                <span className="text-xs text-stone-500">Wind</span>
+                                                <span className="text-xs font-semibold text-stone-800">{wardWeather.wind_kmh} km/h</span>
+                                            </div>
+                                            {wardWeather.rainfall_1h > 0 && (
+                                                <div className="flex justify-between gap-2">
+                                                    <span className="text-xs text-stone-500">Rain (1h)</span>
+                                                    <span className="text-xs font-semibold text-blue-600">{wardWeather.rainfall_1h} mm</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                            </div>
+                        </>
+                    )}
+                </div>
+            )}
+
+            {/* ── Weather widget — only shown when NO ward is selected ── */}
+            {weather && !loading && !wardAQI && !wardAQILoading && (
+                <div className="absolute top-4 right-4 sm:right-6 z-20 bg-white/95 border border-stone-200 rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm min-w-[180px]">
+                    <div className="flex items-center gap-2 mb-1">
+                        <img src={weather.icon_url} alt={weather.condition} className="w-8 h-8" />
+                        <div>
+                            <p className="text-2xl font-bold text-stone-900 leading-none">{weather.temp}°C</p>
+                            <p className="text-xs text-stone-500 capitalize">{weather.description}</p>
+                        </div>
+                    </div>
+                    <div className="border-t border-stone-100 mt-2 pt-2 space-y-1">
+                        <div className="flex justify-between gap-3">
+                            <span className="text-xs text-stone-400">Feels like</span>
+                            <span className="text-xs font-medium text-stone-700">{weather.feels_like}°C</span>
+                        </div>
+                        <div className="flex justify-between gap-3">
+                            <span className="text-xs text-stone-400">Humidity</span>
+                            <span className="text-xs font-medium text-stone-700">{weather.humidity}%</span>
+                        </div>
+                        <div className="flex justify-between gap-3">
+                            <span className="text-xs text-stone-400">Wind</span>
+                            <span className="text-xs font-medium text-stone-700">{weather.wind_kmh} km/h</span>
+                        </div>
+                        {weather.rainfall_1h > 0 && (
+                            <div className="flex justify-between gap-3">
+                                <span className="text-xs text-stone-400">Rain (1h)</span>
+                                <span className="text-xs font-medium text-blue-600">{weather.rainfall_1h} mm</span>
+                            </div>
+                        )}
+                    </div>
+                    <p className="text-[10px] text-stone-400 mt-2 text-center">Mumbai City-Wide · Click a ward for local data</p>
+                </div>
+            )}
+
+            {/* ── AQI Legend ── */}
+            {!loading && (
+                <div className="absolute bottom-6 left-6 z-20 bg-white/95 border border-stone-300 rounded-2xl p-5 shadow-xl backdrop-blur-sm">
+                    <h3 className="text-base font-bold text-stone-900 mb-3 flex items-center gap-2">
+                        <Cloud className="w-4 h-4 text-blue-500" />
+                        Air Quality Index
+                    </h3>
+                    <div className="space-y-2">
+                        {[
+                            { level: 1, label: "Good", color: "#00C853" },
+                            { level: 2, label: "Fair", color: "#8BC34A" },
+                            { level: 3, label: "Moderate", color: "#FFC107" },
+                            { level: 4, label: "Poor", color: "#FF5722" },
+                            { level: 5, label: "Very Poor", color: "#B71C1C" },
+                        ].map((item) => (
+                            <div key={item.level} className="flex items-center gap-3">
+                                <div
+                                    className="w-4 h-4 rounded-sm shadow-sm border border-black/10 flex-shrink-0"
+                                    style={{ backgroundColor: item.color }}
+                                />
+                                <span className="text-xs font-medium text-stone-700">{item.label}</span>
+                                <span className="text-xs text-stone-400 ml-auto">Level {item.level}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-stone-200">
+                        <p className="text-[10px] text-stone-400">
+                            Zone-level colors · Click ward for precise data
+                        </p>
+                        <p className="text-[10px] text-stone-400">
+                            Source: OpenWeatherMap
+                        </p>
+                    </div>
+                </div>
+            )}
+        </>
+    );
+}
+
+// Flooding Risk Layer
+function FloodingLayer() {
+    const { map, isLoaded } = useMap();
+    const id = useId();
+    const sourceId = `flooding-source-${id}`;
+    const fillLayerId = `flooding-fill-${id}`;
+    const outlineLayerId = `flooding-outline-${id}`;
+
+    useEffect(() => {
+        if (!isLoaded || !map) return;
+
+        map.addSource(sourceId, {
+            type: "geojson",
+            data: floodingData as any,
+        });
+
+        map.addLayer({
+            id: fillLayerId,
+            type: "fill",
+            source: sourceId,
+            paint: {
+                "fill-color": "#0ea5e9", // Sky blue for water/flooding
+                "fill-opacity": 0.5,
+            },
+        });
+
+        map.addLayer({
+            id: outlineLayerId,
+            type: "line",
+            source: sourceId,
+            paint: {
+                "line-color": "#0284c7",
+                "line-width": 1.5,
+            },
+        });
+
+        return () => {
+            try {
+                if (map.getLayer(outlineLayerId)) map.removeLayer(outlineLayerId);
+                if (map.getLayer(fillLayerId)) map.removeLayer(fillLayerId);
+                if (map.getSource(sourceId)) map.removeSource(sourceId);
+            } catch {
+                // ignore
+            }
+        };
+    }, [isLoaded, map, sourceId, fillLayerId, outlineLayerId]);
+
+    return (
+        <div className="absolute bottom-6 left-6 z-20 bg-white/95 border border-stone-300 rounded-2xl p-5 shadow-xl backdrop-blur-sm">
+            <h3 className="text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">
+                <Droplets className="w-5 h-5 text-sky-500" />
+                Flooding Risk Zones
+            </h3>
+            <p className="text-sm text-stone-600 max-w-xs">
+                Highlighted areas indicate historical or forecasted flooding risks within Mumbai.
+            </p>
+        </div>
     );
 }
 
@@ -1035,46 +1711,21 @@ export default function MapPage() {
                     maxZoom={18}
                     key={dataset}
                 >
-                    {/* Dataset Toggle + My Ward Button - inside Map for shared context */}
-                    <div className="absolute top-4 left-6 z-20 flex items-center gap-3">
-                        <div className="bg-card/90 border border-border p-1.5 flex gap-1 backdrop-blur-sm rounded-full">
-                            <button
-                                onClick={() => setDataset("electoral")}
-                                className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "electoral"
-                                    ? "bg-accent text-white"
-                                    : "text-muted-foreground hover:text-accent hover:bg-muted"
-                                    }`}
-                            >
-                                Electoral
-                            </button>
-                            <button
-                                onClick={() => setDataset("plain")}
-                                className={`px-5 py-2 text-sm font-medium transition-all rounded-full ${dataset === "plain"
-                                    ? "bg-accent text-white"
-                                    : "text-muted-foreground hover:text-accent hover:bg-muted"
-                                    }`}
-                            >
-                                Plain
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setDataset("results");
-                                    showToast('info', 'Election Results', 'Showing all 227 ward winners');
-                                }}
-                                className={`px-5 py-2 text-sm font-medium transition-all rounded-full flex items-center gap-1.5 ${dataset === "results"
-                                    ? "bg-amber-500 text-white"
-                                    : "text-muted-foreground hover:text-amber-500 hover:bg-amber-50"
-                                    }`}
-                            >
-                                <Trophy className="w-4 h-4" /> Results
-                            </button>
-                        </div>
+                    {/* Map Type Dropdown + My Ward Button - inside Map for shared context */}
+                    <div className="absolute top-4 left-4 sm:left-6 z-20 flex items-center gap-2 sm:gap-3">
+                        <MapTypeDropdown dataset={dataset} setDataset={setDataset} />
                         <MyWardButton setDataset={setDataset} onWardFound={handleWardFound} />
                     </div>
 
                     {dataset === "electoral" && <Electoral2025WardsLayer onWardClick={handleWardClick} />}
                     {dataset === "results" && <ElectionResultsLayer onWardClick={handleWardClick} />}
-                    {/* Plain mode shows no layers - just base map */}
+                    {dataset === "forecast" && <WeatherForecastLayer onWardClick={handleWardClick} />}
+                    {dataset === "flooding" && (
+                        <>
+                            <Electoral2025WardsLayer onWardClick={handleWardClick} />
+                            <FloodingLayer />
+                        </>
+                    )}
 
                     {/* User location marker */}
                     {userLocation && (
@@ -1125,7 +1776,7 @@ export default function MapPage() {
             )} */}
 
             {/* Hint */}
-            {dataset !== "plain" && (
+            {dataset !== "forecast" && (
                 <div className="absolute bottom-24 right-6 z-20 hidden sm:block">
                     <div className="bg-card/90 border border-white/20 px-4 py-2 backdrop-blur-sm">
                         <p className="text-xs text-black font-light">
@@ -1135,7 +1786,10 @@ export default function MapPage() {
                 </div>
             )}
 
+            {/* What's this page? floating popup */}
+            <WhatsThisPopup dataset={dataset} setDataset={setDataset} mapTypes={MAP_TYPES} />
 
         </div>
     );
 }
+

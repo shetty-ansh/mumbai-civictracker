@@ -18,7 +18,7 @@ export default function SourcesPage() {
 
             <main className="max-w-4xl mx-auto px-6 py-12">
                 <div className="mb-8 text-center">
-                    <h1 className="text-3xl md:text-4xl font-bold font-[family-name:var(--font-fraunces)] mb-4 text-stone-900">
+                    <h1 className="text-3xl md:text-4xl font-bold mb-4 text-stone-900">
                         Resources & Sources
                     </h1>
                     <p className="text-lg text-stone-600 max-w-2xl mx-auto">
@@ -344,3 +344,4 @@ export default function SourcesPage() {
         </div>
     );
 }
+

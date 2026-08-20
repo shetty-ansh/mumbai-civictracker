@@ -35,7 +35,7 @@ export default async function NewsPage(props: { searchParams: Promise<{ page?: s
                         </span>
                         <span className="ml-2 text-xs font-medium text-green-700 uppercase tracking-wider">Live Updates</span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-semibold tracking-tight font-[var(--font-fraunces)]">
+                    <h1 className="text-4xl md:text-5xl font-semibold tracking-tight ">
                         Mumbai News
                     </h1>
                     <p className="text-lg text-stone-500 font-light">
@@ -56,7 +56,7 @@ export default async function NewsPage(props: { searchParams: Promise<{ page?: s
                                 >
                                     <div className="p-6 flex flex-col h-full justify-between">
                                         <div>
-                                            <h2 className="text-2xl font-normal mb-3 leading-tight group-hover:text-stone-600 transition-colors font-[var(--font-fraunces)]">
+                                            <h2 className="text-2xl font-normal mb-3 leading-tight group-hover:text-stone-600 transition-colors ">
                                                 {item.title}
                                             </h2>
                                             {item.contentSnippet && (
