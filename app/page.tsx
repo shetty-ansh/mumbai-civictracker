@@ -84,7 +84,7 @@ export default function LandingPage() {
           <Linkedin className="w-4 h-4" strokeWidth={1.5} />
         </a>
         <a
-          href="https://anshshetty.vercel.app"
+          href="https://anshshetty.in"
           target="_blank"
           rel="noopener noreferrer"
           className="text-white/60 hover:text-white/90 transition-colors"

@@ -160,7 +160,7 @@ export default function SourcesPage() {
                                         <br /><br />
                                         As a student-led initiative without institutional resources, we have manually verified data to the best of our ability, but minor discrepancies may exist. Our goal is strictly neutral civic awareness, and we do not intend to disrespect or defame any candidate or party.
                                         <br /><br />
-                                        If you spot an error, please let us know at <a href="mailto:shettyansh205@gmail.com" className="text-amber-700 font-medium hover:underline">shettyansh205@gmail.com</a>, and we will correct it immediately. Thank you for your support.
+                                        If you spot an error, please let us know at <a href="mailto:mumbaitracker.in@gmail.com" className="text-amber-700 font-medium hover:underline">mumbaitracker.in@gmail.com</a>, and we will correct it immediately. Thank you for your support.
                                     </p>
                                 </div>
                             )}

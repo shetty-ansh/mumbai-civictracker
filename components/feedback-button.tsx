@@ -19,7 +19,7 @@ export function FeedbackButton() {
     return (
         <div className="fixed bottom-6 right-6 z-50">
             <a
-                href="mailto:shettyansh205@gmail.com?subject=Correction/Complaint%20Report"
+                href="mailto:mumbaitracker.in@gmail.com?subject=Correction/Complaint%20Report"
                 className="flex items-center gap-2 px-4 py-3 bg-stone-900 text-white rounded-full shadow-lg hover:bg-stone-800 transition-all hover:scale-105 active:scale-95 group"
                 aria-label="Send correction or complaint"
             >
