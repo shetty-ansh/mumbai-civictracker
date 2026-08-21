@@ -54,7 +54,7 @@ export default function LandingPage() {
 
       {/* Mobile Background Image */}
       <img
-        src="/images/phone-new-2.jpeg"
+        src="/images/mobile-landing.png"
         alt="Mumbai Mobile Background"
         className="block md:hidden absolute inset-0 w-full h-full object-cover"
       />
