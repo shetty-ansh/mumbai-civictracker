@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import { User, AlertTriangle, Scale, Trophy, Vote } from "lucide-react";
+import { User, AlertTriangle, Scale, Trophy, Vote, Star } from "lucide-react";
 import manifestoData from "@/data/party-manifestos.json";
 import wardAffidavits from "@/data/ward-affidavits.json";
 import { CandidatePageToast } from "./candidate-toast";
@@ -12,6 +12,7 @@ import { PromisesManifestoToggle } from "./promises-manifesto-toggle";
 import { BackButton } from "./back-button";
 import { Special_Elite } from "next/font/google";
 import { CandidateContact } from "./candidate-contact";
+import { CandidateRating } from "./candidate-rating";
 
 const specialElite = Special_Elite({
     weight: "400",
@@ -115,7 +116,7 @@ export default async function CandidatePage({
 }) {
     const { id } = await params;
 
-    const [{ data: candidateRaw, error }, { data: promisesData }, { data: contactData, error: contactError }] = await Promise.all([
+    const [{ data: candidateRaw, error }, { data: promisesData }, { data: contactData, error: contactError }, { data: ratingsData }] = await Promise.all([
         supabase
             .from('bmc_candidates')
             .select(`
@@ -135,6 +136,11 @@ export default async function CandidatePage({
             .from('corporator_contact')
             .select('*')
             .eq('candidate_id', id),
+        supabase
+            .from('candidate_ratings')
+            .select('rating')
+            .eq('candidate_id', id)
+            .eq('status', 'published')
     ]);
 
     // Transform votes from array to single value
@@ -165,6 +171,9 @@ export default async function CandidatePage({
     const manifesto = getPartyManifesto(candidate.party_name);
     const promises = promisesData || [];
     const contactInfo = contactData && contactData.length > 0 ? contactData[0] : null;
+    const averageRating = ratingsData && ratingsData.length > 0
+        ? ratingsData.reduce((sum, r) => sum + r.rating, 0) / ratingsData.length
+        : null;
 
     return (
         <div className="min-h-screen bg-stone-50">
@@ -178,115 +187,143 @@ export default async function CandidatePage({
                 {/* Bento Grid Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:min-h-[500px]">
 
-                    {/* Left Column - Candidate Info Card, styled as a local-train ticket */}
-                    <div
-                        className={`lg:col-span-2 rounded-xl flex flex-col min-h-[700px] relative overflow-hidden lg:sticky lg:top-6 lg:self-start ${specialElite.className}`}
-                        style={{
-                            backgroundImage: candidate.winnner
-                                ? "url('/images/local-train-ticket.svg')"
-                                : "none",
-                            backgroundPosition: candidate.winnner ? "center" : "auto",
-                            backgroundRepeat: candidate.winnner ? "no-repeat" : "auto",
-                            backgroundColor: candidate.winnner ? undefined : "#000",
-                        }}
-                    >
-                        {/* Stamp: reservation, inked & rotated top-right like a franking stamp */}
-                        {candidate.is_women_reserved && (
-                            <div
-                                className={`absolute top-[118px] right-5 rotate-[-9deg] border-2 rounded-sm px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest select-none mix-blend-multiply ${candidate.winnner ? 'border-rose-700/60 text-rose-700/80' : 'border-pink-400/60 text-pink-300/80'
-                                    }`}
-                            >
-                                Women<br />Reserved
-                            </div>
-                        )}
-
-                        {/* Stamp: winner, inked & rotated, opposite corner */}
-                        {candidate.winnner && (
-                            <div className="absolute top-[118px] left-5 rotate-[8deg] border-2 border-emerald-700/50 rounded-sm px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700/70 select-none mix-blend-multiply">
-                                ✓ Elected
-                            </div>
-                        )}
-
-                        {/* Main ticket body — sits below the printed banner/perforation art */}
-                        <div className="flex-1 flex flex-col justify-center px-7 pt-[170px] pb-6">
-
-                            <div className="space-y-4">
-                                {/* Passenger (candidate name) */}
-                                <div className="flex items-end gap-2">
-                                    <span className={`text-[10px] uppercase tracking-widest whitespace-nowrap ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Passenger</span>
-                                    <span className={`flex-1 border-b border-dotted mb-1 ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
+                    {/* Left Column Container */}
+                    <div className="lg:col-span-2 flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
+                        {/* Candidate Info Card, styled as a local-train ticket */}
+                        <div
+                            className={`rounded-xl flex flex-col min-h-[700px] relative overflow-hidden ${specialElite.className}`}
+                            style={{
+                                backgroundImage: candidate.winnner
+                                    ? "url('/images/local-train-ticket.svg')"
+                                    : "none",
+                                backgroundPosition: candidate.winnner ? "center" : "auto",
+                                backgroundRepeat: candidate.winnner ? "no-repeat" : "auto",
+                                backgroundColor: candidate.winnner ? undefined : "#000",
+                            }}
+                        >
+                            {/* Stamp: reservation, inked & rotated top-right like a franking stamp */}
+                            {candidate.is_women_reserved && (
+                                <div
+                                    className={`absolute top-[118px] right-5 rotate-[-9deg] border-2 rounded-sm px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest select-none mix-blend-multiply ${candidate.winnner ? 'border-rose-700/60 text-rose-700/80' : 'border-pink-400/60 text-pink-300/80'
+                                        }`}
+                                >
+                                    Women<br />Reserved
                                 </div>
-                                <p className={`text-xl sm:text-2xl font-bold -mt-3 ${candidate.winnner ? 'text-stone-800' : 'text-white'}`}>
-                                    {candidate.candidate_name}
-                                </p>
+                            )}
 
-                                {/* Party (issuing authority) */}
-                                <div className="flex items-end gap-2 pt-2">
-                                    <span className={`text-[10px] uppercase tracking-widest whitespace-nowrap ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Issued By</span>
-                                    <span className={`flex-1 border-b border-dotted mb-1 ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
+                            {/* Stamp: winner, inked & rotated, opposite corner */}
+                            {candidate.winnner && (
+                                <div className="absolute top-[118px] left-5 rotate-[8deg] border-2 border-emerald-700/50 rounded-sm px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700/70 select-none mix-blend-multiply">
+                                    ✓ Elected
                                 </div>
-                                <p className={`text-base font-medium -mt-3 ${candidate.winnner ? 'text-stone-700' : 'text-stone-200'}`}>
-                                    {candidate.party_name}
-                                </p>
+                            )}
 
-                                {/* Ward no. / Ward name — two-column ticket fields */}
-                                <div className="grid grid-cols-5 gap-3 pt-3">
-                                    <div className="col-span-2">
-                                        <p className={`text-[10px] uppercase tracking-widest ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Ward No.</p>
-                                        <p className={`text-lg font-bold ${candidate.winnner ? 'text-stone-800' : 'text-amber-400'}`}>{candidate.ward_no}</p>
+                            {/* Main ticket body — sits below the printed banner/perforation art */}
+                            <div className="flex-1 flex flex-col justify-center px-7 pt-[170px] pb-6">
+
+                                <div className="space-y-4">
+                                    {/* Passenger (candidate name) */}
+                                    <div className="flex items-end gap-2">
+                                        <span className={`text-[10px] uppercase tracking-widest whitespace-nowrap ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Passenger</span>
+                                        <span className={`flex-1 border-b border-dotted mb-1 ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
                                     </div>
-                                    <div className="col-span-3">
-                                        <p className={`text-[10px] uppercase tracking-widest ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Station / Ward</p>
-                                        <p className={`text-lg font-bold ${candidate.winnner ? 'text-stone-800' : 'text-amber-400'}`}>{candidate.ward_name}</p>
+                                    <p className={`text-xl sm:text-2xl font-bold -mt-3 ${candidate.winnner ? 'text-stone-800' : 'text-white'}`}>
+                                        {candidate.candidate_name}
+                                    </p>
+
+                                    {/* Party (issuing authority) */}
+                                    <div className="flex items-end gap-2 pt-2">
+                                        <span className={`text-[10px] uppercase tracking-widest whitespace-nowrap ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Issued By</span>
+                                        <span className={`flex-1 border-b border-dotted mb-1 ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
+                                    </div>
+                                    <p className={`text-base font-medium -mt-3 ${candidate.winnner ? 'text-stone-700' : 'text-stone-200'}`}>
+                                        {candidate.party_name}
+                                    </p>
+
+                                    {/* Ward no. / Rating — two-column ticket fields */}
+                                    <div className="grid grid-cols-5 gap-3 pt-3">
+                                        <div className="col-span-2">
+                                            <p className={`text-[10px] uppercase tracking-widest ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Ward No.</p>
+                                            <p className={`text-lg font-bold ${candidate.winnner ? 'text-stone-800' : 'text-amber-400'}`}>{candidate.ward_no}</p>
+                                        </div>
+                                        <div className="col-span-3">
+                                            <p className={`text-[10px] uppercase tracking-widest ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Avg Rating</p>
+                                            <p className={`text-lg font-bold flex items-center gap-1 ${candidate.winnner ? 'text-stone-800' : 'text-amber-400'}`}>
+                                                {averageRating !== null ? (
+                                                    <>
+                                                        {averageRating.toFixed(1)} <Star className="w-4 h-4 fill-current" />
+                                                    </>
+                                                ) : 'N/A'}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Perforated tear line separating ticket from counterfoil */}
-                            <div className="w-full flex items-center gap-2 my-6">
-                                <span className={`flex-1 border-t-2 border-dashed ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
-                                <span className={`text-xs ${candidate.winnner ? 'text-stone-500/60' : 'text-stone-400/50'}`}>✂</span>
-                                <span className={`flex-1 border-t-2 border-dashed ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
-                            </div>
+                                {/* Perforated tear line separating ticket from counterfoil */}
+                                <div className="w-full flex items-center gap-2 my-6">
+                                    <span className={`flex-1 border-t-2 border-dashed ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
+                                    <span className={`text-xs ${candidate.winnner ? 'text-stone-500/60' : 'text-stone-400/50'}`}>✂</span>
+                                    <span className={`flex-1 border-t-2 border-dashed ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
+                                </div>
 
-                            {/* Counterfoil — tear-tab style action row */}
-                            <div className={`flex rounded-lg overflow-hidden border divide-x divide-dashed ${candidate.winnner ? 'border-stone-400/40 divide-stone-400/40 bg-white/40' : 'border-stone-500/30 divide-stone-500/30 bg-white/5'}`}>
+                                {/* Counterfoil — tear-tab style action row */}
+                                <div className={`flex rounded-lg overflow-hidden border divide-x divide-dashed ${candidate.winnner ? 'border-stone-400/40 divide-stone-400/40 bg-white/40' : 'border-stone-500/30 divide-stone-500/30 bg-white/5'}`}>
+                                    <a
+                                        href="#promises"
+                                        className={`flex-1 flex flex-col items-center justify-center gap-1 text-center text-xs font-semibold uppercase tracking-wide py-3 px-2 transition-colors ${candidate.winnner ? 'text-stone-800 hover:bg-white/60' : 'text-stone-100 hover:bg-white/10'}`}
+                                    >
+                                        View<br />Promises
+                                    </a>
+                                    <a
+                                        href="#ratings"
+                                        className={`flex-1 flex flex-col items-center justify-center gap-1 text-center text-xs font-semibold uppercase tracking-wide py-3 px-2 transition-colors ${candidate.winnner ? 'text-stone-800 hover:bg-white/60' : 'text-stone-100 hover:bg-white/10'}`}
+                                    >
+                                        <Star className="w-3.5 h-3.5" />
+                                        View<br />Ratings
+                                    </a>
+                                </div>
+
+                                {/* View Affidavit — the ticket's "boarding" strip, main CTA */}
                                 <a
                                     href={wardAffidavits[candidate.ward_no.toString() as keyof typeof wardAffidavits] || "#"}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`flex-1 text-center text-xs font-semibold uppercase tracking-wide py-3 px-2 transition-colors ${candidate.winnner ? 'text-stone-800 hover:bg-white/60' : 'text-stone-100 hover:bg-white/10'}`}
+                                    className={`mt-3 flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-widest rounded-lg py-3.5 transition-colors ${candidate.winnner
+                                        ? 'bg-stone-800 text-white hover:bg-stone-700'
+                                        : 'bg-amber-400 text-stone-900 hover:bg-amber-300'
+                                        }`}
                                 >
-                                    View<br />Affidavit
+                                    View Affidavit ↗
                                 </a>
-                                <Link
-                                    href={`/candidates/compare/${candidate.ward_no}`}
-                                    className={`flex-1 flex flex-col items-center justify-center gap-1 text-center text-xs font-semibold uppercase tracking-wide py-3 px-2 transition-colors ${candidate.winnner ? 'text-stone-800 hover:bg-white/60' : 'text-stone-100 hover:bg-white/10'}`}
-                                >
-                                    <Scale className="w-3.5 h-3.5" />
-                                    Compare<br />Ward
-                                </Link>
+
+                                {/* Votes — printed like a ticket serial number */}
+                                {candidate.votes !== null && (
+                                    <div className={`mt-4 flex items-center justify-center text-[11px] tracking-widest ${candidate.winnner ? 'text-stone-500/70' : 'text-stone-400/60'}`}>
+                                        <div className="flex items-center gap-1.5">
+                                            <Vote className="w-3 h-3" />
+                                            <span>{candidate.votes.toLocaleString('en-IN')} VOTES POLLED</span>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
-
-                            {/* View Promises — the ticket's "boarding" strip, main CTA replacing votes */}
-                            <a
-                                href="#promises"
-                                className={`mt-3 flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-widest rounded-lg py-3.5 transition-colors ${candidate.winnner
-                                    ? 'bg-stone-800 text-white hover:bg-stone-700'
-                                    : 'bg-amber-400 text-stone-900 hover:bg-amber-300'
-                                    }`}
-                            >
-                                View Promises ↓
-                            </a>
-
-                            {/* Votes — de-emphasized, printed like a ticket serial number */}
-                            {candidate.votes !== null && (
-                                <div className={`mt-4 flex items-center justify-center gap-1.5 text-[11px] tracking-widest ${candidate.winnner ? 'text-stone-500/70' : 'text-stone-400/60'}`}>
-                                    <Vote className="w-3 h-3" />
-                                    <span>{candidate.votes.toLocaleString('en-IN')} VOTES POLLED</span>
-                                </div>
-                            )}
                         </div>
+
+                        {/* Compare Ward Candidates Card */}
+                        <Link
+                            href={`/candidates/compare/${candidate.ward_no}`}
+                            className="bg-white border border-stone-200 rounded-xl p-4 flex items-center justify-between hover:border-amber-400 transition-colors group shadow-sm"
+                        >
+                            <div className="flex items-center gap-4">
+                                <div className="p-2.5 bg-stone-50 rounded-lg group-hover:bg-amber-50 transition-colors">
+                                    <Scale className="w-5 h-5 text-stone-600 group-hover:text-amber-600" />
+                                </div>
+                                <div>
+                                    <h3 className="text-sm font-bold text-stone-800">Compare Ward</h3>
+                                    <p className="text-xs text-stone-500">See other candidates in Ward {candidate.ward_no}</p>
+                                </div>
+                            </div>
+                            <span className="text-stone-300 group-hover:text-amber-500 transition-colors px-2">→</span>
+                        </Link>
                     </div>
 
                     {/* Right Column */}
@@ -380,6 +417,9 @@ export default async function CandidatePage({
                         </div>
                         <div>
                             <CandidateContact email={contactInfo?.email} mobile={contactInfo?.mobile} />
+                        </div>
+                        <div id="ratings">
+                            <CandidateRating candidateId={id} />
                         </div>
                     </div>
                 </div>
