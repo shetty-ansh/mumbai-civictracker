@@ -25,7 +25,7 @@ export function AnnouncementPopup() {
 
     const handleClose = () => setIsOpen(false)
 
-    const handleSubmit = async (e: React.SubmitEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setStatus("loading")
         setErrMsg("")
