@@ -13,6 +13,8 @@ import { BackButton } from "./back-button";
 import { Special_Elite } from "next/font/google";
 import { CandidateContact } from "./candidate-contact";
 import { CandidateRating } from "./candidate-rating";
+import { CandidateShareActions } from "./candidate-share-actions";
+import { CandidateReportCard } from "./candidate-report-card";
 
 const specialElite = Special_Elite({
     weight: "400",
@@ -138,9 +140,10 @@ export default async function CandidatePage({
             .eq('candidate_id', id),
         supabase
             .from('candidate_ratings')
-            .select('rating')
+            .select('rating, review_text, created_at')
             .eq('candidate_id', id)
             .eq('status', 'published')
+            .order('created_at', { ascending: false })
     ]);
 
     // Transform votes from array to single value
@@ -181,8 +184,11 @@ export default async function CandidatePage({
             <CandidatePageToast />
 
             <main className="max-w-5xl mx-auto p-4">
-                {/* Back Button */}
-                <BackButton />
+                {/* Top Action Bar */}
+                <div className="flex items-center justify-between mb-4">
+                    <BackButton />
+                    <CandidateShareActions candidateName={candidate.candidate_name} wardNo={candidate.ward_no} />
+                </div>
 
                 {/* Bento Grid Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 lg:min-h-[500px]">
@@ -191,6 +197,7 @@ export default async function CandidatePage({
                     <div className="lg:col-span-2 flex flex-col gap-4 lg:sticky lg:top-6 lg:self-start">
                         {/* Candidate Info Card, styled as a local-train ticket */}
                         <div
+                            id="candidate-ticket-card"
                             className={`rounded-xl flex flex-col min-h-[700px] relative overflow-hidden ${specialElite.className}`}
                             style={{
                                 backgroundImage: candidate.winnner
@@ -422,6 +429,19 @@ export default async function CandidatePage({
                             <CandidateRating candidateId={id} />
                         </div>
                     </div>
+                </div>
+                
+                {/* Hidden Report Card for Download */}
+                <div className="absolute top-0 -left-[9999px] z-[-1] overflow-hidden">
+                    <CandidateReportCard 
+                        candidate={candidate}
+                        caseInfo={caseInfo}
+                        averageRating={averageRating}
+                        ratingsData={ratingsData || []}
+                        promises={promises}
+                        manifesto={manifesto}
+                        contactInfo={contactInfo}
+                    />
                 </div>
             </main>
         </div>
