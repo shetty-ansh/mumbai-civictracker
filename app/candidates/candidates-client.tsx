@@ -176,6 +176,27 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                     </div>
                 </div>
 
+                {/* Leaderboard CTA Section */}
+                <div className="mb-4 bg-gradient-to-r from-stone-50 to-stone-100 border border-stone-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-white border border-stone-200 rounded-full flex items-center justify-center shadow-sm">
+                            <Trophy className="w-5 h-5 text-amber-500" />
+                        </div>
+                        <div>
+                            <p className="font-semibold text-stone-900">Corporator Rankings</p>
+                            <p className="text-sm text-stone-600">See who is leading based on citizen ratings and reviews.</p>
+                        </div>
+                    </div>
+                    <div className="w-full sm:w-auto">
+                        <Link
+                            href="/candidates/rankings"
+                            className="block w-full sm:w-auto bg-stone-900 text-white border border-stone-800 px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-stone-800 transition-colors text-center shadow-sm"
+                        >
+                            VIEW LEADERBOARD
+                        </Link>
+                    </div>
+                </div>
+
                 {/* Map CTA Section */}
                 <div className="mb-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">

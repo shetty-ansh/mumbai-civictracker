@@ -12,3 +12,12 @@ export interface RatingStatus {
     status?: "quarantined" | "published" | "removed";
     created_at?: string;
 }
+
+export interface LeaderboardData {
+    id: string;
+    ward_no: string;
+    candidate_name: string;
+    rating_avg: number | null;
+    rating_count: number;
+    candidate_ratings?: CandidateRatingsData[];
+}
