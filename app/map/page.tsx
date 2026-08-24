@@ -18,6 +18,8 @@ import { supabase } from "@/lib/supabase";
 import categoryReservationData from "@/data/category-reservation.json";
 import winnersData from "@/data/winners.json";
 import floodingData from "@/data/flooding-data.json";
+import wardZoneMap from "@/data/ward-zone-map.json";
+import wardCentroids from "@/data/ward-centroids.json";
 import { showToast } from "@/lib/toast";
 import { getAllWardCenters } from "@/lib/ward-utils";
 import { WhatsThisPopup, MapTypeConfig } from "@/components/whats-this-popup";
@@ -107,17 +109,15 @@ function MapTypeDropdown({ dataset, setDataset }: { dataset: DatasetType; setDat
                                     showToast('info', 'Election Results', 'Showing all 227 ward winners');
                                 }
                             }}
-                            className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all hover:bg-stone-50 ${
-                                dataset === mapType.id ? 'bg-stone-50' : ''
-                            }`}
+                            className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all hover:bg-stone-50 ${dataset === mapType.id ? 'bg-stone-50' : ''
+                                }`}
                         >
                             <span className="flex items-center justify-center w-8 h-8 rounded-lg" style={{ color: mapType.color, backgroundColor: `${mapType.color}15` }}>
                                 {mapType.icon}
                             </span>
                             <div className="flex-1 min-w-0">
-                                <p className={`text-sm font-semibold ${
-                                    dataset === mapType.id ? 'text-stone-900' : 'text-stone-700'
-                                }`}>{mapType.label}</p>
+                                <p className={`text-sm font-semibold ${dataset === mapType.id ? 'text-stone-900' : 'text-stone-700'
+                                    }`}>{mapType.label}</p>
                                 <p className="text-xs text-stone-400 truncate">{mapType.description.slice(0, 50)}...</p>
                             </div>
                             {dataset === mapType.id && (
@@ -1096,6 +1096,8 @@ function ElectionResultsLayer({ onWardClick }: { onWardClick: (name: string, id:
 }
 
 // Weather Forecast Layer - Shows AQI data for each ward
+
+
 function WeatherForecastLayer({ onWardClick }: { onWardClick: (name: string, id: string | number) => void }) {
     const { map, isLoaded } = useMap();
     const id = useId();
@@ -1104,126 +1106,121 @@ function WeatherForecastLayer({ onWardClick }: { onWardClick: (name: string, id:
     const outlineLayerId = `weather-forecast-outline-${id}`;
     const labelLayerId = `weather-forecast-labels-${id}`;
 
-    const [weatherData, setWeatherData] = useState<Record<number, { aqi: number; temp: number; condition: string }>>({});
-    const [hoveredWard, setHoveredWard] = useState<{ wardNo: number; aqi: number; temp: number; condition: string } | null>(null);
+    // ── State ────────────────────────────────────────────────────────────────
+
+    // Zone-level AQI used to color all 227 polygons on load
+    const [zoneAQI, setZoneAQI] = useState<Record<string, number>>({});
+    // City-wide weather shown in the corner widget
+    const [weather, setWeather] = useState<{
+        temp: number;
+        feels_like: number;
+        humidity: number;
+        wind_kmh: number;
+        condition: string;
+        description: string;
+        icon_url: string;
+        rainfall_1h: number;
+    } | null>(null);
+    // Per-ward AQI loaded on click
+    const [wardAQI, setWardAQI] = useState<{
+        wardNo: number;
+        aqi: number;
+        label: string;
+        color: string;
+        components: {
+            co: number; no2: number; o3: number;
+            so2: number; pm2_5: number; pm10: number;
+        };
+    } | null>(null);
+
+    const [wardWeather, setWardWeather] = useState<{
+        temp: number;
+        feels_like: number;
+        humidity: number;
+        wind_kmh: number;
+        condition: string;
+        description: string;
+        icon_url: string;
+        rainfall_1h: number;
+    } | null>(null);
+
+    const [wardAQILoading, setWardAQILoading] = useState(false);
+
+    const [hoveredWardNo, setHoveredWardNo] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
-    // AQI color mapping
-    const getAQIColor = (aqi: number): string => {
-        if (aqi <= 50) return "#00E400"; // Good - Green
-        if (aqi <= 100) return "#FFFF00"; // Moderate - Yellow
-        if (aqi <= 150) return "#FF7E00"; // Unhealthy for Sensitive - Orange
-        if (aqi <= 200) return "#FF0000"; // Unhealthy - Red
-        if (aqi <= 300) return "#8F3F97"; // Very Unhealthy - Purple
-        return "#7E0023"; // Hazardous - Maroon
+    // ── Static lookup tables (imported JSON) ─────────────────────────────────
+
+
+    // AQI level → color  (OpenWeatherMap 1–5 scale)
+    const AQI_COLORS: Record<number, string> = {
+        1: "#00C853",  // Good — green
+        2: "#8BC34A",  // Fair — light green
+        3: "#FFC107",  // Moderate — amber
+        4: "#FF5722",  // Poor — orange
+        5: "#B71C1C",  // Very Poor — red
     };
 
-    const getAQILabel = (aqi: number): string => {
-        if (aqi <= 50) return "Good";
-        if (aqi <= 100) return "Moderate";
-        if (aqi <= 150) return "Unhealthy for Sensitive";
-        if (aqi <= 200) return "Unhealthy";
-        if (aqi <= 300) return "Very Unhealthy";
-        return "Hazardous";
+    const AQI_LABELS: Record<number, string> = {
+        1: "Good",
+        2: "Fair",
+        3: "Moderate",
+        4: "Poor",
+        5: "Very Poor",
     };
 
-    // Fetch weather data for all wards
+    // ── Fetch environment data on mount ──────────────────────────────────────
     useEffect(() => {
-        const fetchWeatherData = async () => {
+        const fetchEnvironmentData = async () => {
             setLoading(true);
+            setError(null);
             try {
-                const wardCenters = getAllWardCenters();
-                const weatherPromises = wardCenters.slice(0, 25).map(async (ward) => { // Use 25 wards for demo
-                    try {
-                        // Using actual API endpoint that was set up, instead of mock
-                        const response = await fetch('/api/weather/forecast', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                lat: ward.lat,
-                                lon: ward.lng,
-                                wardId: ward.wardId,
-                            }),
-                        });
-                        
-                        if (!response.ok) {
-                            throw new Error('Failed to fetch from API');
-                        }
-                        
-                        const data = await response.json();
-                        // OpenWeather forecast structure usually has aqi in air pollution endpoint
-                        // Since this uses standard forecast endpoint, we can mock AQI but use real temp
-                        const temp = data.forecast?.list?.[0]?.main?.temp || 28;
-                        const condition = data.forecast?.list?.[0]?.weather?.[0]?.main || 'Clear';
-                        
-                        // Generating mock AQI as air pollution API would require a separate call
-                        const mockAQI = Math.floor(Math.random() * 300) + 1;
+                const res = await fetch("/api/environment");
+                if (!res.ok) throw new Error(`API returned ${res.status}`);
+                const data = await res.json();
 
-                        return {
-                            wardId: parseInt(ward.wardId),
-                            aqi: mockAQI,
-                            temp: Math.round(temp),
-                            condition: condition
-                        };
-                    } catch (error) {
-                        console.error(`Error fetching weather for ward ${ward.wardId}:`, error);
-                        // Fallback to mock data if API fails or rate limits
-                        return {
-                            wardId: parseInt(ward.wardId),
-                            aqi: Math.floor(Math.random() * 300) + 1,
-                            temp: Math.floor(Math.random() * 15) + 20,
-                            condition: ["Clear", "Cloudy", "Rainy", "Hazy"][Math.floor(Math.random() * 4)]
-                        };
-                    }
-                });
-
-                const results = await Promise.all(weatherPromises);
-                const weatherMap: Record<number, { aqi: number; temp: number; condition: string }> = {};
-
-                results.forEach(result => {
-                    if (result) {
-                        weatherMap[result.wardId] = {
-                            aqi: result.aqi,
-                            temp: result.temp,
-                            condition: result.condition
-                        };
-                    }
-                });
-
-                setWeatherData(weatherMap);
-            } catch (error) {
-                console.error("Error fetching weather data:", error);
-                showToast('error', 'Weather Error', 'Failed to load weather data');
+                // Extract zone → aqi number map
+                const zoneAQIMap: Record<string, number> = {};
+                for (const [zone, info] of Object.entries(data.zones)) {
+                    zoneAQIMap[zone] = (info as any).aqi;
+                }
+                setZoneAQI(zoneAQIMap);
+                setWeather(data.weather);
+            } catch (err) {
+                console.error("Environment fetch failed:", err);
+                setError("Could not load weather & AQI data.");
+                showToast("error", "Environment Error", "Failed to load weather data.");
             } finally {
                 setLoading(false);
             }
         };
 
-        if (isLoaded) {
-            fetchWeatherData();
-        }
+        if (isLoaded) fetchEnvironmentData();
     }, [isLoaded]);
 
+    // ── Add MapLibre layers once zone data is ready ──────────────────────────
     useEffect(() => {
-        if (!isLoaded || !map || Object.keys(weatherData).length === 0) return;
+        if (!isLoaded || !map || Object.keys(zoneAQI).length === 0) return;
 
-        // Build color expression for fill based on AQI
+        // Build MapLibre match expression:
+        // ["match", ["to-number", ["get", "note"]], wardNo, color, wardNo, color, ..., defaultColor]
         const colorExpression: any[] = ["match", ["to-number", ["get", "note"]]];
 
-        for (const [wardNo, weather] of Object.entries(weatherData)) {
-            colorExpression.push(parseInt(wardNo), getAQIColor(weather.aqi));
+        // For each ward, look up its zone, then the zone's AQI color
+        for (let wardNo = 1; wardNo <= 227; wardNo++) {
+            const zone = (wardZoneMap as Record<string, string>)[String(wardNo)];
+            const aqiLevel = zone ? (zoneAQI[zone] ?? 1) : 1;
+            const color = AQI_COLORS[aqiLevel] ?? "#E0E0E0";
+            colorExpression.push(wardNo, color);
         }
-        // Default color for wards without data
-        colorExpression.push("#E0E0E0");
+        colorExpression.push("#E0E0E0"); // default for any unmapped ward
 
         map.addSource(sourceId, {
             type: "geojson",
             data: "/2025-ward-data.geojson",
         });
 
-        // Colored fill based on AQI
         map.addLayer({
             id: fillLayerId,
             type: "fill",
@@ -1233,8 +1230,8 @@ function WeatherForecastLayer({ onWardClick }: { onWardClick: (name: string, id:
                 "fill-opacity": [
                     "case",
                     ["boolean", ["feature-state", "hover"], false],
-                    0.9,
-                    0.7,
+                    0.95,
+                    0.72,
                 ],
             },
         });
@@ -1247,14 +1244,14 @@ function WeatherForecastLayer({ onWardClick }: { onWardClick: (name: string, id:
                 "line-color": [
                     "case",
                     ["boolean", ["feature-state", "hover"], false],
-                    "#000000", // Black on hover
-                    "#666666", // Gray normally
+                    "#000000",
+                    "#555555",
                 ],
                 "line-width": [
                     "case",
                     ["boolean", ["feature-state", "hover"], false],
-                    3, // Thick on hover
-                    1, // Thin normally
+                    3,
+                    1,
                 ],
             },
         });
@@ -1284,57 +1281,63 @@ function WeatherForecastLayer({ onWardClick }: { onWardClick: (name: string, id:
         ) => {
             if (e.features && e.features.length > 0) {
                 if (hoveredFeatureId !== undefined) {
-                    map.setFeatureState(
-                        { source: sourceId, id: hoveredFeatureId },
-                        { hover: false }
-                    );
+                    map.setFeatureState({ source: sourceId, id: hoveredFeatureId }, { hover: false });
                 }
                 hoveredFeatureId = e.features[0].id;
                 if (hoveredFeatureId !== undefined) {
-                    map.setFeatureState(
-                        { source: sourceId, id: hoveredFeatureId },
-                        { hover: true }
-                    );
+                    map.setFeatureState({ source: sourceId, id: hoveredFeatureId }, { hover: true });
                 }
-                const props = e.features[0].properties;
-                const wardNo = parseInt(props?.note) || 0;
-                const weather = weatherData[wardNo];
-
-                if (weather) {
-                    setHoveredWard({
-                        wardNo,
-                        aqi: weather.aqi,
-                        temp: weather.temp,
-                        condition: weather.condition
-                    });
-                } else {
-                    setHoveredWard(null);
-                }
-
+                const wardNo = parseInt(e.features[0].properties?.note) || 0;
+                setHoveredWardNo(wardNo);
                 map.getCanvas().style.cursor = "pointer";
             }
         };
 
         const handleMouseLeave = () => {
             if (hoveredFeatureId !== undefined) {
-                map.setFeatureState(
-                    { source: sourceId, id: hoveredFeatureId },
-                    { hover: false }
-                );
+                map.setFeatureState({ source: sourceId, id: hoveredFeatureId }, { hover: false });
             }
             hoveredFeatureId = undefined;
-            setHoveredWard(null);
+            setHoveredWardNo(null);
             map.getCanvas().style.cursor = "";
         };
 
-        const handleClick = (
+        const handleClick = async (
             e: MapLibreGL.MapMouseEvent & { features?: MapLibreGL.MapGeoJSONFeature[] }
         ) => {
-            if (e.features && e.features.length > 0) {
-                const props = e.features[0].properties;
-                const wardNo = parseInt(props?.note) || 0;
-                onWardClick(`ward-${wardNo}`, e.features[0].id ?? "unknown");
+            if (!e.features || e.features.length === 0) return;
+
+            const wardNo = parseInt(e.features[0].properties?.note) || 0;
+            const featureId = e.features[0].id ?? "unknown";
+            const centroid = (wardCentroids as Record<string, { lat: number; lon: number }>)[String(wardNo)];
+
+            if (centroid) {
+                setWardAQILoading(true);
+                setWardAQI(null);
+                setWardWeather(null);
+
+                // Fire both AQI and weather calls for this ward in parallel
+                const [aqiRes, weatherRes] = await Promise.allSettled([
+                    fetch(`/api/ward-aqi?lat=${centroid.lat}&lon=${centroid.lon}`),
+                    fetch(`/api/ward-weather?lat=${centroid.lat}&lon=${centroid.lon}`),
+                ]);
+
+                // Handle AQI response
+                if (aqiRes.status === "fulfilled" && aqiRes.value.ok) {
+                    const aqiData = await aqiRes.value.json();
+                    setWardAQI({ wardNo, ...aqiData });
+                }
+
+                // Handle weather response
+                if (weatherRes.status === "fulfilled" && weatherRes.value.ok) {
+                    const data = await weatherRes.value.json();
+                    setWardWeather(data);
+                }
+
+                setWardAQILoading(false);
             }
+
+
         };
 
         map.on("mousemove", fillLayerId, handleMouseMove);
@@ -1351,91 +1354,252 @@ function WeatherForecastLayer({ onWardClick }: { onWardClick: (name: string, id:
                 if (map.getLayer(fillLayerId)) map.removeLayer(fillLayerId);
                 if (map.getSource(sourceId)) map.removeSource(sourceId);
             } catch {
-                // ignore
+                // ignore cleanup errors
             }
         };
-    }, [isLoaded, map, weatherData, sourceId, fillLayerId, outlineLayerId, labelLayerId, onWardClick]);
+    }, [isLoaded, map, zoneAQI, sourceId, fillLayerId, outlineLayerId, labelLayerId, onWardClick]);
 
+    // ── Derived hover display values ──────────────────────────────────────────
+    const hoveredZone = hoveredWardNo
+        ? (wardZoneMap as Record<string, string>)[String(hoveredWardNo)]
+        : null;
+    const hoveredAQILevel = hoveredZone ? (zoneAQI[hoveredZone] ?? 1) : 1;
+    const hoveredColor = AQI_COLORS[hoveredAQILevel] ?? "#E0E0E0";
+    const hoveredLabel = AQI_LABELS[hoveredAQILevel] ?? "Unknown";
+
+    // ── Render ────────────────────────────────────────────────────────────────
     return (
         <>
-            {/* Hover Info Card */}
-            {hoveredWard && (
-                <div className="absolute top-24 left-6 z-10 bg-white border-2 rounded-xl px-5 py-4 shadow-xl min-w-[240px]" style={{ borderColor: getAQIColor(hoveredWard.aqi) }}>
-                    <div className="flex items-center gap-2 mb-2">
-                        <Cloud className="w-4 h-4" style={{ color: getAQIColor(hoveredWard.aqi) }} />
-                        <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: getAQIColor(hoveredWard.aqi) }}>
-                            {getAQILabel(hoveredWard.aqi)}
-                        </span>
-                    </div>
-                    <p className="text-4xl font-bold text-stone-900">
-                        #{hoveredWard.wardNo}
-                    </p>
-                    <div className="mt-3 space-y-2">
-                        <div className="flex justify-between gap-4">
-                            <span className="text-sm text-stone-500">AQI</span>
-                            <span className="font-bold text-lg" style={{ color: getAQIColor(hoveredWard.aqi) }}>
-                                {hoveredWard.aqi}
-                            </span>
-                        </div>
-                        <div className="flex justify-between gap-4">
-                            <span className="text-sm text-stone-500">Temperature</span>
-                            <span className="font-semibold text-stone-900">{hoveredWard.temp}°C</span>
-                        </div>
-                        <div className="flex justify-between gap-4">
-                            <span className="text-sm text-stone-500">Condition</span>
-                            <span className="font-semibold text-stone-900">{hoveredWard.condition}</span>
-                        </div>
-                    </div>
-                    <p className="text-xs text-stone-400 mt-3">Click for details</p>
-                </div>
-            )}
-
-            {/* Loading indicator */}
+            {/* ── Loading state ── */}
             {loading && (
                 <div className="absolute top-24 left-6 z-10 bg-white border border-stone-200 rounded-xl px-5 py-4 shadow-lg">
                     <div className="flex items-center gap-3">
-                        <div className="w-4 h-4 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin" />
-                        <span className="text-sm text-stone-600">Loading weather data...</span>
+                        <div className="w-4 h-4 border-2 border-stone-300 border-t-blue-500 rounded-full animate-spin" />
+                        <span className="text-sm text-stone-600">Loading weather & AQI...</span>
                     </div>
                 </div>
             )}
 
-            {/* AQI Legend */}
-            <div className="absolute bottom-6 left-6 z-20 bg-white/95 border border-stone-300 rounded-2xl p-5 shadow-xl backdrop-blur-sm">
-                <h3 className="text-lg font-bold text-stone-900 mb-4 flex items-center gap-2">
-                    <Cloud className="w-5 h-5 text-blue-500" />
-                    Air Quality Index
-                </h3>
-                <div className="space-y-2">
-                    {[
-                        { range: "0-50", label: "Good", color: "#00E400" },
-                        { range: "51-100", label: "Moderate", color: "#FFFF00" },
-                        { range: "101-150", label: "Unhealthy for Sensitive", color: "#FF7E00" },
-                        { range: "151-200", label: "Unhealthy", color: "#FF0000" },
-                        { range: "201-300", label: "Very Unhealthy", color: "#8F3F97" },
-                        { range: "300+", label: "Hazardous", color: "#7E0023" },
-                    ].map((item) => (
-                        <div key={item.range} className="flex items-center gap-3">
-                            <div
-                                className="w-4 h-4 rounded-sm shadow-sm border border-black/10"
-                                style={{ backgroundColor: item.color }}
-                            />
-                            <div className="flex-1">
-                                <span className="text-xs font-semibold text-stone-800">{item.label}</span>
-                                <span className="text-xs text-stone-500 ml-2">({item.range})</span>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-                <div className="mt-4 pt-3 border-t border-stone-200">
-                    <div className="flex justify-between items-center">
-                        <span className="text-xs text-stone-500">Wards with Data</span>
-                        <span className="text-lg font-bold text-stone-900">
-                            {Object.keys(weatherData).length}
-                        </span>
+            {/* ── Error state ── */}
+            {error && !loading && (
+                <div className="absolute top-24 left-6 z-10 bg-white border border-red-200 rounded-xl px-5 py-4 shadow-lg">
+                    <div className="flex items-center gap-2">
+                        <AlertTriangle className="w-4 h-4 text-red-500" />
+                        <span className="text-sm text-red-600">{error}</span>
                     </div>
                 </div>
-            </div>
+            )}
+
+            {/* ── Hover tooltip — shows zone-level AQI while hovering ── */}
+            {hoveredWardNo && !loading && (
+                <div
+                    className="absolute top-24 left-6 z-10 bg-white border-2 rounded-xl px-5 py-4 shadow-xl min-w-[200px]"
+                    style={{ borderColor: hoveredColor }}
+                >
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: hoveredColor }} />
+                        <span className="text-xs font-semibold uppercase tracking-wider" style={{ color: hoveredColor }}>
+                            {hoveredLabel}
+                        </span>
+                    </div>
+                    <p className="text-4xl font-bold text-stone-900">#{hoveredWardNo}</p>
+                    <div className="mt-3 flex justify-between gap-4">
+                        <span className="text-sm text-stone-500">AQI Level</span>
+                        <span className="font-bold text-lg" style={{ color: hoveredColor }}>
+                            {hoveredAQILevel} / 5
+                        </span>
+                    </div>
+                    <p className="text-xs text-stone-400 mt-2">Click for precise ward data</p>
+                </div>
+            )}
+
+            {/* ── Combined ward panel — AQI + Weather for clicked ward ── */}
+            {(wardAQILoading || wardAQI) && (
+                <div
+                    className="absolute top-4 right-4 sm:right-6 z-20 bg-white border-2 rounded-2xl shadow-xl min-w-[260px] max-w-[300px] overflow-hidden"
+                    style={{ borderColor: wardAQI?.color ?? "#E0E0E0" }}
+                >
+                    {wardAQILoading ? (
+                        <div className="flex items-center gap-3 px-5 py-4">
+                            <div className="w-4 h-4 border-2 border-stone-300 border-t-blue-500 rounded-full animate-spin" />
+                            <span className="text-sm text-stone-500">Fetching ward data...</span>
+                        </div>
+                    ) : wardAQI && (
+                        <>
+                            {/* Header */}
+                            <div
+                                className="px-5 py-3 flex items-center justify-between"
+                                style={{ backgroundColor: `${wardAQI.color}18` }}
+                            >
+                                <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: wardAQI.color }} />
+                                    <span className="text-xs font-bold uppercase tracking-wider" style={{ color: wardAQI.color }}>
+                                        {wardAQI.label}
+                                    </span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <span className="text-lg font-bold text-stone-800">
+                                        Ward #{wardAQI.wardNo}
+                                    </span>
+                                    <button
+                                        onClick={() => { setWardAQI(null); setWardWeather(null); }}
+                                        className="text-stone-400 hover:text-stone-700 ml-1"
+                                    >
+                                        <X className="w-4 h-4" />
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="px-5 py-4 space-y-4">
+
+                                {/* AQI level prominent display */}
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-xs text-stone-400 uppercase tracking-widest font-semibold">AQI Level</p>
+                                        <p className="text-4xl font-bold" style={{ color: wardAQI.color }}>
+                                            {wardAQI.aqi}
+                                            <span className="text-sm text-stone-400 font-normal ml-1">/ 5</span>
+                                        </p>
+                                    </div>
+                                    {/* Weather icon + temp if available */}
+                                    {wardWeather && (
+                                        <div className="flex flex-col items-center">
+                                            <img src={wardWeather.icon_url} alt={wardWeather.condition} className="w-10 h-10" />
+                                            <p className="text-xl font-bold text-stone-800 -mt-1">{wardWeather.temp}°C</p>
+                                            <p className="text-xs text-stone-400 capitalize text-center">{wardWeather.description}</p>
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Pollutants */}
+                                <div>
+                                    <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
+                                        Pollutants
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                                        {[
+                                            { key: "pm2_5", label: "PM2.5" },
+                                            { key: "pm10", label: "PM10" },
+                                            { key: "no2", label: "NO₂" },
+                                            { key: "o3", label: "O₃" },
+                                            { key: "so2", label: "SO₂" },
+                                            { key: "co", label: "CO" },
+                                        ].map(({ key, label }) => (
+                                            <div key={key} className="flex justify-between gap-2">
+                                                <span className="text-xs text-stone-500">{label}</span>
+                                                <span className="text-xs font-semibold text-stone-800">
+                                                    {wardAQI.components[key as keyof typeof wardAQI.components].toFixed(1)}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <p className="text-[10px] text-stone-400 mt-1">All values in μg/m³</p>
+                                </div>
+
+                                {/* Weather details — only if ward weather loaded */}
+                                {wardWeather && (
+                                    <div className="border-t border-stone-100 pt-3">
+                                        <p className="text-[10px] font-semibold text-stone-400 uppercase tracking-widest mb-2">
+                                            Ward Weather
+                                        </p>
+                                        <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+                                            <div className="flex justify-between gap-2">
+                                                <span className="text-xs text-stone-500">Feels like</span>
+                                                <span className="text-xs font-semibold text-stone-800">{wardWeather.feels_like}°C</span>
+                                            </div>
+                                            <div className="flex justify-between gap-2">
+                                                <span className="text-xs text-stone-500">Humidity</span>
+                                                <span className="text-xs font-semibold text-stone-800">{wardWeather.humidity}%</span>
+                                            </div>
+                                            <div className="flex justify-between gap-2">
+                                                <span className="text-xs text-stone-500">Wind</span>
+                                                <span className="text-xs font-semibold text-stone-800">{wardWeather.wind_kmh} km/h</span>
+                                            </div>
+                                            {wardWeather.rainfall_1h > 0 && (
+                                                <div className="flex justify-between gap-2">
+                                                    <span className="text-xs text-stone-500">Rain (1h)</span>
+                                                    <span className="text-xs font-semibold text-blue-600">{wardWeather.rainfall_1h} mm</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                            </div>
+                        </>
+                    )}
+                </div>
+            )}
+
+            {/* ── Weather widget — only shown when NO ward is selected ── */}
+            {weather && !loading && !wardAQI && !wardAQILoading && (
+                <div className="absolute top-4 right-4 sm:right-6 z-20 bg-white/95 border border-stone-200 rounded-2xl px-4 py-3 shadow-xl backdrop-blur-sm min-w-[180px]">
+                    <div className="flex items-center gap-2 mb-1">
+                        <img src={weather.icon_url} alt={weather.condition} className="w-8 h-8" />
+                        <div>
+                            <p className="text-2xl font-bold text-stone-900 leading-none">{weather.temp}°C</p>
+                            <p className="text-xs text-stone-500 capitalize">{weather.description}</p>
+                        </div>
+                    </div>
+                    <div className="border-t border-stone-100 mt-2 pt-2 space-y-1">
+                        <div className="flex justify-between gap-3">
+                            <span className="text-xs text-stone-400">Feels like</span>
+                            <span className="text-xs font-medium text-stone-700">{weather.feels_like}°C</span>
+                        </div>
+                        <div className="flex justify-between gap-3">
+                            <span className="text-xs text-stone-400">Humidity</span>
+                            <span className="text-xs font-medium text-stone-700">{weather.humidity}%</span>
+                        </div>
+                        <div className="flex justify-between gap-3">
+                            <span className="text-xs text-stone-400">Wind</span>
+                            <span className="text-xs font-medium text-stone-700">{weather.wind_kmh} km/h</span>
+                        </div>
+                        {weather.rainfall_1h > 0 && (
+                            <div className="flex justify-between gap-3">
+                                <span className="text-xs text-stone-400">Rain (1h)</span>
+                                <span className="text-xs font-medium text-blue-600">{weather.rainfall_1h} mm</span>
+                            </div>
+                        )}
+                    </div>
+                    <p className="text-[10px] text-stone-400 mt-2 text-center">Mumbai City-Wide · Click a ward for local data</p>
+                </div>
+            )}
+
+            {/* ── AQI Legend ── */}
+            {!loading && (
+                <div className="absolute bottom-6 left-6 z-20 bg-white/95 border border-stone-300 rounded-2xl p-5 shadow-xl backdrop-blur-sm">
+                    <h3 className="text-base font-bold text-stone-900 mb-3 flex items-center gap-2">
+                        <Cloud className="w-4 h-4 text-blue-500" />
+                        Air Quality Index
+                    </h3>
+                    <div className="space-y-2">
+                        {[
+                            { level: 1, label: "Good", color: "#00C853" },
+                            { level: 2, label: "Fair", color: "#8BC34A" },
+                            { level: 3, label: "Moderate", color: "#FFC107" },
+                            { level: 4, label: "Poor", color: "#FF5722" },
+                            { level: 5, label: "Very Poor", color: "#B71C1C" },
+                        ].map((item) => (
+                            <div key={item.level} className="flex items-center gap-3">
+                                <div
+                                    className="w-4 h-4 rounded-sm shadow-sm border border-black/10 flex-shrink-0"
+                                    style={{ backgroundColor: item.color }}
+                                />
+                                <span className="text-xs font-medium text-stone-700">{item.label}</span>
+                                <span className="text-xs text-stone-400 ml-auto">Level {item.level}</span>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="mt-3 pt-3 border-t border-stone-200">
+                        <p className="text-[10px] text-stone-400">
+                            Zone-level colors · Click ward for precise data
+                        </p>
+                        <p className="text-[10px] text-stone-400">
+                            Source: OpenWeatherMap
+                        </p>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
