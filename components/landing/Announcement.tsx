@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect } from "react"
@@ -38,9 +37,9 @@ export function AnnouncementPopup() {
         setStatus("loading")
         setErrMsg("")
 
-        const res = await fetch('/api/subscribe', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        const res = await fetch("/api/subscribe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email }),
         })
         const data = await res.json()
@@ -66,96 +65,113 @@ export function AnnouncementPopup() {
                 "bg-cover md:bg-[length:100%_100%] bg-center bg-no-repeat"
             )}
             style={{
-                backgroundImage: "url('/images/announcement.png')"
+                backgroundImage: "url('/images/announcement.png')",
             }}
         >
             {/* Inner safe area to avoid the ornate borders */}
-            <div className="px-8 py-16 md:px-20 md:py-16 relative h-full w-full">
+            <div className="px-8 pt-14 pb-12 md:px-20 md:py-16 relative h-full w-full">
                 <button
                     onClick={handleClose}
-                    className="absolute top-6 right-6 md:top-12 md:right-14 p-1.5 text-amber-200/50 hover:text-white bg-black/10 hover:bg-black/20 rounded-full transition-colors z-10"
+                    className="absolute top-8 right-8 md:top-12 md:right-14 p-1.5 text-amber-200/50 hover:text-white bg-black/10 hover:bg-black/20 rounded-full transition-colors z-10"
                     aria-label="Close"
                 >
                     <X className="w-4 h-4" />
                 </button>
 
                 {status === "success" ? (
+                    <div className="flex flex-col items-center justify-center gap-3 py-6 text-center h-full">
+                        <CheckCircle className="w-10 h-10 md:w-12 md:h-12 text-amber-400" />
 
-                    <div className="flex flex-col items-center justify-center gap-3 py-10 text-center h-full">
-                        <CheckCircle className="w-12 h-12 text-amber-400" />
-                        <p className="text-xl font-semibold text-amber-50">You&apos;re on the list!</p>
-                        <p className="text-sm text-amber-100/70">
+                        <p className="text-lg md:text-xl font-semibold text-amber-50">
+                            You&apos;re on the list!
+                        </p>
+
+                        <p className="text-xs md:text-sm text-amber-100/70">
                             We&apos;ll send you one email when the next update drops.
                         </p>
                     </div>
-
                 ) : (
-
-                    <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center h-full mt-2">
+                    <div className="flex flex-col md:flex-row gap-0 md:gap-8 items-center h-full">
 
                         {/* Left Column: Features */}
-                        <div className="flex-1 flex flex-col gap-3 w-full">
-                            <div>
-                                <p className="text-[10px] font-semibold tracking-widest uppercase text-[#FF8C00] mb-0.5">
+                        <div className="flex-1 flex flex-col gap-0 md:gap-3 w-full">
+
+                            <div className="mt-1 md:mt-0.5">
+                                <p className="hidden md:block text-[10px] font-semibold tracking-widest uppercase text-[#FF8C00] mb-0.5">
                                     What&apos;s New
                                 </p>
-                                <h3 className="text-lg font-bold text-amber-50 tracking-tight leading-snug">
-                                    Mumbai Tracker just got better
-                                </h3>
+
+                                {/* Mobile title + notification on same line */}
+                                <div className="flex flex-row justify-between items-end sm:mt-0.5">
+                                    <h3 className="text-base md:text-lg font-bold text-amber-50 tracking-tight leading-snug">
+                                        Mumbai Tracker just got better
+                                    </h3>
+
+                                    <p className="md:hidden text-[11px] font-medium leading-tight text-white text-right whitespace-nowrap">
+                                        Get notified when we launch.
+                                    </p>
+                                </div>
                             </div>
 
                             <div className="w-full flex items-center gap-2">
                                 <span className="flex-1 border-t-2 border-dashed border-amber-200/20" />
                             </div>
 
-                            <ul className="space-y-1.5">
+                            <ul className="space-y-1 md:space-y-1.5">
                                 {NEW_FEATURES.map((feature) => (
                                     <li
                                         key={feature}
-                                        className="text-[13px] text-amber-100/80 leading-snug"
+                                        className="text-xs md:text-[13px] text-amber-100/80 leading-snug"
                                     >
-                                        {feature}
+                                        - {feature}
                                     </li>
                                 ))}
                             </ul>
                         </div>
 
                         {/* Right Column: Form */}
-                        <div className="flex-1 flex flex-col gap-3 w-full md:border-l-2 md:border-dashed md:border-amber-200/20 md:pl-6">
-                            
+                        <div className="flex-1 flex flex-col gap-2 md:gap-3 w-full md:border-l-2 md:border-dashed md:border-amber-200/20 md:pl-6">
+
                             {/* Mobile divider */}
                             <div className="w-full flex items-center gap-2 md:hidden">
                                 <span className="flex-1 border-t-2 border-dashed border-amber-200/20" />
                             </div>
 
-                            <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 justify-center h-full w-full">
-                                <p className="text-[13px] text-amber-50 font-medium mb-0.5 text-center">
+                            <form
+                                onSubmit={handleSubmit}
+                                className="flex flex-col gap-2 md:gap-2.5 justify-center h-full w-full"
+                            >
+                                <p className="hidden md:block text-[11px] font-medium leading-tight text-white md:mb-0.5 md:text-[13px] md:leading-normal md:text-left text-center">
                                     Get notified when we launch.
                                 </p>
-                                <div className="flex flex-col gap-2">
+
+                                <div className="flex flex-col gap-1.5 md:gap-2">
                                     <Input
                                         type="email"
                                         placeholder="your@email.com"
                                         value={email}
-                                        onChange={e => setEmail(e.target.value)}
+                                        onChange={(e) => setEmail(e.target.value)}
                                         required
                                         disabled={status === "loading"}
-                                        className="bg-black/20 border-amber-200/20 text-white placeholder:text-amber-200/40 focus-visible:ring-amber-500/50 h-9 text-sm"
+                                        className="bg-black/20 border-amber-200/20 text-white placeholder:text-amber-200/40 focus-visible:ring-amber-500/50 h-8 md:h-9 text-xs md:text-sm"
                                     />
+
                                     <button
                                         type="submit"
                                         disabled={status === "loading"}
-                                        className="w-full bg-[#FF8C00] text-stone-900 text-[13px] font-bold px-4 py-2 rounded-md hover:bg-amber-500 active:scale-[0.98] transition-all disabled:opacity-50 whitespace-nowrap shadow-lg h-9"
+                                        className="w-full bg-[#FF8C00] text-stone-900 text-xs md:text-[13px] font-bold px-4 py-1.5 md:py-2 rounded-md hover:bg-amber-500 active:scale-[0.98] transition-all disabled:opacity-50 whitespace-nowrap shadow-lg h-8 md:h-9"
                                     >
                                         {status === "loading" ? "Saving..." : "Notify me"}
                                     </button>
                                 </div>
 
                                 {status === "error" && (
-                                    <p className="text-xs text-red-400 text-center">{errMsg}</p>
+                                    <p className="text-xs text-red-400 text-center">
+                                        {errMsg}
+                                    </p>
                                 )}
 
-                                <p className="text-[9px] text-amber-200/40 text-center font-bold uppercase tracking-widest mt-1">
+                                <p className="text-[9px] text-amber-200/40 text-center font-bold uppercase tracking-widest mt-0.5">
                                     Only one update. No spam.
                                 </p>
                             </form>
