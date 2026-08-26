@@ -102,14 +102,10 @@ export function AnnouncementPopup() {
                                 </p>
 
                                 {/* Mobile title + notification on same line */}
-                                <div className="flex flex-row justify-between items-end sm:mt-0.5">
+                                <div className="flex flex-row justify-between items-end sm:mt-1">
                                     <h3 className="text-base md:text-lg font-bold text-amber-50 tracking-tight leading-snug">
-                                        Mumbai Tracker just got better
+                                        We&apos;re back! Get notified when v2 launches.
                                     </h3>
-
-                                    <p className="md:hidden text-[11px] font-medium leading-tight text-white text-right whitespace-nowrap">
-                                        Get notified when we launch.
-                                    </p>
                                 </div>
                             </div>
 
