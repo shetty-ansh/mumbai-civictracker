@@ -305,6 +305,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { generateWardPdf, WardPdfData } from "@/lib/generate-ward-pdf";
 
+export const dynamic = "force-dynamic"; // Prevents Vercel from caching GET requests
+
 const VERIFY_TOKEN = process.env.WHATSAPP_VERIFY_TOKEN!;
 const WHATSAPP_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN!;
 const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID!;
@@ -330,7 +332,12 @@ export async function GET(req: NextRequest) {
 
     if (mode === "subscribe" && token === VERIFY_TOKEN) {
         console.log("✅ Webhook verified!");
-        return new NextResponse(challenge, { status: 200 });
+        return new NextResponse(challenge, { 
+            status: 200,
+            headers: {
+                "Content-Type": "text/plain",
+            }
+        });
     }
     console.log("❌ Verification failed - token mismatch");
     return new NextResponse("Forbidden", { status: 403 });
