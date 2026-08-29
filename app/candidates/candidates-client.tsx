@@ -197,6 +197,27 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                     </div>
                 </div>
 
+                {/* Compare Corporators CTA Section */}
+                <div className="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-100 border border-blue-200 rounded-full flex items-center justify-center shadow-sm">
+                            <Scale className="w-5 h-5 text-blue-600" />
+                        </div>
+                        <div>
+                            <p className="font-semibold text-stone-900">Compare Corporators</p>
+                            <p className="text-sm text-stone-600">Pick any two corporators and compare them head-to-head.</p>
+                        </div>
+                    </div>
+                    <div className="w-full sm:w-auto">
+                        <Link
+                            href="/candidates/head-to-head"
+                            className="block w-full sm:w-auto bg-stone-900 text-white border border-stone-800 px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-stone-800 transition-colors text-center shadow-sm"
+                        >
+                            COMPARE NOW
+                        </Link>
+                    </div>
+                </div>
+
                 {/* Map CTA Section */}
                 <div className="mb-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-3">
@@ -357,10 +378,13 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                             <Scale className="w-3 h-3" />
                                             Compare Ward
                                         </Link> */}
-                                        <Button className="flex items-center justify-center gap-1 py-2 bg-stone-200 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200">
+                                        <Link
+                                            href={`/candidates/${candidate.id}#promises`}
+                                            className="flex items-center justify-center gap-1 py-2 bg-stone-200 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200">
                                             <HeartHandshake className="w-4 h-4" />
                                             View Promises
-                                        </Button>
+
+                                        </Link>
                                     </div>
                                 );
                             })}
@@ -432,7 +456,7 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                                             Compare Ward Candidates
                                         </Link> */}
                                         <Link
-                                            href={`/candidates/compare/${candidate.ward_no}`}
+                                            href={`/candidates/${candidate.id}#promises`}
                                             className="flex items-center justify-center gap-1 py-2 bg-stone-200 hover:bg-stone-200 transition-colors text-xs font-medium text-stone-600 border-t border-stone-200"
                                         >
                                             <HeartHandshake className="w-4 h-4" />
