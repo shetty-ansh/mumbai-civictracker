@@ -70,7 +70,7 @@ export default async function Image({ params }: { params: { id: string } }) {
                         <div style={{ fontSize: 80, fontWeight: 800, lineHeight: 1.1, marginBottom: '20px' }}>
                             {candidate.candidate_name}
                         </div>
-                        
+
                         <div style={{ display: 'flex', gap: '60px', marginTop: '20px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ fontSize: 24, textTransform: 'uppercase', letterSpacing: '2px', opacity: 0.8, color: candidate.winnner ? '#4b5563' : '#9ca3af' }}>
@@ -90,8 +90,8 @@ export default async function Image({ params }: { params: { id: string } }) {
                                 </div>
                             </div>
                         </div>
-                        
-                        {candidate.winnner && (
+
+                        {/* {candidate.winnner && (
                             <div style={{ 
                                 marginTop: '40px', 
                                 padding: '10px 20px', 
@@ -105,15 +105,15 @@ export default async function Image({ params }: { params: { id: string } }) {
                             }}>
                                 ✓ Elected
                             </div>
-                        )}
-                        
+                        )} */}
+
                         {!candidate.winnner && candidate.is_women_reserved && (
-                            <div style={{ 
-                                marginTop: '40px', 
-                                padding: '10px 20px', 
-                                border: '4px solid #f472b6', 
-                                color: '#f472b6', 
-                                fontSize: 32, 
+                            <div style={{
+                                marginTop: '40px',
+                                padding: '10px 20px',
+                                border: '4px solid #f472b6',
+                                color: '#f472b6',
+                                fontSize: 32,
                                 fontWeight: 'bold',
                                 textTransform: 'uppercase',
                                 transform: 'rotate(-5deg)',

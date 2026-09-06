@@ -1,9 +1,10 @@
 "use client";
 
-import { Share2, Download, Check, ChevronDown, Image as ImageIcon, FileText } from "lucide-react";
+import { Share2, Download, Check, ChevronDown, Image as ImageIcon, FileText, Scale } from "lucide-react";
 import { useState, useCallback, useRef, useEffect } from "react";
 import * as htmlToImage from "html-to-image";
 import { jsPDF } from "jspdf";
+import Link from "next/link";
 import { toast } from "sonner";
 
 interface CandidateShareActionsProps {
@@ -101,11 +102,11 @@ export function CandidateShareActions({ candidateName, wardNo }: CandidateShareA
                     format: [800, node.offsetHeight]
                 });
                 pdf.addImage(dataUrl, 'PNG', 0, 0, 800, node.offsetHeight);
-                
+
                 // Add hyperlinks
                 const links = node.querySelectorAll('.pdf-link');
                 const nodeRect = node.getBoundingClientRect();
-                
+
                 links.forEach(linkEl => {
                     const href = linkEl.getAttribute('data-href');
                     if (href) {
@@ -128,29 +129,37 @@ export function CandidateShareActions({ candidateName, wardNo }: CandidateShareA
     }, [candidateName, wardNo]);
 
     return (
-        <div className="flex gap-2">
+        <div className="flex flex-1 sm:flex-none w-full sm:w-auto gap-2 ml-4 sm:ml-0">
+            <Link
+                href="/candidates/head-to-head"
+                className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-white border border-[#FF8C00] rounded-lg text-sm font-semibold text-[#FF8C00] hover:bg-[#FF8C00] hover:border-[#FF8C00] hover:text-white transition-all shadow-sm active:scale-95 w-1/2 sm:w-auto"
+            >
+                <Scale className="w-4 h-4" />
+                <span className="sm:inline">Compare </span> <span className="hidden sm:inline">Corporator</span>
+            </Link>
+
             <button
                 onClick={handleShare}
                 disabled={isSharing}
-                className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-stone-200 rounded-lg text-sm font-semibold text-stone-700 hover:bg-stone-50 hover:border-amber-400 transition-all shadow-sm active:scale-95"
+                className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-white border border-stone-200 rounded-lg text-sm font-semibold text-stone-700 hover:bg-stone-50 hover:border-amber-400 transition-all shadow-sm active:scale-95 w-1/4 sm:w-auto"
             >
                 {isCopied ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
-                {isCopied ? "Copied" : "Share"}
+                <span className="hidden sm:inline">{isCopied ? "Copied" : "Share"}</span>
             </button>
 
-            <div className="relative" ref={dropdownRef}>
+            <div className="relative w-1/4 sm:w-auto" ref={dropdownRef}>
                 <button
                     onClick={() => setShowDropdown(!showDropdown)}
                     disabled={isDownloading}
-                    className="flex items-center justify-center gap-2 px-4 py-2 bg-stone-800 border border-stone-800 rounded-lg text-sm font-semibold text-white hover:bg-stone-700 transition-all shadow-sm active:scale-95"
+                    className="flex w-full h-full items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-stone-800 border border-stone-800 rounded-lg text-sm font-semibold text-white hover:bg-stone-700 transition-all shadow-sm active:scale-95"
                 >
                     {isDownloading ? (
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                         <Download className="w-4 h-4" />
                     )}
-                    {isDownloading ? "Saving..." : "Save Card"}
-                    <ChevronDown className="w-4 h-4 ml-1 opacity-70" />
+                    <span className="hidden sm:inline">{isDownloading ? "Saving..." : "Save Card"}</span>
+                    <ChevronDown className="w-4 h-4 sm:ml-1 opacity-70 hidden sm:block" />
                 </button>
 
                 {showDropdown && (

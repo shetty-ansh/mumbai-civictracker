@@ -46,8 +46,9 @@ export function ManifestoSection({ manifesto }: ManifestoSectionProps) {
                     {manifesto.keyPromises.slice(0, VISIBLE_PROMISES).map((promise, index) => (
                         <span
                             key={index}
-                            className="inline-flex items-center bg-stone-900 text-white text-[10px] px-3 py-1 rounded-md uppercase tracking-widest font-medium"
+                            className="inline-flex items-start text-[12px] px-3 py-1 tracking-widest font-semibold text-stone-900"
                         >
+                            <ChevronRight className="w-3 h-3 mt-[3px] mr-1 shrink-0 opacity-80" />
                             {promise}
                         </span>
                     ))}

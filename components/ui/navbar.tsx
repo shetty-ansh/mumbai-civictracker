@@ -51,7 +51,7 @@ export function Navbar() {
                         height={36}
                         className="w-8 h-8"
                     />
-                    <div>
+                    <div className="hidden md:block">
                         <div className="text-sm text-accent">aamchi</div>
                         <div className="text-xl leading-none font-bold" style={{ fontFamily: 'serif' }}>मुंबई</div>
                     </div>

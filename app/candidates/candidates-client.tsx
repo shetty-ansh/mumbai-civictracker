@@ -37,7 +37,7 @@ function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
         case 'Bharatiya Janata Party':
             return '/images/party-symbols/bjp-logo.jpg';
         case 'Shiv Sena':
-            return '/images/party-symbols/shivsena-logo.jpg';
+            return '/images/party-symbols/shivsena-logo.png';
         case 'Nationalist Congress Party - Sharad Pawar':
             return '/images/party-symbols/ncpsp-logo.png';
         case 'Nationalist Congress Party':
@@ -176,72 +176,65 @@ export default function CandidatesClient({ initialCandidates }: CandidatesClient
                     </div>
                 </div>
 
-                {/* Leaderboard CTA Section */}
-                <div className="mb-4 bg-gradient-to-r from-stone-50 to-stone-100 border border-stone-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-white border border-stone-200 rounded-full flex items-center justify-center shadow-sm">
-                            <Trophy className="w-5 h-5 text-amber-500" />
-                        </div>
+                {/* Quick Actions Carousel */}
+                <div className="mb-8 flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    {/* Leaderboard CTA Section */}
+                    <div className="snap-center shrink-0 w-[260px] md:w-[280px] aspect-square bg-gradient-to-br from-stone-50 to-stone-100 border border-stone-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
                         <div>
-                            <p className="font-semibold text-stone-900">Corporator Rankings</p>
+                            <div className="w-12 h-12 bg-white border border-stone-200 rounded-full flex items-center justify-center shadow-sm mb-4">
+                                <Trophy className="w-6 h-6 text-amber-500" />
+                            </div>
+                            <h3 className="font-bold text-xl text-stone-900 mb-2">Corporator Rankings</h3>
                             <p className="text-sm text-stone-600">See who is leading based on citizen ratings and reviews.</p>
                         </div>
-                    </div>
-                    <div className="w-full sm:w-auto">
                         <Link
                             href="/candidates/rankings"
-                            className="block w-full sm:w-auto bg-stone-900 text-white border border-stone-800 px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-stone-800 transition-colors text-center shadow-sm"
+                            className="w-full bg-stone-900 text-white border border-stone-800 px-4 py-3 rounded-xl text-sm font-bold hover:bg-stone-800 transition-colors text-center shadow-sm mt-4"
                         >
                             VIEW LEADERBOARD
                         </Link>
                     </div>
-                </div>
 
-                {/* Compare Corporators CTA Section */}
-                <div className="mb-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-blue-100 border border-blue-200 rounded-full flex items-center justify-center shadow-sm">
-                            <Scale className="w-5 h-5 text-blue-600" />
-                        </div>
+                    {/* Compare Corporators CTA Section */}
+                    <div className="snap-center shrink-0 w-[260px] md:w-[280px] aspect-square bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
                         <div>
-                            <p className="font-semibold text-stone-900">Compare Corporators</p>
+                            <div className="w-12 h-12 bg-blue-100 border border-blue-200 rounded-full flex items-center justify-center shadow-sm mb-4">
+                                <Scale className="w-6 h-6 text-blue-600" />
+                            </div>
+                            <h3 className="font-bold text-xl text-stone-900 mb-2">Compare Corporators</h3>
                             <p className="text-sm text-stone-600">Pick any two corporators and compare them head-to-head.</p>
                         </div>
-                    </div>
-                    <div className="w-full sm:w-auto">
                         <Link
                             href="/candidates/head-to-head"
-                            className="block w-full sm:w-auto bg-stone-900 text-white border border-stone-800 px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-stone-800 transition-colors text-center shadow-sm"
+                            className="w-full bg-stone-900 text-white border border-stone-800 px-4 py-3 rounded-xl text-sm font-bold hover:bg-stone-800 transition-colors text-center shadow-sm mt-4"
                         >
                             COMPARE NOW
                         </Link>
                     </div>
-                </div>
 
-                {/* Map CTA Section */}
-                <div className="mb-6 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
-                            <MapPin className="w-5 h-5 text-amber-600" />
-                        </div>
+                    {/* Map CTA Section */}
+                    <div className="snap-center shrink-0 w-[260px] md:w-[280px] aspect-square bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-6 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
                         <div>
-                            <p className="font-semibold text-stone-900">Find your ward on the map</p>
-                            <p className="text-sm text-stone-600">See your corporator's details and <Link href="/manifestos" className="text-stone-900 font-bold underline">what they had promised</Link></p>
+                            <div className="w-12 h-12 bg-amber-100 border border-amber-200 rounded-full flex items-center justify-center shadow-sm mb-4">
+                                <MapPin className="w-6 h-6 text-amber-600" />
+                            </div>
+                            <h3 className="font-bold text-xl text-stone-900 mb-2">Find your ward</h3>
+                            <p className="text-sm text-stone-600">See your corporator's details and <Link href="/manifestos" className="text-stone-900 font-bold underline">what they promised</Link></p>
                         </div>
-                    </div>
-                    <div className="flex gap-3 w-full sm:w-auto">
-                        <Link
-                            href="/manifestos"
-                            className="flex-1 sm:flex-none bg-white text-stone-900 border border-stone-300 px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-stone-50 transition-colors text-center"
-                        >
-                            View Manifestos
-                        </Link>
-                        <Link
-                            href="/map"
-                            className="flex-1 sm:flex-none bg-stone-900 text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-stone-800 transition-colors text-center"
-                        >
-                            Explore Map
-                        </Link>
+                        <div className="flex gap-2 mt-4">
+                            <Link
+                                href="/manifestos"
+                                className="flex-1 bg-white text-stone-900 border border-stone-300 px-2 py-3 rounded-xl text-sm font-bold hover:bg-stone-50 transition-colors text-center shadow-sm flex items-center justify-center"
+                            >
+                                Manifestos
+                            </Link>
+                            <Link
+                                href="/map"
+                                className="flex-1 bg-stone-900 text-white border border-stone-800 px-2 py-3 rounded-xl text-sm font-bold hover:bg-stone-800 transition-colors text-center shadow-sm flex items-center justify-center"
+                            >
+                                Map
+                            </Link>
+                        </div>
                     </div>
                 </div>
 

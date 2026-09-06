@@ -80,7 +80,7 @@ export function PromisesSection({ candidateName, promises }: PromisesSectionProp
                     return (
                         <span
                             key={index}
-                            className={`inline-flex items-start text-[12px] px-3 py-1 tracking-widest font-medium ${colorClass}`}
+                            className={`inline-flex items-start text-[12px] px-3 py-1 tracking-widest font-semibold ${colorClass}`}
                         >
                             <ChevronRight className="w-3 h-3 mt-[3px] mr-1 shrink-0 opacity-80" />
 

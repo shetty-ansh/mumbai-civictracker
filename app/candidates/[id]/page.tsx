@@ -10,7 +10,7 @@ import wardAffidavits from "@/data/ward-affidavits.json";
 import { CandidatePageToast } from "./candidate-toast";
 import { PromisesManifestoToggle } from "./promises-manifesto-toggle";
 import { BackButton } from "./back-button";
-import { Special_Elite } from "next/font/google";
+import { Special_Elite, Bitter } from "next/font/google";
 import { CandidateContact } from "./candidate-contact";
 import { CandidateRating } from "./candidate-rating";
 import { CandidateShareActions } from "./candidate-share-actions";
@@ -19,6 +19,11 @@ import { CandidateReportCard } from "./candidate-report-card";
 const specialElite = Special_Elite({
     weight: "400",
     subsets: ["latin"],
+});
+
+const bitter = Bitter({
+    subsets: ["latin"],
+    weight: ["400", "500", "600", "700", "800"],
 });
 
 // Static generation - pre-build all candidate pages at build time
@@ -63,7 +68,7 @@ function getPartyLogo(partyName: string, isWomenReserved?: boolean): string {
         case 'Bharatiya Janata Party':
             return '/images/party-symbols/bjp-logo.jpg';
         case 'Shiv Sena':
-            return '/images/party-symbols/shivsena-logo.jpg';
+            return '/images/party-symbols/shivsena-logo.png';
         case 'Nationalist Congress Party - Sharad Pawar':
             return '/images/party-symbols/ncpsp-logo.png';
         case 'Nationalist Congress Party':
@@ -208,22 +213,22 @@ export default async function CandidatePage({
                                 backgroundColor: candidate.winnner ? undefined : "#000",
                             }}
                         >
-                            {/* Stamp: reservation, inked & rotated top-right like a franking stamp */}
+                            {/* Stamp: reservation, inked & rotated top-left like a franking stamp */}
                             {candidate.is_women_reserved && (
                                 <div
-                                    className={`absolute top-[118px] right-5 rotate-[-9deg] border-2 rounded-sm px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest select-none mix-blend-multiply ${candidate.winnner ? 'border-rose-700/60 text-rose-700/80' : 'border-pink-400/60 text-pink-300/80'
+                                    className={`absolute top-[118px] left-5 border-2 rounded-sm px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest select-none mix-blend-multiply ${candidate.winnner ? 'border-rose-700/60 text-rose-700/80' : 'border-pink-400/60 text-pink-300/80'
                                         }`}
                                 >
                                     Women<br />Reserved
                                 </div>
                             )}
 
-                            {/* Stamp: winner, inked & rotated, opposite corner */}
+                            {/* Stamp: winner, inked & rotated, opposite corner
                             {candidate.winnner && (
                                 <div className="absolute top-[118px] left-5 rotate-[8deg] border-2 border-emerald-700/50 rounded-sm px-2.5 py-1 text-[10px] font-bold uppercase tracking-widest text-emerald-700/70 select-none mix-blend-multiply">
                                     ✓ Elected
                                 </div>
-                            )}
+                            )} */}
 
                             {/* Main ticket body — sits below the printed banner/perforation art */}
                             <div className="flex-1 flex flex-col justify-center px-7 pt-[170px] pb-6">
@@ -231,34 +236,34 @@ export default async function CandidatePage({
                                 <div className="space-y-4">
                                     {/* Passenger (candidate name) */}
                                     <div className="flex items-end gap-2">
-                                        <span className={`text-[10px] uppercase tracking-widest whitespace-nowrap ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Passenger</span>
+                                        <span className={`text-sm font-extrabold uppercase tracking-widest whitespace-nowrap ${candidate.winnner ? 'text-stone-700' : 'text-stone-300'}`}>प्रवासी</span>
                                         <span className={`flex-1 border-b border-dotted mb-1 ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
                                     </div>
-                                    <p className={`text-xl sm:text-2xl font-bold -mt-3 ${candidate.winnner ? 'text-stone-800' : 'text-white'}`}>
+                                    <p className={`text-3xl sm:text-5xl font-extrabold -mt-2 leading-tight ${bitter.className} ${candidate.winnner ? 'text-stone-900' : 'text-white'}`}>
                                         {candidate.candidate_name}
                                     </p>
 
                                     {/* Party (issuing authority) */}
                                     <div className="flex items-end gap-2 pt-2">
-                                        <span className={`text-[10px] uppercase tracking-widest whitespace-nowrap ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Issued By</span>
+                                        <span className={`text-sm font-extrabold uppercase tracking-widest whitespace-nowrap ${candidate.winnner ? 'text-stone-700' : 'text-stone-300'}`}>मार्गे</span>
                                         <span className={`flex-1 border-b border-dotted mb-1 ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
                                     </div>
-                                    <p className={`text-base font-medium -mt-3 ${candidate.winnner ? 'text-stone-700' : 'text-stone-200'}`}>
+                                    <p className={`text-lg sm:text-xl font-semibold -mt-2 ${bitter.className} ${candidate.winnner ? 'text-stone-800' : 'text-stone-100'}`}>
                                         {candidate.party_name}
                                     </p>
 
                                     {/* Ward no. / Rating — two-column ticket fields */}
                                     <div className="grid grid-cols-5 gap-3 pt-3">
                                         <div className="col-span-2">
-                                            <p className={`text-[10px] uppercase tracking-widest ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Ward No.</p>
-                                            <p className={`text-lg font-bold ${candidate.winnner ? 'text-stone-800' : 'text-amber-400'}`}>{candidate.ward_no}</p>
+                                            <p className={`text-sm font-extrabold uppercase tracking-widest ${candidate.winnner ? 'text-stone-700' : 'text-stone-300'}`}>तिकीट क्र.</p>
+                                            <p className={`text-2xl font-extrabold ${bitter.className} ${candidate.winnner ? 'text-stone-900' : 'text-amber-400'}`}>{candidate.ward_no}</p>
                                         </div>
                                         <div className="col-span-3">
-                                            <p className={`text-[10px] uppercase tracking-widest ${candidate.winnner ? 'text-stone-600' : 'text-stone-400'}`}>Avg Rating</p>
-                                            <p className={`text-lg font-bold flex items-center gap-1 ${candidate.winnner ? 'text-stone-800' : 'text-amber-400'}`}>
+                                            <p className={`text-sm font-extrabold uppercase tracking-widest ${candidate.winnner ? 'text-stone-700' : 'text-stone-300'}`}>दर्जा</p>
+                                            <p className={`text-2xl font-extrabold flex items-center gap-1 ${bitter.className} ${candidate.winnner ? 'text-stone-900' : 'text-amber-400'}`}>
                                                 {averageRating !== null ? (
                                                     <>
-                                                        {averageRating.toFixed(1)} <Star className="w-4 h-4 fill-current" />
+                                                        {averageRating.toFixed(1)} <Star className="w-5 h-5 fill-current" />
                                                     </>
                                                 ) : 'N/A'}
                                             </p>
@@ -273,20 +278,20 @@ export default async function CandidatePage({
                                     <span className={`flex-1 border-t-2 border-dashed ${candidate.winnner ? 'border-stone-500/40' : 'border-stone-500/30'}`} />
                                 </div>
 
-                                {/* Counterfoil — tear-tab style action row */}
-                                <div className={`flex rounded-lg overflow-hidden border divide-x divide-dashed ${candidate.winnner ? 'border-stone-400/40 divide-stone-400/40 bg-white/40' : 'border-stone-500/30 divide-stone-500/30 bg-white/5'}`}>
+                                {/* Counterfoil — white split button for Promises & Ratings */}
+                                <div className={`flex rounded-lg overflow-hidden border border-stone-300 divide-x divide-stone-300 bg-white ${bitter.className}`}>
                                     <a
                                         href="#promises"
-                                        className={`flex-1 flex flex-col items-center justify-center gap-1 text-center text-xs font-semibold uppercase tracking-wide py-3 px-2 transition-colors ${candidate.winnner ? 'text-stone-800 hover:bg-white/60' : 'text-stone-100 hover:bg-white/10'}`}
+                                        className="flex-1 flex items-center justify-center gap-2 text-center text-xs font-bold uppercase tracking-widest py-3 px-2 transition-colors text-stone-800 hover:bg-stone-100"
                                     >
-                                        View<br />Promises
+                                        Promises
                                     </a>
                                     <a
                                         href="#ratings"
-                                        className={`flex-1 flex flex-col items-center justify-center gap-1 text-center text-xs font-semibold uppercase tracking-wide py-3 px-2 transition-colors ${candidate.winnner ? 'text-stone-800 hover:bg-white/60' : 'text-stone-100 hover:bg-white/10'}`}
+                                        className="flex-1 flex items-center justify-center gap-2 text-center text-xs font-bold uppercase tracking-widest py-3 px-2 transition-colors text-stone-800 hover:bg-stone-100"
                                     >
                                         <Star className="w-3.5 h-3.5" />
-                                        View<br />Ratings
+                                        Ratings
                                     </a>
                                 </div>
 
@@ -295,7 +300,7 @@ export default async function CandidatePage({
                                     href={wardAffidavits[candidate.ward_no.toString() as keyof typeof wardAffidavits] || "#"}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className={`mt-3 flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-widest rounded-lg py-3.5 transition-colors ${candidate.winnner
+                                    className={`mt-3 flex items-center justify-center gap-2 text-sm font-bold uppercase tracking-widest rounded-lg py-3.5 transition-colors ${bitter.className} ${candidate.winnner
                                         ? 'bg-stone-800 text-white hover:bg-stone-700'
                                         : 'bg-amber-400 text-stone-900 hover:bg-amber-300'
                                         }`}
@@ -305,7 +310,7 @@ export default async function CandidatePage({
 
                                 {/* Votes — printed like a ticket serial number */}
                                 {candidate.votes !== null && (
-                                    <div className={`mt-4 flex items-center justify-center text-[11px] tracking-widest ${candidate.winnner ? 'text-stone-500/70' : 'text-stone-400/60'}`}>
+                                    <div className={`mt-4 flex items-center justify-center text-[11px] font-semibold tracking-widest ${bitter.className} ${candidate.winnner ? 'text-stone-600' : 'text-stone-300'}`}>
                                         <div className="flex items-center gap-1.5">
                                             <Vote className="w-3 h-3" />
                                             <span>{candidate.votes.toLocaleString('en-IN')} VOTES POLLED</span>
@@ -359,7 +364,7 @@ export default async function CandidatePage({
                                 }
 
                                 return (
-                                    <div className={`rounded-xl flex flex-col border h-full ${isLowEducation ? 'bg-red-50 border-red-200' : 'bg-white border-stone-200'}`}>
+                                    <div className={`rounded-xl flex flex-col border h-full shadow-sm hover:shadow-md transition-shadow ${isLowEducation ? 'bg-red-50 border-red-200' : 'bg-white border-stone-200'}`}>
                                         {/* Header - 30% */}
                                         <div className="basis-[30%] flex items-center justify-center p-4 border-b border-inherit">
                                             <p className={`text-[18px] font-medium uppercase tracking-widest ${isLowEducation ? 'text-red-400' : 'text-stone-500'}`}>Education</p>
@@ -378,7 +383,7 @@ export default async function CandidatePage({
                             {(() => {
                                 const hasCases = caseInfo && (caseInfo.active_cases > 0 || caseInfo.closed_cases > 0);
                                 return (
-                                    <div className={`rounded-xl flex flex-col border h-full ${hasCases ? 'bg-amber-50 border-amber-200' : 'bg-white border-stone-200'}`}>
+                                    <div className={`rounded-xl flex flex-col border h-full shadow-sm hover:shadow-md transition-shadow ${hasCases ? 'bg-amber-50 border-amber-200' : 'bg-white border-stone-200'}`}>
                                         {/* Header - 30% */}
                                         <div className="basis-[30%] flex items-center justify-center p-4 border-b border-inherit">
                                             <div className="flex items-center gap-2">
@@ -430,10 +435,10 @@ export default async function CandidatePage({
                         </div>
                     </div>
                 </div>
-                
+
                 {/* Hidden Report Card for Download */}
                 <div className="absolute top-0 -left-[9999px] z-[-1] overflow-hidden">
-                    <CandidateReportCard 
+                    <CandidateReportCard
                         candidate={candidate}
                         caseInfo={caseInfo}
                         averageRating={averageRating}
